@@ -5,6 +5,7 @@ import {
   Route,
 } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
+import { createGlobalStyle } from "styled-components";
 import theme from "./theme";
 import SignIn from "./pages/auth/SignIn";
 import LogIn from "./pages/auth/LogIn";
@@ -14,9 +15,17 @@ import Entrance from "./pages/intro/Entrance";
 
 function App() {
 
+  const GlobalStyle = createGlobalStyle`
+    * {
+        font-family: 'Moneygraphy', sans-serif;
+    }
+`;
+
   return (
     <>
       <ThemeProvider theme={theme}>
+      <GlobalStyle/>
+      
         <Router>
           <Routes>
             <Route path="/" element={<Start/>} />

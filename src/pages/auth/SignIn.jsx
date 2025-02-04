@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import Dropdown from "react-dropdown";
 import styled from "styled-components";
@@ -7,6 +8,7 @@ import "react-dropdown/style.css";
 
 export default function SignIn(){
     const [stage, setStage] = useState(0);
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -24,6 +26,7 @@ export default function SignIn(){
 
     const postSignIn =()=>{
         console.log(email, password, nickname, birthday, mbti, hobby, dream)
+        navigate("/ot");
     }
 
     const handleStage =()=>{
