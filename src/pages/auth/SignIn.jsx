@@ -95,7 +95,7 @@ export default function SignIn(){
             case 1 : 
                 return(
                     <ContentWrapper>
-                        <InputContainer>
+                        <InputContainer style={{ minHeight: "380px" }}>
                             <InputTitle>아이디</InputTitle>
                             <Input value={id} onChange={(e) => setID(e.target.value)}/>
                             <InputTitle style={ {marginTop : "30px"} }>비밀번호</InputTitle>
@@ -133,33 +133,51 @@ export default function SignIn(){
             case 2:
                 return(
                     <ContentWrapper>
-                        <span>닉네임</span>
-                        <input value={nickname} onChange={(e) => setNickname(e.target.value)}></input><br/>
-                        <span>생일</span>
-                        <DatePicker
-                            dateFormat='yyyy.MM.dd' // 날짜 형태
-                            shouldCloseOnSelect // 날짜를 선택하면 datepicker가 자동으로 닫힘
-                            selected={birthday} 
-                            onChange={(birthday) => setBirthday(birthday)}
-                            showTimeSelect={false} 
-                        /> <br/>
-                        <span>MBTI</span>
-                        <Dropdown 
-                            options={mbtiOptions} 
-                            onChange={(e) => setMbti(e.value)} 
-                            value={mbti} 
-                            placeholder="mbti를 선택하세요" />
-                        <span>취미</span>
-                        <input value={hobby} onChange={(e) => setHobby(e.target.value)}></input><br/>
-                        <span onClick={() => handleStage()}>다음으로</span>
+                        <InputContainer style={{ minHeight: "440px" }}>
+                            <InputTitle style={ {marginTop : "30px"} }>닉네임</InputTitle>
+                            <Input value={nickname} onChange={(e) => setNickname(e.target.value)}/>
+                            {nickname.length > 5 && <ErrSpan>닉네임은 5글자까지 가능합니다</ErrSpan>}
+
+                            <InputTitle style={ {marginTop : "30px"} } >생일</InputTitle>
+                            <CustomDatePicker
+                                dateFormat='yyyy.MM.dd' // 날짜 형태
+                                shouldCloseOnSelect // 날짜를 선택하면 datepicker가 자동으로 닫힘
+                                selected={birthday} 
+                                onChange={(birthday) => setBirthday(birthday)}
+                                showTimeSelect={false} 
+                            />
+
+                            <InputTitle style={ {marginTop : "30px"} }>MBTI</InputTitle>
+                            <CustomDropdown 
+                                options={mbtiOptions} 
+                                onChange={(e) => setMbti(e.value)} 
+                                value={mbti} 
+                                placeholder="mbti를 선택하세요"
+                                arrowClosed={<img src={"/image/icons/Arrow-down.png"} alt="arrow down" width="20px" />} 
+                                arrowOpen={<img src={"/image/icons/Arrow-up.png"} alt="arrow up" width="20px" />} />
+
+                            <InputTitle style={ {marginTop : "30px"} }>취미</InputTitle>
+                            <Input value={hobby} onChange={(e) => setHobby(e.target.value)}/>
+
+                        </InputContainer>
+
+                        <ButtonContainer>
+                            <BlueButton onClick={handleStage}>확인</BlueButton>
+                        </ButtonContainer>            
                     </ContentWrapper>
                 )
             case 3: 
                 return(
                     <ContentWrapper>
-                        <span>어린 시절의 꿈이 무엇이였나요?</span>
-                        <input value={dream} onChange={(e) => setDream(e.target.value)}></input><br/>
-                        <span onClick={() => postSignIn()}>회원가입하기</span>
+                        <InputContainer>
+                            <InputTitle>어린 시절의 꿈이 무엇이였나요?</InputTitle>
+                            <Input value={dream} onChange={(e) => setDream(e.target.value)}/>
+                        </InputContainer>
+                        
+                        <ButtonContainer>
+
+                        </ButtonContainer>
+                            <BlueButton onClick={() => postSignIn()}>회원가입하기</BlueButton>
                     </ContentWrapper>
                 )
         }
@@ -212,7 +230,6 @@ const InputContainer = styled.div`
     flex-direction: column;
     margin-bottom: 30px;
     position: relative;
-    min-height: 380px;
 `;
 
 const InputTitle = styled.span`
@@ -234,6 +251,48 @@ const Input = styled.input`
     box-sizing: border-box;
     margin-bottom : 10px;
 `;
+
+const CustomDatePicker = styled(DatePicker)`
+  width: 310px;
+  height: 30px;
+  font-size: 16px;
+  border-radius: 40px;
+  border: none;
+  outline : none;
+  padding: 10px 130px 10px 20px;
+  background-color: white;
+`;
+
+const CustomDropdown = styled(Dropdown)`
+  .Dropdown-control {
+    width: 100%;
+    height: 50px;
+    font-size: 16px;
+    border-radius: 40px;
+    border: none;
+    padding: 10px 20px 10px 20px;
+    background-color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .Dropdown-menu {
+    width: 100%;
+    font-size: 16px;
+    border-radius: 10px;
+    border: none;
+    background-color: white;
+  }
+
+   .Dropdown-arrow-wrapper {
+        display: flex;
+        align-items: center; /*  화살표 아이콘이 텍스트와 정렬되도록 설정 */
+  }
+
+`;
+
 
 const Placeholder = styled.span`
     position: absolute;
@@ -317,3 +376,4 @@ const TransparentBtn = styled.button`
     font-size: ${({ theme }) => theme.typography.subtitle20.fontSize};
     border : none;
 `;
+
