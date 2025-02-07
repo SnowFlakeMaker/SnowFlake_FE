@@ -96,9 +96,9 @@ const InputContainer = styled.div`
 `;
 
 const InputTitle = styled.span`
-    font-size: 24px;
-    color: white;
-    margin-bottom: 5px
+    font-size: ${({ theme }) => theme.typography.title24.fontSize};
+    color: ${({ theme }) => theme.colors.mainblue100};;
+    margin-bottom: 5px;
 `;
 
 const Input = styled.input`
@@ -127,11 +127,11 @@ const ButtonContainer = styled.div`
 const BlueButton = styled.button`
     width: 453px;
     height: 77px;
-    background-color: #8AB3DD;
+    background-color: ${({ theme }) => theme.colors.mainblue200};
     border: none;
     border-radius: 10px;
     color: white;
-    font-size: 24px;
+    font-size: ${({ theme }) => theme.typography.title24.fontSize};
 `;
 
 const TransparentBtn = styled.button`
@@ -139,6 +139,6 @@ const TransparentBtn = styled.button`
     height: 50px;
     background-color: transparent;
     color: white;
-    font-size: 20px;
+    font-size: ${({ theme }) => theme.typography.subtitle20.fontSize};
     border : none;
 `;

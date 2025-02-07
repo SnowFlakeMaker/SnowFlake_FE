@@ -9,7 +9,7 @@ const theme = {
         white : "#FFFFFF",
         yellow : "#FFE100",
     },
-    typograhpy : {
+    typography : {
       title24 : {
         fontSize: "24px",
         lineHeight: "26px",
