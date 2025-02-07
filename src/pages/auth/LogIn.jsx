@@ -8,6 +8,10 @@ export default function LogIn(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const [eyesOpen, setEyesOpen] = useState(false);
+    const [saveID, setSaveID] = useState(false);
+    const [passwordErr, setPasswordErr] = useState(true);
+
     const postLogIn =()=>{
         console.log(email, password);
     }
@@ -29,13 +33,26 @@ export default function LogIn(){
                     <InputContainer>
                         <InputTitle>비밀번호</InputTitle>
                         <Input
-                            value={password} 
-                            type="password"
+                            value={eyesOpen ? ("*".repeat(password.length)) :password} 
+                            type="text"
                             onChange={(e) => setPassword(e.target.value)}/>
+                        <EyesIcon 
+                            onClick={() => setEyesOpen((prev) => !prev)}
+                            src = {eyesOpen ? "/image/icons/eyes_close.png" : "/image/icons/eyes.png"}/>
+                        <PwContainer>
+                            <SmallText>비밀번호 찾기</SmallText>
+                            <CheckContainer>
+                                <CheckImoji
+                                    onClick={() => setSaveID((prev) => !prev)}
+                                    src={saveID ? "/image/icons/EllipseCheck.png" : "/image/icons/Ellipse.png"}/>
+                                <SmallText>아이디 저장</SmallText>
+                            </CheckContainer>
+                        </PwContainer>
                     </InputContainer>
                 </FormContainer>
                 
                 <ButtonContainer>
+                    <ErrSpan>비밀번호가 올바르지 않습니다</ErrSpan>
                     <BlueButton onClick={postLogIn}>확인</BlueButton>
                     <TransparentBtn onClick={GoSignIn}>회원가입하기</TransparentBtn>
                 </ButtonContainer>
@@ -93,11 +110,12 @@ const InputContainer = styled.div`
     display: flex;
     flex-direction: column;
     margin-bottom: 30px;
+    position: relative;
 `;
 
 const InputTitle = styled.span`
     font-size: ${({ theme }) => theme.typography.title24.fontSize};
-    color: ${({ theme }) => theme.colors.mainblue100};;
+    color: ${({ theme }) => theme.colors.mainblue100};
     margin-bottom: 5px;
 `;
 
@@ -122,6 +140,44 @@ const ButtonContainer = styled.div`
     margin-top: 40px; /* 버튼과 입력창 사이 간격 */
     z-index: 10;
     align-items: center;
+`;
+
+
+const EyesIcon = styled.img`
+    width : 30px;
+    height : 17.5px;
+    position: absolute; /* 절대 위치 지정 */
+    right: 20px; /* 오른쪽 여백 설정 */
+    top: 53%; /* 입력창 중앙 정렬 */
+    transform: translateY(-50%); /* Y축 중앙 정렬 */
+    cursor: pointer; /* 클릭 가능하도록 설정 */
+    z-index: 10; /* 버튼보다 위로 배치 */
+`;
+
+const PwContainer = styled.div`
+    display : flex;
+    justify-content: space-between;
+    margin-top : 10px;
+`;
+
+const SmallText = styled.span`
+    font-size: ${({ theme }) => theme.typography.subtitle15.fontSize};
+    color : ${({ theme }) => theme.colors.mainblue100};
+`;
+
+const CheckContainer = styled.div`
+    display : flex;
+`;
+
+const CheckImoji = styled.img`
+    margin-right : 5px;
+    width : 15px;
+    height : 15px;
+`;
+
+const ErrSpan = styled.span`
+    font-Size : ${({ theme }) => theme.typography.subtitle15.fontSize};
+    color :   ${({ theme }) => theme.colors.yellow};
 `;
 
 const BlueButton = styled.button`
