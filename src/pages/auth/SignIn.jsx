@@ -12,7 +12,9 @@ export default function SignIn(){
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
+    const [id, setID] = useState("");
     const [password, setPassword] = useState("");
+    const [checkPassword, setCheckPassword] = useState("");
     const [nickname, setNickname] = useState("");
     const [birthday, setBirthday] = useState(new Date());
     const [mbti, setMbti] = useState("");
@@ -32,6 +34,11 @@ export default function SignIn(){
         if(!clickAuth) setClickAuth(true);
         console.log(clickAuth);
     }
+
+    const [eyesOpen, setEyesOpen] = useState(false);
+    const [eyesCheckOpen, setEyesCheckOpen] = useState(false);
+
+
     const verifyEmail =()=>{
         console.log(email, authCode);
         setStage(stage + 1); //수정 필요
@@ -83,15 +90,49 @@ export default function SignIn(){
                             <BlueButton onClick={verifyEmail}>확인</BlueButton>
                             <TransparentBtn onClick={GoLogin}>로그인 하기</TransparentBtn>
                         </ButtonContainer>
-                        
-                        {/* <span>비밀번호</span>
-                        <input value={password} onChange={(e) => setPassword(e.target.value)}></input>
-                        < onClick={() => handleStage()}>다음으로</span> */}
                     </ContentWrapper>
                 );
             case 1 : 
                 return(
-                    <div>
+                    <ContentWrapper>
+                        <InputContainer>
+                            <InputTitle>아이디</InputTitle>
+                            <Input value={id} onChange={(e) => setID(e.target.value)}/>
+                            <InputTitle style={ {marginTop : "30px"} }>비밀번호</InputTitle>
+                            <Input 
+                                value={password}  
+                                type={eyesOpen ? "text" : "password"}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder = "영어대소문자, 특수문자를 포함한 8~18글자"/>
+                            <EyesIcon 
+                                style={ {top : "45%"} }
+                                onClick={() => setEyesOpen((prev) => !prev)}
+                                src = {eyesOpen ? "/image/icons/eyes_close.png" : "/image/icons/eyes.png"}/>
+                            <ErrSpan>비밀번호는 8~18글자, 영어대소문자, 특수문자(@&/~!)가 필수입니다</ErrSpan>
+                            
+                            <InputTitle style={ {marginTop : "30px"} }>비밀번호 확인</InputTitle>
+                            <Input 
+                                value={checkPassword} 
+                                type={eyesCheckOpen ? "text" : "password"}
+                                onChange={(e) => setCheckPassword(e.target.value)}/>
+                            <EyesIcon 
+                                style={ {top : "80%"} }
+                                onClick={() => setEyesCheckOpen((prev) => !prev)}
+                                src = {eyesCheckOpen ? "/image/icons/eyes_close.png" : "/image/icons/eyes.png"}/>
+                            
+                            {password && checkPassword && password !== checkPassword && (
+                                <ErrSpan>비밀번호가 맞지 않습니다</ErrSpan>
+                            )}
+                        </InputContainer>
+
+                        <ButtonContainer>
+                            <BlueButton onClick={handleStage}>확인</BlueButton>
+                        </ButtonContainer>
+                    </ContentWrapper>
+                );
+            case 2:
+                return(
+                    <ContentWrapper>
                         <span>닉네임</span>
                         <input value={nickname} onChange={(e) => setNickname(e.target.value)}></input><br/>
                         <span>생일</span>
@@ -111,15 +152,15 @@ export default function SignIn(){
                         <span>취미</span>
                         <input value={hobby} onChange={(e) => setHobby(e.target.value)}></input><br/>
                         <span onClick={() => handleStage()}>다음으로</span>
-                    </div>
-                );
-            case 2:
+                    </ContentWrapper>
+                )
+            case 3: 
                 return(
-                    <div>
+                    <ContentWrapper>
                         <span>어린 시절의 꿈이 무엇이였나요?</span>
                         <input value={dream} onChange={(e) => setDream(e.target.value)}></input><br/>
                         <span onClick={() => postSignIn()}>회원가입하기</span>
-                    </div>
+                    </ContentWrapper>
                 )
         }
 
@@ -171,6 +212,7 @@ const InputContainer = styled.div`
     flex-direction: column;
     margin-bottom: 30px;
     position: relative;
+    min-height: 380px;
 `;
 
 const InputTitle = styled.span`
@@ -229,6 +271,16 @@ const AuthButton = styled.button`
     margin-bottom : 10px;
     margin-top : 20px;
 
+`;
+
+const EyesIcon = styled.img`
+    width : 30px;
+    height : 17.5px;
+    position: absolute; /* 절대 위치 지정 */
+    right: 20px; /* 오른쪽 여백 설정 */
+    transform: translateY(-50%); /* Y축 중앙 정렬 */
+    cursor: pointer; /* 클릭 가능하도록 설정 */
+    z-index: 10; /* 버튼보다 위로 배치 */
 `;
 
 
