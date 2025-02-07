@@ -33,8 +33,8 @@ export default function LogIn(){
                     <InputContainer>
                         <InputTitle>비밀번호</InputTitle>
                         <Input
-                            value={eyesOpen ? ("*".repeat(password.length)) :password} 
-                            type="text"
+                            value={password} 
+                            type={eyesOpen ? "text" : "password"}
                             onChange={(e) => setPassword(e.target.value)}/>
                         <EyesIcon 
                             onClick={() => setEyesOpen((prev) => !prev)}
