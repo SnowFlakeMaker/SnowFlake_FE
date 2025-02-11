@@ -24,7 +24,7 @@ export default function LogIn(){
             <ContentWrapper>
                 <FormContainer>
                     <InputContainer>
-                        <InputTitle>아이디</InputTitle>
+                        <InputTitle>이메일</InputTitle>
                         <Input  
                             value={email} 
                             onChange={(e) => setEmail(e.target.value)}/>

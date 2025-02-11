@@ -12,7 +12,6 @@ export default function SignIn(){
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
-    const [id, setID] = useState("");
     const [password, setPassword] = useState("");
     const [checkPassword, setCheckPassword] = useState("");
     const [nickname, setNickname] = useState("");
@@ -95,9 +94,7 @@ export default function SignIn(){
             case 1 : 
                 return(
                     <ContentWrapper>
-                        <InputContainer style={{ minHeight: "380px" }}>
-                            <InputTitle>아이디</InputTitle>
-                            <Input value={id} onChange={(e) => setID(e.target.value)}/>
+                        <InputContainer style={{ minHeight: "350px" }}>
                             <InputTitle style={ {marginTop : "30px"} }>비밀번호</InputTitle>
                             <Input 
                                 value={password}  
@@ -105,7 +102,7 @@ export default function SignIn(){
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder = "영어대소문자, 특수문자를 포함한 8~18글자"/>
                             <EyesIcon 
-                                style={ {top : "45%"} }
+                                style={ {top : "24%"} }
                                 onClick={() => setEyesOpen((prev) => !prev)}
                                 src = {eyesOpen ? "/image/icons/eyes_close.png" : "/image/icons/eyes.png"}/>
                             <ErrSpan>비밀번호는 8~18글자, 영어대소문자, 특수문자(@&/~!)가 필수입니다</ErrSpan>
@@ -116,7 +113,7 @@ export default function SignIn(){
                                 type={eyesCheckOpen ? "text" : "password"}
                                 onChange={(e) => setCheckPassword(e.target.value)}/>
                             <EyesIcon 
-                                style={ {top : "80%"} }
+                                style={ {top : "62%"} }
                                 onClick={() => setEyesCheckOpen((prev) => !prev)}
                                 src = {eyesCheckOpen ? "/image/icons/eyes_close.png" : "/image/icons/eyes.png"}/>
                             
