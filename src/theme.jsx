@@ -4,12 +4,21 @@ const theme = {
         mainblue200 : "#8AB3DD",
         mainblue300 : "#7A8A98",
         mainblue400 : "#384754",
+        mainblue500 : "#0A2C83",
+        mainblue600 : "#1F5FA9",
         black : "#000000",
         gray : "#D9D9D9",
         white : "#FFFFFF",
         yellow : "#FFE100",
+        orange : "#FFAE00"
     },
     typography : {
+      title32 : {
+        fontSize: "32px",
+        lineHeight: "26px",
+        fontWeight: "500", 
+        letterSpacing: "-0.02em",
+      },
       title24 : {
         fontSize: "24px",
         lineHeight: "26px",
