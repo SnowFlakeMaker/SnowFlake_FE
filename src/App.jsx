@@ -12,6 +12,7 @@ import LogIn from "./pages/auth/LogIn";
 import Start from "./pages/intro/Start";
 import OT from "./pages/intro/OT";
 import Entrance from "./pages/intro/Entrance";
+import Main from "./pages/main/Main";
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="/login" element={<LogIn/>} />
             <Route path="/ot" element={<OT/>} />
             <Route path="/welcome" element={<Entrance/>} />
+            <Route path="/main" element={<Main/>}/>
           </Routes>
         </Router>
       </ThemeProvider>
