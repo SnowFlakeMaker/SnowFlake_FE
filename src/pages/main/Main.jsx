@@ -1,11 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import Profile from "../../components/main/Profile";
+import InfoBar from "../../components/main/InfoBar";
 
 export default function Main(){
     return(
         <BackgroundContainer>
             <Profile/>
+            <InfoBar/>
             <BackgroundImg src="/image/background/main.png" />
         </BackgroundContainer>
     );
