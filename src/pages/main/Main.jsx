@@ -2,12 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import Profile from "../../components/main/Profile";
 import InfoBar from "../../components/main/InfoBar";
+import Status from "../../components/main/Status";
 
 export default function Main(){
     return(
         <BackgroundContainer>
             <Profile/>
             <InfoBar/>
+            <Status/>
             <BackgroundImg src="/image/background/main.png" />
         </BackgroundContainer>
     );
