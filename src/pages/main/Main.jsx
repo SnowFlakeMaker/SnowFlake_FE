@@ -3,11 +3,13 @@ import styled from "styled-components";
 import Profile from "../../components/main/Profile";
 import InfoBar from "../../components/main/InfoBar";
 import Status from "../../components/main/Status";
+import EventIcon from "../../components/main/EventIcon";
 
 export default function Main(){
     return(
         <BackgroundContainer>
             <Profile/>
+            <EventIcon />
             <InfoBar/>
             <Status/>
             <BackgroundImg src="/image/background/main.png" />
