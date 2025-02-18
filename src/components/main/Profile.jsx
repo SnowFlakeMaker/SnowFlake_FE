@@ -59,13 +59,14 @@ const SnowIcon = styled.img``;
 
 const NameText = styled.span`
     color :  ${({ theme }) => theme.colors.mainblue100};
-    font-size :  ${({ theme }) => theme.typography.title32.fontSize};
+    font-size :  ${({ theme }) => theme.typography.title24.fontSize};
+    padding : 0 20px;
 `;
 
 const SemText = styled.span`
     display : flex;
     color :  ${({ theme }) => theme.colors.mainblue100};
-    font-size :  ${({ theme }) => theme.typography.title24.fontSize};\
+    font-size :  ${({ theme }) => theme.typography.subtitle20.fontSize};\
     justify-content : center;
     align-items : center;
 `;
@@ -84,5 +85,5 @@ const DateContainer = styled.div`
 
 const DateText = styled.span`
     color :  ${({ theme }) => theme.colors.mainblue400};
-    font-size :  ${({ theme }) => theme.typography.title32.fontSize};
+    font-size :  ${({ theme }) => theme.typography.title24.fontSize};
 `;
