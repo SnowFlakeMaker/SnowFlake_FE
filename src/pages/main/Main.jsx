@@ -4,6 +4,7 @@ import Profile from "../../components/main/Profile";
 import InfoBar from "../../components/main/InfoBar";
 import Status from "../../components/main/Status";
 import EventIcon from "../../components/main/EventIcon";
+import Conversation from "../../components/main/Conversation";
 
 export default function Main(){
     return(
@@ -12,6 +13,7 @@ export default function Main(){
             <EventIcon />
             <InfoBar/>
             <Status/>
+            <Conversation />
             <BackgroundImg src="/image/background/main.png" />
         </BackgroundContainer>
     );

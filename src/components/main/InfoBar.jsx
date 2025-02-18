@@ -6,8 +6,12 @@ export default function InfoBar(){
         <Conatiner>
             <CoinContainer>
                 <Icon src="image/icons/coin.svg"/>
-                <CoinText>1610</CoinText>
+                <TextContainer>
+                    <CoinText>1610</CoinText>
+                    <CoinText>C</CoinText>
+                </TextContainer>
             </CoinContainer>
+
             <SettingContainer>
                 <Icon src="image/icons/mail.png"/>
             </SettingContainer>
@@ -42,6 +46,11 @@ const CoinContainer = styled.div`
     justify-content: space-between;
     align-items: center;
     padding-right : 20px;
+`;
+
+const TextContainer = styled.div`
+    gap : 5px;
+    display : flex;
 `;
 
 const CoinText = styled.span`
