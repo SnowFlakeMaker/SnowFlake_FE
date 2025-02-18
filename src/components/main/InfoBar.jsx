@@ -33,8 +33,8 @@ const Conatiner = styled.div`
 `;
 
 const CoinContainer = styled.div`
-    width : 354px;
-    height : 90px;
+    width : 295px;
+    height : 70px;
     background-color : ${({ theme }) => theme.colors.mainblue100};
     border-radius : 50px;
     border : 4px solid ${({ theme }) => theme.colors.mainblue400};
@@ -45,20 +45,20 @@ const CoinContainer = styled.div`
 `;
 
 const CoinText = styled.span`
-    font-size :  ${({ theme }) => theme.typography.title32.fontSize};
+    font-size :  ${({ theme }) => theme.typography.title24.fontSize};
     color : ${({ theme }) => theme.colors.mainblue400};
 `;
 
 const Icon = styled.img`
-    width: 70px; 
-    height: 70px;
+    width: 60px; 
+    height: 60px;
     object-fit: contain; 
-    padding : 10px;
+    padding : 5px;
 `;
 
 const SettingContainer = styled.div`
-    width : 90px;
-    height : 90px;
+    width : 70px;
+    height : 70px;
     background-color : ${({ theme }) => theme.colors.mainblue100};
     border : 4px solid ${({ theme }) => theme.colors.mainblue400};
     border-radius: 50%
