@@ -1,7 +1,19 @@
 import React from "react";
 import styled from "styled-components";
+import { useState } from "react";
+import PlanList from "./PlanList";
 
 export default function Profile(){
+    const [showList, setShowList] = useState(false);
+
+    const handlePlanList = () => {
+        console.log("클릭됨! showList 변경 전:", showList);
+        setShowList((prev) => {
+            console.log("showList 변경 후:", !prev);
+            return !prev;
+        });
+    };
+
     return(
         <Container>
             <ProfileContainer>
@@ -14,9 +26,11 @@ export default function Profile(){
                 
             </ProfileContainer>
 
-            <DateContainer>
+            <DateContainer onClick={handlePlanList} >
                 <DateText>3월 24일</DateText>
             </DateContainer>
+
+            {showList && <PlanList />}
         </Container>
     );
 }
@@ -66,7 +80,7 @@ const NameText = styled.span`
 const SemText = styled.span`
     display : flex;
     color :  ${({ theme }) => theme.colors.mainblue100};
-    font-size :  ${({ theme }) => theme.typography.subtitle20.fontSize};\
+    font-size :  ${({ theme }) => theme.typography.subtitle20.fontSize};
     justify-content : center;
     align-items : center;
 `;
@@ -81,6 +95,7 @@ const DateContainer = styled.div`
     justify-content : center;
     align-items : center;
     padding-top: 5px;
+    cursor: pointer; 
 `;
 
 const DateText = styled.span`

@@ -13,7 +13,7 @@ export default function Main(){
             <EventIcon />
             <InfoBar/>
             <Status/>
-            <Conversation />
+            {/* <Conversation /> */}
             <BackgroundImg src="/image/background/main.png" />
         </BackgroundContainer>
     );
