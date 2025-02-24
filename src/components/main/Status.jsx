@@ -48,7 +48,7 @@ const Container = styled.div`
     flex-direction : column;
     margin : 15px;
     gap : 20px;
-    padding : 30px 20px;
+    padding : 35px 20px;
 `;
 
 const StatusContainer = styled.div`
