@@ -9,7 +9,7 @@ const theme = {
         black : "#000000",
         gray : "#D9D9D9",
         white : "#FFFFFF",
-        yellow : "#FFE100",
+        yellow : "#FFEE96",
         orange : "#FFAE00"
     },
     typography : {
