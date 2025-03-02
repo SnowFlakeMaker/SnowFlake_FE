@@ -60,7 +60,7 @@ export default function LogIn(){
             </ContentWrapper>
             
             <BlakcImg/>
-            <BackgroundImg src="/image/lobby_temp.png"/>
+            <BackgroundImg src="/image/background/lobby_temp.png"/>
         </BackgroundContainer>
             
         

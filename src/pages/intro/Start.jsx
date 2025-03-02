@@ -19,7 +19,7 @@ export default function Start(){
                 <GrayButton onClick={GoSignIn}>회원가입</GrayButton>
                 <GrayButton onClick={GoLogIn}>로그인</GrayButton>
             </ButtonContainer> 
-            <BackgroundImg src="/image/lobby_temp.png"/>
+            <BackgroundImg src="/image/background/lobby_temp.png"/>
         </BackgroundContainer>
         
     );
