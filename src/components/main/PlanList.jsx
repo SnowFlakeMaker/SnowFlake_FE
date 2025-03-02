@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PlanObject from "./PlanObject";
 
@@ -71,6 +71,34 @@ export default function PlanList(){
         },
     };
 
+    const [selectedDate, setSelectedDate] = useState(0);
+    const [calendarPlans, setCalendarPlans] = useState(Array(31).fill(null)); //캘린더에 들어가는 이미지 
+    const [montlyPlans, setMonthlyPlans] = useState(Array(31).fill(null)); //한달 텍스트 계획(백엔드 전송용)
+
+    const handlePlanClick = (title) => {
+        setCalendarPlans((prevPlans) => {
+            const newPlans = [...prevPlans];
+            newPlans[selectedDate] = defaultPlans[title].icon;
+            return newPlans;
+        });
+    
+        setMonthlyPlans((prevTextPlans) => {
+            const newTextPlans = [...prevTextPlans];
+            newTextPlans[selectedDate] = title; // title을 저장
+            return newTextPlans;
+        });
+    
+        if (selectedDate < 30) {
+            setSelectedDate(selectedDate + 1);
+        } else {
+            setSelectedDate(null);
+        }
+    };
+
+    // useEffect(() => {
+    //     console.log("업데이트된 montlyPlans:", montlyPlans);
+    // }, [montlyPlans])
+
     return(
 
         <Container>
@@ -83,13 +111,18 @@ export default function PlanList(){
                 <Calender>
                     <DaysContainer>
                         {[...Array(7)].map((_, i) => (
-                            <DaysOfWeek />
+                            <DaysOfWeek key={i} />
                         ))}
                     </DaysContainer>
  
                     <DatesContainer>
-                        {[...Array(31)].map((_, i) => (
-                            <DateBox />
+                        {calendarPlans.map((plan, i) => (
+                            <DateBox 
+                                key={i} 
+                                isSelected={i === selectedDate}
+                            >
+                                {plan && <PlanIcon src={plan} />}
+                            </DateBox>
                         ))}
                     </DatesContainer>
                 </Calender>
@@ -109,6 +142,7 @@ export default function PlanList(){
                             icon={data.icon} 
                             plus={data.plus} 
                             minus={data.minus} 
+                            onClick={() => handlePlanClick(title)}
                         />
                     ))}
                 </PlanContainer>
@@ -187,7 +221,7 @@ const DatesContainer = styled.div`
 const DateBox = styled.div`
     width: 40px;
     height: 40px;
-    background-color: white;
+    background-color: ${({ isSelected, theme }) => isSelected ? theme.colors.yellow : "white"};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -198,7 +232,7 @@ const PlannerContainer = styled.div`
     height : 522px;
     position: relative;
     margin-top: -50px;
-    z-index : 4;
+    z-index : 4;    
     right : 0;
 `;
 
@@ -231,4 +265,9 @@ const PlanContainer = styled.div`
     align-items : center;
     gap : 10px;
     justify-content : center;
+`;
+
+const PlanIcon = styled.img`
+    width: 32px;
+    height: 32px;
 `;

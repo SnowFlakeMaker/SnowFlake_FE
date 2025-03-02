@@ -2,11 +2,11 @@ import styled from "styled-components";
 import React from "react";
 import { useState } from "react";
 
-export default function PlanObject({ title, icon, plus, minus }){
+export default function PlanObject({ title, icon, plus, minus, onClick}){
     const [isHovered, setIsHovered] = useState(false);
 
     return(
-        <Container>
+        <Container onClick={onClick}>
             <Icon src={icon}/>
             <Title>{title}</Title>
             <InfoIconContainer
@@ -39,6 +39,7 @@ const Container = styled.div`
     gap : 10px;
     align-items : center;
     position: relative; 
+    pointer-events: auto; 
 `;
 
 const Icon = styled.img`
