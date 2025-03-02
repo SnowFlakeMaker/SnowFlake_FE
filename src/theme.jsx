@@ -36,6 +36,12 @@ const theme = {
         lineHeight: "26px",
         fontWeight: "500", 
         letterSpacing: "-0.02em",
+      },
+      subtitle12 : {
+        fontSize: "12px",
+        lineHeight: "26px",
+        fontWeight: "500", 
+        letterSpacing: "-0.02em",
       }
     }
 };
