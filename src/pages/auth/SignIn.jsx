@@ -17,14 +17,30 @@ export default function SignIn(){
     const [nickname, setNickname] = useState("");
     const [birthday, setBirthday] = useState(new Date());
     const [mbti, setMbti] = useState("");
+    const [major, setMajor] = useState("");
     const [hobby, setHobby] = useState("");
     const [dream, setDream] = useState("");
 
     const mbtiOptions = [
         'ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP', 'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ'
     ];
-
-    const defaultOption = mbtiOptions[0];
+    
+    const majorOptions = [
+        '한국어문학부', '역사문화학과', '프랑스언어·문화학과', '중어중문학부', '독일언어·문화학과', '일본학과', '문헌정보학과', '문화관광학전공', '르꼬르동블루외식경영전공', '교육학부',
+        '화학과', '생명시스템학부', '수학과', '통계학과', '체육교육과', '무용과',
+        '화공생명공학부', '인공지능공학부', '지능형전자시스템전공', '신소재물리전공', '컴퓨터과학전공', '데이터사이언스전공', '기계시스템학부', '기초공학부', '첨단공학부',
+        '가족자원경영학과', '아동복지학부', '의류학과', '식품영양학과',
+        '정치외교학과', '행정학과', '홍보광고학과', '소비자경제학과', '사회심리학과',
+        '법학부', 
+        '경제학부', '경영학부', 
+        '피아노과', '관현악과', '성악과', '작곡과',
+        '약학부',
+        '시각·영상디자인과', '산업디자인과', '환경디자인과', '공예과', '회화과',
+        '미디어학부',
+        '자유전공학부', 
+        '글로벌협력전공', '앙트러프러너십전공',
+        '영어영문학부'
+    ]
 
     const [authCode, setAuthCode] = useState("");
     const [clickAuth, setClickAuth] = useState(false);
@@ -153,8 +169,14 @@ export default function SignIn(){
                                 arrowClosed={<img src={"/image/icons/Arrow-down.png"} alt="arrow down" width="20px" />} 
                                 arrowOpen={<img src={"/image/icons/Arrow-up.png"} alt="arrow up" width="20px" />} />
 
-                            <InputTitle style={ {marginTop : "30px"} }>취미</InputTitle>
-                            <Input value={hobby} onChange={(e) => setHobby(e.target.value)}/>
+                            <InputTitle style={ {marginTop : "30px"} }>전공</InputTitle>
+                            <CustomDropdown 
+                                options={majorOptions} 
+                                onChange={(e) => setMajor(e.value)} 
+                                value={major} 
+                                placeholder="전공을 선택하세요"
+                                arrowClosed={<img src={"/image/icons/Arrow-down.png"} alt="arrow down" width="20px" />} 
+                                arrowOpen={<img src={"/image/icons/Arrow-up.png"} alt="arrow up" width="20px" />} />
 
                         </InputContainer>
 
@@ -167,7 +189,10 @@ export default function SignIn(){
                 return(
                     <ContentWrapper>
                         <InputContainer>
-                            <InputTitle>어린 시절의 꿈이 무엇이였나요?</InputTitle>
+                            <InputTitle>취미</InputTitle>
+                            <Input value={hobby} onChange={(e) => setHobby(e.target.value)}/>
+
+                            <InputTitle style={ {marginTop : "30px"} }>어린 시절의 꿈이 무엇이였나요?</InputTitle>
                             <Input value={dream} onChange={(e) => setDream(e.target.value)}/>
                         </InputContainer>
                         
