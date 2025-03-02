@@ -192,7 +192,7 @@ export default function SignIn(){
                             <InputTitle>취미</InputTitle>
                             <Input value={hobby} onChange={(e) => setHobby(e.target.value)}/>
 
-                            <InputTitle>어린 시절의 꿈이 무엇이였나요?</InputTitle>
+                            <InputTitle style={ {marginTop : "30px"} }>어린 시절의 꿈이 무엇이였나요?</InputTitle>
                             <Input value={dream} onChange={(e) => setDream(e.target.value)}/>
                         </InputContainer>
                         
