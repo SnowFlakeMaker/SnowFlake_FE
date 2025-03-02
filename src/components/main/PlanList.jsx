@@ -22,7 +22,7 @@ export default function PlanList(){
         "아르바이트": {
             icon: "/image/icons/planlist/work.png",
             plus: ["스트레스", "사회성", "코인", "근성"],
-            minus: []
+            minus: ["-"]
         },
         "동아리": {
             icon: "/image/icons/planlist/club.png",
@@ -36,7 +36,7 @@ export default function PlanList(){
         },
         "취미" : {
             icon: "/image/icons/planlist/hobby.png",
-            plus: [],
+            plus: ["-"],
             minus: ["스트레스", "근성", "사회성", "지력"]
         },
         "운동" : {
@@ -56,7 +56,7 @@ export default function PlanList(){
         },
         "여행" : {
             icon: "/image/icons/planlist/travel.png",
-            plus: [],
+            plus: ["-"],
             minus: ["체력", "스트레스", "코인", "지력"]
         },
         "전공학회" : {
@@ -75,6 +75,24 @@ export default function PlanList(){
 
         <Container>
             <CalenderContainer>
+                <MonthlyContainer>
+                    <SnowIcon  src="/image/icons/snow-icon.png" />
+                    <MonthText>3월</MonthText>
+                </MonthlyContainer>
+
+                <Calender>
+                    <DaysContainer>
+                        {[...Array(7)].map((_, i) => (
+                            <DaysOfWeek />
+                        ))}
+                    </DaysContainer>
+ 
+                    <DatesContainer>
+                        {[...Array(31)].map((_, i) => (
+                            <DateBox />
+                        ))}
+                    </DatesContainer>
+                </Calender>
 
             </CalenderContainer>
             
@@ -113,11 +131,66 @@ const Container = styled.div`
 
 const CalenderContainer = styled.div`
     width : 357px;
-    height : 300px;
+    height : 310px;
     background-color :  ${({ theme }) => theme.colors.mainblue400};
     border : 4px solid  ${({ theme }) => theme.colors.mainblue100};
     position: relative;
     right: 0;
+`;
+
+const SnowIcon = styled.img`
+`;
+
+const MonthlyContainer = styled.div`
+    display : flex;
+    flex-direction : row;
+    gap : 10px;
+    align-items : center;
+    margin : 10px;
+`;
+
+const MonthText = styled.span`
+    font-size :  ${({ theme }) => theme.typography.title24.fontSize};
+    color : ${({ theme }) => theme.colors.mainblue100};
+`;
+
+const DaysContainer = styled.div`
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap : 7px;
+    padding: 10px;
+    align-items : center;
+    justify-content : center;
+    padding: 0 10px;  
+    margin-bottom : 0;
+`;
+
+
+const DaysOfWeek = styled.div`
+    width : 40px;
+    height : 8px;
+    background-color :  ${({ theme }) => theme.colors.mainblue200};
+`;
+
+const Calender = styled.div`
+`;
+
+const DatesContainer = styled.div`
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 7px;
+    padding: 10px;
+    justify-content : center;
+    align-items: center;
+`;
+
+const DateBox = styled.div`
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 const PlannerContainer = styled.div`
