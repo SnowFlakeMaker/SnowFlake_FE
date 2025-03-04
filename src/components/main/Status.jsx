@@ -36,49 +36,49 @@ export default function Status(){
 }
 
 const Container = styled.div`
-    width : 518px;
-    height : 440px;
+    width: 33vw;
+    height: 55vh;
     z-index : 5;
-    border : 4px solid  ${({ theme }) => theme.colors.mainblue100};
+    border : 0.3vw solid  ${({ theme }) => theme.colors.mainblue100};
     background-color :  ${({ theme }) => theme.colors.mainblue400};
     bottom : 0;
     left: 0;
     position: absolute;
     display : flex;
     flex-direction : column;
-    margin : 15px;
-    gap : 20px;
-    padding : 35px 20px;
+    margin : 1vw;
+    gap : 1.5vw;
+    padding : 3vh 1.5vw;
 `;
 
 const StatusContainer = styled.div`
     display : flex;
     flex-direction : row;
-    gap : 20px;
+    gap :1.5vw; 
     
 `;
 
 const Title = styled.span`
-    width : 115px;
+    width : 8vw;
     color :  ${({ theme }) => theme.colors.mainblue100};
     font-size :  ${({ theme }) => theme.typography.title24.fontSize};
-    padding-left : 25px;
+    padding-left : 1vw;
 `;
 
 const Icon = styled.img`
-    height : 35px;
+    height :  4vh;
 `;
 
 const Bar = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 10px;
+    gap: 0.7vw; 
 `;
 
 const StatusBarContainer = styled.div`
-  width: 314px; /* 바 전체 길이 */
-  height: 25px; /* 바 높이 */
+  width: 22vw; /* 바 전체 길이 */
+  height: 3vh;/* 바 높이 */
   background-color: white; /* 바의 배경색 */
   border: none;
   overflow: hidden; /* 진행 부분이 넘치지 않도록 처리 */

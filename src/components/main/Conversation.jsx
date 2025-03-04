@@ -18,24 +18,24 @@ export default function Conversation(){
 }
 
 const Container = styled.div`
-    width : 725px;
-    height : 247px;
+    width: 37vw;
+    height: 23vh;
     display : flex;
     position : absolute;
     flex-direction : column;
     bottom : 0;
     right : 0;
-    margin : 15px;
+    margin: 0.8vw; 
     z-index : 5;
     background-color : ${({ theme }) => theme.colors.mainblue100};
     border : 4px solid ${({ theme }) => theme.colors.mainblue400};
 `;
 
 const TextContainer = styled.div`
-    margin : 20px;
+    margin: 1vw;
     display : flex;
     flex-direction : column;
-    gap : 10px;
+    gap: 0.5vw;
 `;
 
 const Text = styled.span`
@@ -44,14 +44,14 @@ const Text = styled.span`
 `;
 
 const SelectContainer = styled.div`
-    margin : 20px;  
+    margin: 1vw;
     position : absolute;
     right : 0;
     bottom : 0;
-    margin-right : 10px;
+    margin-right: 0.5vw; 
     display : flex;
     flex-direction : column;
-    gap : 10px;
+    gap: 0.5vw;
     text-align: right;
 `;
 
@@ -63,16 +63,16 @@ const SelectOption = styled.span`
     position: relative;
     display: flex; /* 텍스트와 아이콘을 동일한 높이로 정렬 */
     align-items: center; /* 수직 정렬 */
-    padding-left: 70px; /* 아이콘을 위한 공간 확보 */
+    padding-left: 3.5vw; /* 아이콘을 위한 공간 확보 */
     cursor: pointer;
 
     &:hover::before {
         content: url('/image/icons/select-conversation.png');
         position: absolute;
         left: 0;
-        top : -2px;
-        width: 9px;
-        height: 18px;
+        top: -0.2vh;
+        width: 0.5vw; 
+        height: 1.7vh;
         z-index : 7;
     }
 `;
