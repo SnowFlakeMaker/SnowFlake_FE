@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import MailList from "./MailList";
 
 export default function InfoBar(){
+    const [showMail, setShowMail] = useState(false);
+    const count = 2;
+
+    const handleMailList =()=>{
+        setShowMail((prev) => !prev)
+    }
     return(
         <Conatiner>
             <CoinContainer>
@@ -13,11 +20,16 @@ export default function InfoBar(){
             </CoinContainer>
 
             <SettingContainer>
-                <Icon src="image/icons/mail.png"/>
+                <Icon 
+                    src="image/icons/mail.png"
+                    onClick={handleMailList}/>
+                {count > 0 && <Badge>{count}</Badge>}
             </SettingContainer>
             <SettingContainer>
                 <Icon src="image/icons/setting.png"/>
             </SettingContainer>
+
+            {showMail && <MailList/>}
         </Conatiner>
     );
 }
@@ -66,9 +78,29 @@ const Icon = styled.img`
 `;
 
 const SettingContainer = styled.div`
-    width : 70px;
-    height : 70px;
-    background-color : ${({ theme }) => theme.colors.mainblue100};
-    border : 4px solid ${({ theme }) => theme.colors.mainblue400};
-    border-radius: 50%
+    width: 5rem; /* 80px (16px * 5) */
+    height: 5rem;
+    background-color: ${({ theme }) => theme.colors.mainblue100};
+    border: 0.25rem solid ${({ theme }) => theme.colors.mainblue400}; /* 4px */
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const Badge = styled.div`
+    position: absolute;
+    top: -5%;
+    right: 0%;
+    background-color: #DA0000;
+    color: white;
+    width: 1.5rem; /* 24px */
+    height: 1.5rem;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
