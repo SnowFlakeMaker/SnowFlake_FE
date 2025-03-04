@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import MailList from "./MailList";
 
 export default function InfoBar(){
+    const [showMail, setShowMail] = useState(false);
+
+    const handleMailList =()=>{
+        setShowMail((prev) => !prev)
+    }
     return(
         <Conatiner>
             <CoinContainer>
@@ -13,11 +19,15 @@ export default function InfoBar(){
             </CoinContainer>
 
             <SettingContainer>
-                <Icon src="image/icons/mail.png"/>
+                <Icon 
+                    src="image/icons/mail.png"
+                    onClick={handleMailList}/>
             </SettingContainer>
             <SettingContainer>
                 <Icon src="image/icons/setting.png"/>
             </SettingContainer>
+
+            {showMail && <MailList/>}
         </Conatiner>
     );
 }
