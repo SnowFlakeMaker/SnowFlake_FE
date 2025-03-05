@@ -156,18 +156,18 @@ const Container = styled.div`
     display : flex;
     flex-direction : column;
     right: 0; 
-    bottom: 0;
+    bottom: 5vh;
     position : fixed;
     z-index : 6;
     align-items: flex-end; 
-    margin-right : 15px;
+    margin-right: 0.8vw;
 `;
 
 const CalenderContainer = styled.div`
-    width : 357px;
-    height : 310px;
+    width: 25w; 
+    height: 32vh;
     background-color :  ${({ theme }) => theme.colors.mainblue400};
-    border : 4px solid  ${({ theme }) => theme.colors.mainblue100};
+    border : 0.2vw solid  ${({ theme }) => theme.colors.mainblue100};
     position: relative;
     right: 0;
 `;
@@ -178,9 +178,9 @@ const SnowIcon = styled.img`
 const MonthlyContainer = styled.div`
     display : flex;
     flex-direction : row;
-    gap : 10px;
+    gap: 0.5vw;
     align-items : center;
-    margin : 10px;
+    margin: 0.5vw; 
 `;
 
 const MonthText = styled.span`
@@ -191,18 +191,17 @@ const MonthText = styled.span`
 const DaysContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap : 7px;
-    padding: 10px;
+    gap: 0.5vw;
+    padding: 0 0.5vw;  
     align-items : center;
     justify-content : center;
-    padding: 0 10px;  
     margin-bottom : 0;
 `;
 
 
 const DaysOfWeek = styled.div`
-    width : 40px;
-    height : 8px;
+    width: 2vw; 
+    height: 0.7vh;
     background-color :  ${({ theme }) => theme.colors.mainblue200};
 `;
 
@@ -212,15 +211,15 @@ const Calender = styled.div`
 const DatesContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 7px;
-    padding: 10px;
+    gap: 0.5vw; 
+    padding: 0.5vw; 
     justify-content : center;
     align-items: center;
 `;
 
 const DateBox = styled.div`
-    width: 40px;
-    height: 40px;
+    width: 2vw; 
+    height: 2vw; 
     background-color: ${({ isSelected, theme }) => isSelected ? theme.colors.yellow : "white"};
     display: flex;
     align-items: center;
@@ -228,25 +227,24 @@ const DateBox = styled.div`
 `;
 
 const PlannerContainer = styled.div`
-    width : 700px;
-    height : 522px;
+    width: 36vw; 
+    height: 50vh;
     position: relative;
-    margin-top: -50px;
+    margin-top: -5vh;
     z-index : 4;    
-    right : 0;
+    right : 5vw;
 `;
 
 const TitleContainer = styled.div`
     background-color :  ${({ theme }) => theme.colors.mainblue100};
-    border : 4px solid  ${({ theme }) => theme.colors.mainblue400};
-    border-radius : 40px;
+    border : 0.2vw solid  ${({ theme }) => theme.colors.mainblue400};
+    border-radius : 2vw;
     justify-content : center;
     align-items : center;
-    width : 283px;
-    height : 43px;
+    width: 15vw;
+    height: 5vh;
     display : flex;
-    margin-bottom : 15px;
-
+    margin-bottom: 0.8vw;
 `;
 
 const Text = styled.span`
@@ -256,18 +254,18 @@ const Text = styled.span`
 `;
 
 const PlanContainer = styled.div`
-    width : 700px;
-    height : 430px;
+    width: 40vw;
+    height: 45vh;
     background-color :  ${({ theme }) => theme.colors.mainblue100};
-    border : 4px solid  ${({ theme }) => theme.colors.mainblue400};
+    border : 0.2vw solid  ${({ theme }) => theme.colors.mainblue400};
     display : flex;
     flex-wrap: wrap;
     align-items : center;
-    gap : 10px;
+    gap: 0.5vw;
     justify-content : center;
 `;
 
 const PlanIcon = styled.img`
-    width: 32px;
-    height: 32px;
+    width: 1.7vw;
+    height: 1.7vw;
 `;

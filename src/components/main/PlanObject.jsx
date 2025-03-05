@@ -28,29 +28,29 @@ export default function PlanObject({ title, icon, plus, minus, onClick}){
 }
 
 const Container = styled.div`
-    width : 195px;
-    height : 60px;
+    width: 12vw;
+    height: 7vh;
     background-color : white;
-    border : 4px solid  ${({ theme }) => theme.colors.mainblue400};
+    border : 0.3vw solid  ${({ theme }) => theme.colors.mainblue400};
     z-index : 7;
     display : flex;
     flex-direction : row;
-    border-radius : 10px;
-    gap : 10px;
+    border-radius :  1vw;
+    gap : 0.7vw;
     align-items : center;
     position: relative; 
     pointer-events: auto; 
 `;
 
 const Icon = styled.img`
-    width : 50px;
-    height : 52px;
+    width: 3vw; 
+    height: 5vh;
     object-fit : fit;
-    margin-left: 3px;
+    margin-left: 0.5vw;
 `;
 
 const Title = styled.span`
-    width: 80px;
+    width: 4.5vw;
     font-size :  ${({ theme }) => theme.typography.subtitle15.fontSize};
     color : ${({ theme }) => theme.colors.mainblue400};
 `;
@@ -62,19 +62,19 @@ const InfoIconContainer = styled.div`
 `;
 
 const InfoIcon = styled.img`
-    width : 24px;
-    height : 24px;
+    width : 1.7vw; 
+    height : 1.7vw; 
     object-fit : fit;
 `;
 
 const PlusMinusInfoContainer = styled.div`
     position: absolute;
-    top: -80px; 
+    top: -10vh;
     left: -250%;
     transform: translateX(-50%);
-    width: 240px;
-    height : 890px;
-    padding: 8px;
+    width: 17vw;
+    height: 60vh;
+    padding: 0.5vw;
     z-index: 50;
     white-space: nowrap;
     align-items: center;
@@ -89,10 +89,10 @@ const TooltipImage = styled.img`
 `;
 
 const Info = styled.span`
-    font-size :  ${({ theme }) => theme.typography.subtitle12.fontSize};
+    font-size :  ${({ theme }) => theme.typography.subtitle15.fontSize};
     color : white;
     display: block;
-    margin-top: -55px;
+    margin-top: -7.5vh;
     position: absolute;
     width: 100%;
     text-align: center;

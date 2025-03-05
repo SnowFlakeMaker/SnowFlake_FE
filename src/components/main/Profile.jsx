@@ -39,19 +39,19 @@ const Container = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    width : 283px;
-    height : 179px;
-    margin : 15px;
+    width: 18vw;
+    height: 22vh;
+    margin: 1vw;
     border : none;
     z-index : 5;
     display : flex;
     flex-direction : column;
-    gap : 10px;
+    gap: 0.7vw;
 `;
 
 const ProfileContainer = styled.div`
-    width : 283px;
-    height : 109px;
+    width: 100%;
+    height: 15vh;
     background-color :  ${({ theme }) => theme.colors.mainblue400};
     border : 4px solid  ${({ theme }) => theme.colors.mainblue100};
     display : flex;
@@ -65,16 +65,19 @@ const NameContainer = styled.div`
     justify-content : center;
     align-items : center;
     display: flex;
-    gap : 10px;
-    margin-bottom : 10px;
+    gap: 0.7vw;
+    margin-bottom: 0.7vw;
 `;
 
-const SnowIcon = styled.img``;
+const SnowIcon = styled.img`
+    width: 2vw;
+    height: 2vw;
+`;
 
 const NameText = styled.span`
     color :  ${({ theme }) => theme.colors.mainblue100};
     font-size :  ${({ theme }) => theme.typography.title24.fontSize};
-    padding : 0 20px;
+    padding: 0 1.5vw;
 `;
 
 const SemText = styled.span`
@@ -86,8 +89,8 @@ const SemText = styled.span`
 `;
 
 const DateContainer = styled.div`
-    width : 283px;
-    height : 51px;
+    width: 100%;
+    height: 7vh;
     background-color :  ${({ theme }) => theme.colors.mainblue100};
     border : 4px solid  ${({ theme }) => theme.colors.mainblue400};
     display : flex;

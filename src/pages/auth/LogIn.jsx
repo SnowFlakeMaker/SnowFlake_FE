@@ -93,9 +93,9 @@ const ContentWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center; /* 세로 중앙 정렬 */
-    width: 453px; /* 입력창과 버튼 크기와 동일하게 설정 */
+    width: 23vw;/* 입력창과 버튼 크기와 동일하게 설정 */
     height: auto;
-    gap: 20px;
+    gap: 1vw;
 `;
 
 const FormContainer = styled.div`
@@ -109,20 +109,20 @@ const InputContainer = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    margin-bottom: 30px;
+    margin-bottom: 1.5vh;
     position: relative;
 `;
 
 const InputTitle = styled.span`
     font-size: ${({ theme }) => theme.typography.title24.fontSize};
     color: ${({ theme }) => theme.colors.mainblue100};
-    margin-bottom: 5px;
+    margin-bottom: 0.3vh;
 `;
 
 const Input = styled.input`
-    width: 453px;
-    height: 45px;
-    padding: 10px 30px;
+    width: 23vw;
+    height: 5vh;
+    padding: 1vh 1.5vw;
     font-size: 16px;
     border-radius: 40px;
     border: none;
@@ -136,18 +136,19 @@ const ButtonContainer = styled.div`
     width: 100%; /* ContentWrapper 내에서 전체 사용 */
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 40px; /* 버튼과 입력창 사이 간격 */
+    gap: 0.5vh;
     z-index: 10;
     align-items: center;
+    position : fixed;
+    bottom : 5vw;
 `;
 
 
 const EyesIcon = styled.img`
-    width : 30px;
-    height : 17.5px;
+    width: 2vw;
+    height: 2vh;
     position: absolute; /* 절대 위치 지정 */
-    right: 20px; /* 오른쪽 여백 설정 */
+    right: 1vw; /* 오른쪽 여백 설정 */
     top: 53%; /* 입력창 중앙 정렬 */
     transform: translateY(-50%); /* Y축 중앙 정렬 */
     cursor: pointer; /* 클릭 가능하도록 설정 */
@@ -157,7 +158,7 @@ const EyesIcon = styled.img`
 const PwContainer = styled.div`
     display : flex;
     justify-content: space-between;
-    margin-top : 10px;
+    margin-top: 1vh; 
 `;
 
 const SmallText = styled.span`
@@ -170,31 +171,32 @@ const CheckContainer = styled.div`
 `;
 
 const CheckImoji = styled.img`
-    margin-right : 5px;
-    width : 15px;
-    height : 15px;
+    margin-right: 0.3vw; 
+    width: 0.8vw; 
+    height : 0.8vw; 
 `;
 
 const ErrSpan = styled.span`
     font-Size : ${({ theme }) => theme.typography.subtitle15.fontSize};
     color :   ${({ theme }) => theme.colors.yellow};
+    padding-bottom : 1vh;
 `;
 
 const BlueButton = styled.button`
-    width: 453px;
-    height: 77px;
+    width: 23vw;
+    height: 7vh;
     background-color: ${({ theme }) => theme.colors.mainblue200};
     border: none;
-    border-radius: 10px;
     color: white;
     font-size: ${({ theme }) => theme.typography.title24.fontSize};
 `;
 
 const TransparentBtn = styled.button`
-    width: 453px;
-    height: 50px;
+    width: 23vw;
+    height: 4vh;
     background-color: transparent;
     color: white;
     font-size: ${({ theme }) => theme.typography.subtitle20.fontSize};
     border : none;
+    padding-top : 2vh;
 `;

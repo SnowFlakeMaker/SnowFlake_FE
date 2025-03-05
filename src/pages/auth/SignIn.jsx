@@ -118,10 +118,10 @@ export default function SignIn(){
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder = "영어대소문자, 특수문자를 포함한 8~18글자"/>
                             <EyesIcon 
-                                style={ {top : "24%"} }
+                                style={ {top : "23%"} }
                                 onClick={() => setEyesOpen((prev) => !prev)}
                                 src = {eyesOpen ? "/image/icons/eyes_close.png" : "/image/icons/eyes.png"}/>
-                            <ErrSpan>비밀번호는 8~18글자, 영어대소문자, 특수문자(@&/~!)가 필수입니다</ErrSpan>
+                            
                             
                             <InputTitle style={ {marginTop : "30px"} }>비밀번호 확인</InputTitle>
                             <Input 
@@ -129,7 +129,7 @@ export default function SignIn(){
                                 type={eyesCheckOpen ? "text" : "password"}
                                 onChange={(e) => setCheckPassword(e.target.value)}/>
                             <EyesIcon 
-                                style={ {top : "62%"} }
+                                style={ {top : "54%"} }
                                 onClick={() => setEyesCheckOpen((prev) => !prev)}
                                 src = {eyesCheckOpen ? "/image/icons/eyes_close.png" : "/image/icons/eyes.png"}/>
                             
@@ -197,9 +197,9 @@ export default function SignIn(){
                         </InputContainer>
                         
                         <ButtonContainer>
-
-                        </ButtonContainer>
                             <BlueButton onClick={() => postSignIn()}>회원가입하기</BlueButton>
+                        </ButtonContainer>
+                            
                     </ContentWrapper>
                 )
         }
@@ -240,9 +240,9 @@ const ContentWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center; /* 세로 중앙 정렬 */
-    width: 453px; /* 입력창과 버튼 크기와 동일하게 설정 */
+    width: 23vw;  /* 입력창과 버튼 크기와 동일하게 설정 */
     height: auto;
-    gap: 20px;
+    gap: 1vw;
 `;
 
 
@@ -250,49 +250,49 @@ const InputContainer = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    margin-bottom: 30px;
+    margin-bottom: 1.5vh; 
     position: relative;
 `;
 
 const InputTitle = styled.span`
     font-size: ${({ theme }) => theme.typography.title24.fontSize};
     color: ${({ theme }) => theme.colors.mainblue100};
-    margin-bottom: 5px;
+    margin-bottom: 0.3vh;
 `;
 
 const Input = styled.input`
-    width: 453px;
-    height: 45px;
-    padding: 10px 130px 10px 20px;
+    width: 23vw;
+    height: 5vh;
+    padding: 1vh 1.5vw;
     font-size: 16px;
-    border-radius: 40px;
+    border-radius: 2vw;
     border: none;
     outline: none;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    margin-bottom : 10px;
+    margin-bottom: 0.5vh; 
 `;
 
 const CustomDatePicker = styled(DatePicker)`
-  width: 310px;
-  height: 30px;
+  width: 20vw;
+  height: 3vh;
   font-size: 16px;
-  border-radius: 40px;
+  border-radius: 2vw;
   border: none;
   outline : none;
-  padding: 10px 130px 10px 20px;
+  padding: 1vh 1.5vw; 
   background-color: white;
 `;
 
 const CustomDropdown = styled(Dropdown)`
   .Dropdown-control {
     width: 100%;
-    height: 50px;
+    height: 5vh;
     font-size: 16px;
-    border-radius: 40px;
+    border-radius: 2vw;
     border: none;
-    padding: 10px 20px 10px 20px;
+    padding: 1vh 1vw;
     background-color: white;
     cursor: pointer;
     display: flex;
@@ -303,7 +303,7 @@ const CustomDropdown = styled(Dropdown)`
   .Dropdown-menu {
     width: 100%;
     font-size: 16px;
-    border-radius: 10px;
+    border-radius: 0.5vw; 
     border: none;
     background-color: white;
   }
@@ -318,8 +318,8 @@ const CustomDropdown = styled(Dropdown)`
 
 const Placeholder = styled.span`
     position: absolute;
-    right: 20px; /* 오른쪽 정렬 */
-    top: 26%;
+    right: 1vw;/* 오른쪽 정렬 */
+    top: 28%;
     transform: translateY(-50%);
     font-size: 16px;
     color: ${({ theme }) => theme.colors.mainblue300};
@@ -330,17 +330,18 @@ const ButtonContainer = styled.div`
     width: 100%; /* ContentWrapper 내에서 전체 사용 */
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 40px; /* 버튼과 입력창 사이 간격 */
+    gap: 0.5vh;
     z-index: 10;
     align-items: center;
+    position : fixed;
+    bottom : 5vw;
 `;
 
 
 const AuthButton = styled.button`
-    width: 453px;
-    height: 57px;
-    border-radius: 40px;
+    width: 23vw;
+    height: 5vh;
+    border-radius: 2vw;
     border: none;
     outline: none;
     align-items: center;
@@ -349,16 +350,16 @@ const AuthButton = styled.button`
         clickAuth ? theme.colors.gray : theme.colors.mainblue200};
     font-size: ${({ theme }) => theme.typography.subtitle20.fontSize};
     color : white;
-    margin-bottom : 10px;
-    margin-top : 20px;
+    margin-bottom: 1vh;
+    margin-top: 1vh;
 
 `;
 
 const EyesIcon = styled.img`
-    width : 30px;
-    height : 17.5px;
+    width: 2vw;
+    height: 2vh;
     position: absolute; /* 절대 위치 지정 */
-    right: 20px; /* 오른쪽 여백 설정 */
+    right: 1vw; /* 오른쪽 여백 설정 */
     transform: translateY(-50%); /* Y축 중앙 정렬 */
     cursor: pointer; /* 클릭 가능하도록 설정 */
     z-index: 10; /* 버튼보다 위로 배치 */
@@ -377,12 +378,14 @@ const SmallText = styled.span`
 const ErrSpan = styled.span`
     font-Size : ${({ theme }) => theme.typography.subtitle15.fontSize};
     color :   ${({ theme }) => theme.colors.yellow};
-    text-align: right;
+    text-align: center;
+    padding-bottom : 1vh;
+    padding-top : 0.3vh;
 `;
 
 const BlueButton = styled.button`
-    width: 453px;
-    height: 77px;
+    width: 23vw;
+    height: 7vh;
     background-color: ${({ theme }) => theme.colors.mainblue200};
     border: none;
     border-radius: 10px;
@@ -391,11 +394,12 @@ const BlueButton = styled.button`
 `;
 
 const TransparentBtn = styled.button`
-    width: 453px;
-    height: 50px;
+    width: 23vw;
+    height: 4vh;
     background-color: transparent;
     color: white;
     font-size: ${({ theme }) => theme.typography.subtitle20.fontSize};
     border : none;
+    padding-top : 2vh;
 `;
 

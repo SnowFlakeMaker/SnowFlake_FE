@@ -4,7 +4,7 @@ import MailList from "./MailList";
 
 export default function InfoBar(){
     const [showMail, setShowMail] = useState(false);
-    const count = 2;
+    const count = 3; //알림 갯수
 
     const handleMailList =()=>{
         setShowMail((prev) => !prev)
@@ -38,30 +38,30 @@ const Conatiner = styled.div`
     position: absolute;
     top: 0;
     right: 0;
-    width : 550px;
-    height : 90px;
+    width: 35vw;
+    height: 12vh;
     border : none;
     display : flex;
     flex-direction : row;
-    gap : 10px;
+    gap: 1vw;
     z-index : 5;
-    margin : 15px;
+    margin : 1vw;
 `;
 
 const CoinContainer = styled.div`
-    width : 295px;
-    height : 70px;
+    width: 20vw;
+    height: 9vh;
     background-color : ${({ theme }) => theme.colors.mainblue100};
     border-radius : 50px;
-    border : 4px solid ${({ theme }) => theme.colors.mainblue400};
+    border : 0.3vw solid ${({ theme }) => theme.colors.mainblue400};
     display : flex;
     justify-content: space-between;
     align-items: center;
-    padding-right : 20px;
+    padding-right: 2vw;
 `;
 
 const TextContainer = styled.div`
-    gap : 5px;
+    gap: 0.3vw;
     display : flex;
 `;
 
@@ -71,15 +71,15 @@ const CoinText = styled.span`
 `;
 
 const Icon = styled.img`
-    width: 60px; 
-    height: 60px;
+    width: 4vw;
+    height: 4vw;
     object-fit: contain; 
-    padding : 5px;
+   padding: 0.5vw;
 `;
 
 const SettingContainer = styled.div`
-    width: 5rem; /* 80px (16px * 5) */
-    height: 5rem;
+    width: 5vw;  
+    height: 5vw;
     background-color: ${({ theme }) => theme.colors.mainblue100};
     border: 0.25rem solid ${({ theme }) => theme.colors.mainblue400}; /* 4px */
     border-radius: 50%;

@@ -30,39 +30,39 @@ export default function MailList(){
 }
 
 const Container = styled.div`
-    width : 550px;
-    height : 495px;
+    width: 35vw;
+    height: 65vh;
     background-color : ${({ theme }) => theme.colors.mainblue400};
     border : 4px solid ${({ theme }) => theme.colors.mainblue100};
     z-index : 10;
     right : 0;
-    top : 100px;
+    top: 12vh;   
     position : absolute;
     display : flex;
     flex-direction : column;
     align-items: center;
-    gap : 15px;
-    padding-top : 10px;
+    gap: 1vw; 
+    padding-top : 1vh;
 `;
 
 const AlarmContainer = styled.div`
-    width : 520px;
-    height : 70px;
+    width: 32vw;
+    height: 9vh;
     background-color : ${({ theme }) => theme.colors.mainblue100};
     border : none;
     border-radius : 40px;
     display : flex;
     flex-direction : row;
     align-items: center;
-    padding: 0 10px;
+    padding: 0 1vw;
 `;
 
 const MailIcon = styled.img`
-    width ; 50px;
-    height : 32px;
+    width: 2.5vw;
+    height: 3vh; 
     object-fit: fit; 
-    padding-left : 5px;
-    padding-right : 15px;
+    padding-left : 0.5vw;
+    padding-right :  1vw; 
 `;
 
 const AlarmTitle = styled.span`
@@ -71,13 +71,13 @@ const AlarmTitle = styled.span`
 `;
 
 const ReadButton = styled.button`
-    width : 100px;
-    height : 32px;
+    width: 7vw; 
+    height: 5vh;
     background-color : ${({ theme }) => theme.colors.mainblue200};
     font-size :  ${({ theme }) => theme.typography.subtitle15.fontSize};
     color :  ${({ theme }) => theme.colors.mainblue100};
     border: none;
-    border-radius : 10px;
+    border-radius: 1vw;
     margin-left: auto;
-    margin-right : 15px;
+    margin-right: 1vw;
 `;

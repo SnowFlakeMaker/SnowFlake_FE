@@ -45,23 +45,23 @@ const BackgroundImg = styled.img`
 `;
 
 const ButtonContainer = styled.div`
-    position: absolute;
-    bottom: 10%; /* 화면 하단에서 약간 위로 조정 */
+    position: fixed;
+    bottom: 10vh;
     display: flex;
     flex-direction: column;
     background-color: transparent; 
-    gap: 20px; /* 버튼 간격 조정 */
+    gap: 2vh; /* 버튼 간격 조정 */
     align-items: center;
     z-index: 10;
 `;
 
 const GrayButton = styled.button`
-    width : 477px;
-    height : 77px;
-    background-color: rgba(0, 0, 0, 0.34); /* 반투명한 검정색 */
+    width: 25vw; 
+    height: 7vh;
+    background-color: rgba(0, 0, 0, 0.7); /* 반투명한 검정색 */
     color: #ffffff;
     font-size: 24px;
     font-weight: bold;
     border: none;
-    border-radius: 10px; 
+    border-radius: 1vw;
 `;
