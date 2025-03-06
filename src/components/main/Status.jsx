@@ -36,18 +36,18 @@ export default function Status(){
 }
 
 const Container = styled.div`
-    width: 33vw;
-    height: 55vh;
+    width: 30vw;
+    height: 45vh;
     z-index : 5;
-    border : 0.3vw solid  ${({ theme }) => theme.colors.mainblue100};
+    border : 0.2vw solid  ${({ theme }) => theme.colors.mainblue100};
     background-color :  ${({ theme }) => theme.colors.mainblue400};
     bottom : 0;
     left: 0;
-    position: absolute;
+    position: fixed;
     display : flex;
     flex-direction : column;
     margin : 1vw;
-    gap : 1.5vw;
+    gap : 1vw;
     padding : 3vh 1.5vw;
 `;
 
@@ -55,13 +55,12 @@ const StatusContainer = styled.div`
     display : flex;
     flex-direction : row;
     gap :1.5vw; 
-    
 `;
 
 const Title = styled.span`
-    width : 8vw;
+    width : 5vw;
     color :  ${({ theme }) => theme.colors.mainblue100};
-    font-size :  ${({ theme }) => theme.typography.title24.fontSize};
+    font-size :  ${({ theme }) => theme.typography.subtitle20.fontSize};
     padding-left : 1vw;
 `;
 
@@ -77,7 +76,7 @@ const Bar = styled.div`
 `;
 
 const StatusBarContainer = styled.div`
-  width: 22vw; /* 바 전체 길이 */
+  width: 20vw; /* 바 전체 길이 */
   height: 3vh;/* 바 높이 */
   background-color: white; /* 바의 배경색 */
   border: none;

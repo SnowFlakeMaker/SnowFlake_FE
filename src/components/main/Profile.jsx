@@ -2,22 +2,24 @@ import React from "react";
 import styled from "styled-components";
 import { useState } from "react";
 import PlanList from "./PlanList";
+import Status from "./Status";
 
 export default function Profile(){
+    const [showStatus, setShowStatus] = useState(false);
     const [showList, setShowList] = useState(false);
 
+    const handleStatus = ()=>{
+        setShowStatus((prev) => !prev);
+    }
+
     const handlePlanList = () => {
-        console.log("클릭됨! showList 변경 전:", showList);
-        setShowList((prev) => {
-            console.log("showList 변경 후:", !prev);
-            return !prev;
-        });
+        setShowList((prev) => !prev);
     };
 
     return(
         <Container>
             <ProfileContainer>
-                <NameContainer>
+                <NameContainer onClick={handleStatus}>
                     <SnowIcon src = "/image/icons/snow-icon.png" />
                     <NameText>김눈꽃송이</NameText>
                     <SnowIcon src = "/image/icons/snow-icon.png" />
@@ -30,6 +32,7 @@ export default function Profile(){
                 <DateText>3월 24일</DateText>
             </DateContainer>
 
+            {showStatus && <Status />}
             {showList && <PlanList />}
         </Container>
     );
