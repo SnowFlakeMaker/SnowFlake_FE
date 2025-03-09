@@ -1,31 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import ClassRegister from "../events/ClassRegister";
 
 export default function MailList(){
+    const [showMailList, setShowMailList] = useState(true);
+
     //백엔드에서 get해올 현재 알림 목록 
-    const alarmList = ["수강신청", "국가장학금 신청", "전공 선택"]
+    const alarmList = ["수강신청", "국가장학금 신청", "전공 선택"];
+    
+    const [showClassRegister, setShowClassRegister] = useState(false);
+    const [showMajorSelect, setsShowMajorSelect] = useState(false);
     
     const handleRead = (alarm) => {
+        setShowMailList(false); 
         if (alarm === "수강신청") {
-            console.log("수강신청 알람 읽기");
+            setShowClassRegister(true);
         } else if (alarm === "국가장학금 신청") {
             console.log("국가장학금 신청 알람 읽기");
         } else if (alarm === "전공 선택") {
-            console.log("전공 선택 알람 읽기");
+            setsShowMajorSelect(true);
         }
     };
     
     return(
-        <Container>
-            {alarmList.map((alarm, index) => (
-                <AlarmContainer key={index}>
-                    <MailIcon src="/image/icons/unreadMail.png" />
-                    <AlarmTitle>{alarm}</AlarmTitle>
-                    <ReadButton onClick={() => handleRead(alarm)}>읽기</ReadButton>
-                </AlarmContainer>
-            ))}
-
-        </Container>
+        <>
+            {showMailList && (
+                <Container>
+                    {alarmList.map((alarm, index) => (
+                        <AlarmContainer key={index}>
+                            <MailIcon src="/image/icons/unreadMail.png" />
+                            <AlarmTitle>{alarm}</AlarmTitle>
+                            <ReadButton onClick={() => handleRead(alarm)}>읽기</ReadButton>
+                        </AlarmContainer>
+                    ))}
+                </Container>
+            )}
+            {showClassRegister && <ClassRegister />}
+        </>
     );
 }
 
