@@ -1,8 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 export default function ClassRegister(){
-    var totalCredit = 0; //현재 신청한 학점 
+    const [totalCredit, setTotalCredit] = useState(0); //현재 신청한 학점 
+
+    //교필 수강신청 여부 
+    const [digital, setDigital] = useState(false); //디사의
+    const [branding, setBranding] = useState(false); //미래설계
+    const [english, setEnglish] = useState(false); //영교필
+    const [software, setSoftware] = useState(false); //논사소
+
+    //교필 이수 여부 (백엔드에서 받을 것임)
+    const [isAlreadyDigital, setIsAlredayDigital] = useState(false);
+    const [isAlreadyBranding, setIsAlredayBranding] = useState(false);
+    const [isAlreadyEnglish, setIsAlredayEnglish] = useState(false);
+    const [isAlreadySoftware, setIsAlredaySoftware] = useState(false);
+
+    // 교션 영역 과목 신청 개수
+    const [field1, setField1] = useState(0);
+    const [field2, setField2] = useState(0);
+    const [field3, setField3] = useState(0);
+    const [field4, setField4] = useState(0);
+
+    //전공 영역 신청 개수 
+    const [majors, setMajors] = useState(0);
 
     return(
         <Container>
@@ -21,8 +42,8 @@ export default function ClassRegister(){
                     </ProfileContainer>
 
                     <Register>
-                        <InfoYellow>최대 학점은 18학점으로 교양선택은 한 영역당 2개만 들을 수 있습니다. 한 과목 당 3학점입니다.</InfoYellow> 
-                        <InfoWhite>현재 신청한 학점 : {totalCredit}</InfoWhite>
+                        <InfoYellow>최대 학점은 18학점으로 한 과목 당 3학점입니다.</InfoYellow> 
+                        <InfoWhite>현재 신청한 학점 : {totalCredit}학점</InfoWhite>
 
                         <RegisterCoures>
                             <CourseTitle>
@@ -33,10 +54,10 @@ export default function ClassRegister(){
                             </CourseTitle>
                             
                             <Courses>
-                                <InfoWhite>▶ 디지털 시대의 사고와 의사소통 : </InfoWhite> 
-                                <InfoWhite>▶ 미래 설계와 나의 브랜딩 : </InfoWhite>
-                                <InfoWhite>▶ 영어 교양 필수 : </InfoWhite>
-                                <InfoWhite>▶ 논리적 사고와 소프트웨어</InfoWhite>
+                                <InfoWhite>▶ 디지털 시대의 사고와 의사소통 : {isAlreadyDigital ? "이수 완료" : (digital ? "신청" : "-")}</InfoWhite> 
+                                <InfoWhite>▶ 미래 설계와 나의 브랜딩 : {isAlreadyBranding ? "이수 완료" : (branding ? "신청" : "-")}</InfoWhite>
+                                <InfoWhite>▶ 영어 교양 필수 : {isAlreadyEnglish ? "이수 완료" : (english ? "신청" : "-")} </InfoWhite>
+                                <InfoWhite>▶ 논리적 사고와 소프트웨어 : {isAlreadySoftware ? "이수 완료" : (software ? "신청" : "-")}</InfoWhite>
                             </Courses>
                             
                         </RegisterCoures>
@@ -50,10 +71,10 @@ export default function ClassRegister(){
                             </CourseTitle>
                             
                             <Courses>
-                                <InfoWhite>▶ 교선핵심 1영역 : </InfoWhite> 
-                                <InfoWhite>▶ 교선핵심 2영역 : </InfoWhite>
-                                <InfoWhite>▶ 교선핵심 3영역 : </InfoWhite>
-                                <InfoWhite>▶ 교선핵심 4영역 : </InfoWhite>
+                                <InfoWhite>▶ 교선핵심 1영역 : {field1}개 </InfoWhite> 
+                                <InfoWhite>▶ 교선핵심 2영역 : {field2}개 </InfoWhite>
+                                <InfoWhite>▶ 교선핵심 3영역 : {field3}개 </InfoWhite>
+                                <InfoWhite>▶ 교선핵심 4영역 : {field4}개 </InfoWhite>
                             </Courses>
                             
                         </RegisterCoures>
@@ -67,7 +88,7 @@ export default function ClassRegister(){
                             </CourseTitle>
                             
                             <Courses>
-                                <InfoWhite>▶ 신청된 전공과목 개수 : </InfoWhite> 
+                                <InfoWhite>▶ 신청된 전공과목 개수 : {majors}개 </InfoWhite> 
                             </Courses>
                             
                         </RegisterCoures>
@@ -90,32 +111,84 @@ export default function ClassRegister(){
                             <CourseList>
                                 <InfoDarkBlue>디지털 시대의 사고와 의사소통</InfoDarkBlue>
                                 <ButtonContainer>
-                                    <RegisterButton>신청하기</RegisterButton>
-                                    <CancelButton>취소하기</CancelButton>
+                                    {isAlreadyDigital ? (
+                                        <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                            신청하기
+                                        </RegisterButton>
+                                    ) : (
+                                        digital ? (
+                                            <CancelButton onClick={() => setDigital(prev => !prev)}>
+                                                취소하기
+                                            </CancelButton>
+                                        ) : (
+                                            <RegisterButton onClick={() => setDigital(prev => !prev)}>
+                                                신청하기
+                                            </RegisterButton>
+                                        )
+                                    )}
                                 </ButtonContainer>
                             </CourseList>
 
                             <CourseList>
                                 <InfoDarkBlue>미래 설계와 나의 브랜딩</InfoDarkBlue>
                                 <ButtonContainer>
-                                    <RegisterButton>신청하기</RegisterButton>
-                                    <CancelButton>취소하기</CancelButton>
+                                    {isAlreadyBranding ? (
+                                        <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                            신청하기
+                                        </RegisterButton>
+                                    ) : (
+                                        branding ? (
+                                            <CancelButton onClick={() => setBranding(prev => !prev)}>
+                                                취소하기
+                                            </CancelButton>
+                                        ) : (
+                                            <RegisterButton onClick={() => setBranding(prev => !prev)}>
+                                                신청하기
+                                            </RegisterButton>
+                                        )
+                                    )}
                                 </ButtonContainer>
                             </CourseList>
 
                             <CourseList>
                                 <InfoDarkBlue>영어 교양 필수</InfoDarkBlue>
                                 <ButtonContainer>
-                                    <RegisterButton>신청하기</RegisterButton>
-                                    <CancelButton>취소하기</CancelButton>
+                                    {isAlreadyEnglish ? (
+                                        <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                            신청하기
+                                        </RegisterButton>
+                                    ) : (
+                                        english ? (
+                                            <CancelButton onClick={() => setEnglish(prev => !prev)}>
+                                                취소하기
+                                            </CancelButton>
+                                        ) : (
+                                            <RegisterButton onClick={() => setEnglish(prev => !prev)}>
+                                                신청하기
+                                            </RegisterButton>
+                                        )
+                                    )}
                                 </ButtonContainer>
                             </CourseList>
 
                             <CourseList>
                                 <InfoDarkBlue>논리적 사고와 소프트웨어</InfoDarkBlue>
                                 <ButtonContainer>
-                                    <RegisterButton>신청하기</RegisterButton>
-                                    <CancelButton>취소하기</CancelButton>
+                                    {isAlreadySoftware ? (
+                                        <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                            신청하기
+                                        </RegisterButton>
+                                    ) : (
+                                        software ? (
+                                            <CancelButton onClick={() => setSoftware(prev => !prev)}>
+                                                취소하기
+                                            </CancelButton>
+                                        ) : (
+                                            <RegisterButton onClick={() => setSoftware(prev => !prev)}>
+                                                신청하기
+                                            </RegisterButton>
+                                        )
+                                    )}
                                 </ButtonContainer>
                             </CourseList>
                         </CourseLists>
@@ -133,32 +206,52 @@ export default function ClassRegister(){
                             <CourseList>
                                 <InfoDarkBlue>교선핵심 1영역</InfoDarkBlue>
                                 <ButtonContainer>
-                                    <RegisterButton>신청하기</RegisterButton>
-                                    <CancelButton>취소하기</CancelButton>
+                                    <RegisterButton onClick={() => {
+                                        if (totalCredit >= 18) return;
+                                        setTotalCredit(prev =>  prev + 3)
+                                        setField1(prev => prev + 1)}}>신청하기</RegisterButton>
+                                    <CancelButton  onClick={() => {
+                                        setTotalCredit(prev => Math.max(0, prev - 3))
+                                        setField1(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
                                 </ButtonContainer>
                             </CourseList>
 
                             <CourseList>
                                 <InfoDarkBlue>교선핵심 2영역</InfoDarkBlue>
                                 <ButtonContainer>
-                                    <RegisterButton>신청하기</RegisterButton>
-                                    <CancelButton>취소하기</CancelButton>
+                                    <RegisterButton onClick={() => {
+                                        if (totalCredit >= 18) return;
+                                        setTotalCredit(prev =>  prev + 3)
+                                        setField2(prev => prev + 1)}}>신청하기</RegisterButton>
+                                    <CancelButton  onClick={() => {
+                                        setTotalCredit(prev => Math.max(0, prev - 3))
+                                        setField2(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
                                 </ButtonContainer>
                             </CourseList>
 
                             <CourseList>
                                 <InfoDarkBlue>교선핵심 3영역</InfoDarkBlue>
                                 <ButtonContainer>
-                                    <RegisterButton>신청하기</RegisterButton>
-                                    <CancelButton>취소하기</CancelButton>
+                                    <RegisterButton onClick={() => {
+                                        if (totalCredit >= 18) return;
+                                        setTotalCredit(prev =>  prev + 3)
+                                        setField3(prev => prev + 1)}}>신청하기</RegisterButton>
+                                    <CancelButton  onClick={() => {
+                                        setTotalCredit(prev => Math.max(0, prev - 3))
+                                        setField3(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
                                 </ButtonContainer>
                             </CourseList>
 
                             <CourseList>
                                 <InfoDarkBlue>교선핵심 4영역</InfoDarkBlue>
                                 <ButtonContainer>
-                                    <RegisterButton>신청하기</RegisterButton>
-                                    <CancelButton>취소하기</CancelButton>
+                                    <RegisterButton onClick={() => {
+                                        if (totalCredit >= 18) return;
+                                        setTotalCredit(prev =>  prev + 3)
+                                        setField4(prev => prev + 1)}}>신청하기</RegisterButton>
+                                    <CancelButton  onClick={() => {
+                                        setTotalCredit(prev => Math.max(0, prev - 3))
+                                        setField4(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
                                 </ButtonContainer>
                             </CourseList>
                         </CourseLists>
@@ -173,8 +266,13 @@ export default function ClassRegister(){
                         </CourseBlueTitle>
 
                         <MajorButtonContainer>
-                            <RegisterButton>신청하기</RegisterButton>
-                            <CancelButton>취소하기</CancelButton>
+                            <RegisterButton  onClick={() => {
+                                if (totalCredit >= 18) return;
+                                setTotalCredit(prev =>  prev + 3)
+                                setMajors(prev => prev + 1)}}>신청하기</RegisterButton>
+                            <CancelButton  onClick={() => {
+                                setTotalCredit(prev => Math.max(0, prev - 3))
+                                setMajors(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
                         </MajorButtonContainer>
                     </MajorClass>
 
