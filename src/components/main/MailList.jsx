@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import ClassRegister from "../events/ClassRegister";
+import OpeningMeeting from "../events/OpeningMeeting";
 
 export default function MailList(){
     const [showMailList, setShowMailList] = useState(true);
 
     //백엔드에서 get해올 현재 알림 목록 
-    const alarmList = ["수강신청", "국가장학금 신청", "전공 선택"];
+    const alarmList = ["수강신청", "국가장학금 신청", "전공 선택", "개강총회"];
     
     const [showClassRegister, setShowClassRegister] = useState(false);
+    const [showOpeningMetting, setShowOpeningMeeting] = useState(false);
     const [showMajorSelect, setsShowMajorSelect] = useState(false);
     
     const handleRead = (alarm) => {
@@ -19,6 +21,8 @@ export default function MailList(){
             console.log("국가장학금 신청 알람 읽기");
         } else if (alarm === "전공 선택") {
             setsShowMajorSelect(true);
+        } else if(alarm == "개강총회"){
+            setShowOpeningMeeting(true);
         }
     };
     
@@ -36,6 +40,7 @@ export default function MailList(){
                 </Container>
             )}
             {showClassRegister && <ClassRegister />}
+            {showOpeningMetting && <OpeningMeeting />}
         </>
     );
 }

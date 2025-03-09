@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-export default function Conversation(){
+export default function OpeningMeeting(){
     return(
         <Container>
             <TextContainer>
@@ -21,10 +21,10 @@ const Container = styled.div`
     width: 37vw;
     height: 23vh;
     display : flex;
-    position : absolute;
+    position : fixed;
     flex-direction : column;
-    bottom : 0;
-    right : 0;
+    bottom : 1vh;
+    right : 1vh;
     margin: 0.8vw; 
     z-index : 5;
     background-color : ${({ theme }) => theme.colors.mainblue100};
