@@ -1,30 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
-export default function Conversation(){
+export default function SelectMajor(){
+    const [major, setMajor] = useState("");
+    
+    if (major !== "") return null;
+
     return(
         <Container>
             <TextContainer>
-                <Text>친구들을 처음 만나는 자리야.</Text>
-                <Text>개강총회에 참석할까?</Text>
+                <Text>3~5학기부터는 전공 선택이 가능해.</Text>
+                <Text>복수전공, 부전공, 심화전공 중 선택이 가능한데 5학기까지 선택하지 않으면 자동으로 심화전공이 선택돼.</Text>
+                <Text>지금 전공을 선택할까?</Text>
             </TextContainer>
 
             <SelectContainer>
-                <SelectOption>참석한다 (Y)</SelectOption>
-                <SelectOption>참석하지 않는다 (N)</SelectOption>
+                <SelectOption onClick={()=> setMajor("복수전공")}>복수전공</SelectOption>
+                <SelectOption onClick={()=> setMajor("부전공")}>부전공</SelectOption>
+                <SelectOption onClick={()=> setMajor("심화전공")}>심화전공</SelectOption>
+                <SelectOption>선택하지 않는다.</SelectOption>
             </SelectContainer>
         </Container>
     );
 }
 
 const Container = styled.div`
-    width: 37vw;
-    height: 23vh;
+    width: 40vw;
+    height: 40vh;
     display : flex;
-    position : absolute;
+    position : fixed;
     flex-direction : column;
-    bottom : 0;
-    right : 0;
+    bottom : 1vh;
+    right : 1vh;
     margin: 0.8vw; 
     z-index : 5;
     background-color : ${({ theme }) => theme.colors.mainblue100};
@@ -46,8 +53,8 @@ const Text = styled.span`
 const SelectContainer = styled.div`
     margin: 1vw;
     position : absolute;
-    right : 0;
-    bottom : 0;
+    right : 1vw;
+    bottom : 0.5vh;
     margin-right: 0.5vw; 
     display : flex;
     flex-direction : column;
