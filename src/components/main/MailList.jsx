@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import ClassRegister from "../events/ClassRegister";
 import OpeningMeeting from "../events/OpeningMeeting";
+import SelectMajor from "../events/SelectMajor";
 
 export default function MailList(){
     const [showMailList, setShowMailList] = useState(true);
@@ -41,6 +42,7 @@ export default function MailList(){
             )}
             {showClassRegister && <ClassRegister />}
             {showOpeningMetting && <OpeningMeeting />}
+            {showMajorSelect && <SelectMajor />}
         </>
     );
 }
