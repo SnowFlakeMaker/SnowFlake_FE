@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 export default function OpeningMeeting(){
+    const [isMeeting, setIsMeeting] = useState(undefined);
+
+    if (isMeeting !== undefined) return null;
     return(
         <Container>
             <TextContainer>
@@ -10,8 +13,8 @@ export default function OpeningMeeting(){
             </TextContainer>
 
             <SelectContainer>
-                <SelectOption>참석한다 (Y)</SelectOption>
-                <SelectOption>참석하지 않는다 (N)</SelectOption>
+                <SelectOption onClick={() => setIsMeeting(true)}>참석한다 (Y)</SelectOption>
+                <SelectOption onClick={() => setIsMeeting(false)}>참석하지 않는다 (N)</SelectOption>
             </SelectContainer>
         </Container>
     );
