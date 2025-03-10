@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ClassRegister from "../events/ClassRegister";
 import OpeningMeeting from "../events/OpeningMeeting";
 import SelectMajor from "../events/SelectMajor";
+import StudentCouncil from "../events/StudentCouncil";
 
 export default function MailList(){
     const [showMailList, setShowMailList] = useState(true);
@@ -10,11 +11,11 @@ export default function MailList(){
     const [activeEvent, setActiveEvent] = useState(null); // 하나의 이벤트만 렌더링
 
     //백엔드에서 get해올 현재 알림 목록 
-    const alarmList = ["수강신청", "국가장학금 신청", "전공 선택", "개강총회"];
+    const alarmList = ["수강신청", "국가장학금 신청", "학생회 지원", "리더십그룹 지원"];
 
     const handleRead = (alarm) => {
         setClickedAlarms(prev => ({ ...prev, [alarm]: true }));
-        
+
         if (alarm === "수강신청") {
             setShowMailList(false);
             setActiveEvent("classRegister");
@@ -24,6 +25,10 @@ export default function MailList(){
             setActiveEvent("majorSelect");
         } else if(alarm == "개강총회"){
             setActiveEvent("openingMeeting");
+        } else if(alarm == "학생회 지원"){
+            setActiveEvent("studentCouncil");
+        } else if(alarm == "리더십그룹 지원"){
+            setActiveEvent("leadershipGroup");
         }
     };
     
@@ -47,6 +52,8 @@ export default function MailList(){
             {activeEvent === "classRegister" && <ClassRegister />}
             {activeEvent === "openingMeeting" && <OpeningMeeting />}
             {activeEvent === "majorSelect" && <SelectMajor />}
+            {activeEvent === "studentCouncil" && <StudentCouncil />}
+
         </>
     );
 }
