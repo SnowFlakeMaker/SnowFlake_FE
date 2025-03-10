@@ -33,7 +33,7 @@ const Container = styled.div`
     bottom : 1vh;
     right : 1vh;
     margin: 0.8vw; 
-    z-index : 5;
+    z-index : 15;
     background-color : ${({ theme }) => theme.colors.mainblue100};
     border : 4px solid ${({ theme }) => theme.colors.mainblue400};
 `;
