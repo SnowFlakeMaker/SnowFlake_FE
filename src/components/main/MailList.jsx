@@ -6,6 +6,8 @@ import SelectMajor from "../events/SelectMajor";
 import StudentCouncil from "../events/StudentCouncil";
 import LeadershipGroup from "../events/LeadershipGroup";
 import Club from "../events/Club";
+import MajorStudy from "../events/MajorStudy";
+import External from "../events/External";
 
 export default function MailList(){
     const [showMailList, setShowMailList] = useState(true);
@@ -13,7 +15,7 @@ export default function MailList(){
     const [activeEvent, setActiveEvent] = useState(null); // 하나의 이벤트만 렌더링
 
     //백엔드에서 get해올 현재 알림 목록 
-    const alarmList = ["수강신청", "국가장학금 신청", "동아리 지원"];
+    const alarmList = ["수강신청", "국가장학금 신청", "대외활동 지원"];
 
     const handleRead = (alarm) => {
         setClickedAlarms(prev => ({ ...prev, [alarm]: true }));
@@ -33,7 +35,10 @@ export default function MailList(){
             setActiveEvent("leadershipGroup");
         } else if(alarm == "동아리 지원"){
             setActiveEvent("club");
-
+        } else if(alarm == "전공학회 지원"){
+            setActiveEvent("majorStudy");
+        } else if (alarm == "대외활동 지원"){
+            setActiveEvent("external");
         }
     };
     
@@ -60,6 +65,9 @@ export default function MailList(){
             {activeEvent === "studentCouncil" && <StudentCouncil />}
             {activeEvent === "leadershipGroup" && <LeadershipGroup />}
             {activeEvent === "club" && <Club/>}
+            {activeEvent === "majorStudy" && <MajorStudy/>}
+            {activeEvent === "external" && <External/>}
+
 
 
 
