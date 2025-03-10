@@ -8,6 +8,15 @@ import LeadershipGroup from "../events/LeadershipGroup";
 import Club from "../events/Club";
 import MajorStudy from "../events/MajorStudy";
 import External from "../events/External";
+import MT from "../events/MT";
+import Festival from "../events/Festival";
+import GiveUpMajor from "../events/GiveUpMajor";
+import KoreaScholarship from "../events/KoreaScholarship";
+import StartMaster from "../events/StartMaster";
+import ApplyIntern from "../events/ApplyIntern";
+import PrepareContest from "../events/PrepareContest";
+import ExchangeStudent from "../events/exchangeStudent";
+import PrepareGraduate from "../events/prepareGraduate";
 
 export default function MailList(){
     const [showMailList, setShowMailList] = useState(true);
@@ -15,7 +24,7 @@ export default function MailList(){
     const [activeEvent, setActiveEvent] = useState(null); // 하나의 이벤트만 렌더링
 
     //백엔드에서 get해올 현재 알림 목록 
-    const alarmList = ["수강신청", "국가장학금 신청", "대외활동 지원"];
+    const alarmList = ["수강신청", "국가장학금 신청"];
 
     const handleRead = (alarm) => {
         setClickedAlarms(prev => ({ ...prev, [alarm]: true }));
@@ -24,7 +33,7 @@ export default function MailList(){
             setShowMailList(false);
             setActiveEvent("classRegister");
         } else if (alarm === "국가장학금 신청") {
-            console.log("국가장학금 신청 알람 읽기");
+            setActiveEvent("koreaScholarship");
         } else if (alarm === "전공 선택") {
             setActiveEvent("majorSelect");
         } else if(alarm == "개강총회"){
@@ -39,6 +48,22 @@ export default function MailList(){
             setActiveEvent("majorStudy");
         } else if (alarm == "대외활동 지원"){
             setActiveEvent("external");
+        } else if(alarm == "MT"){
+            setActiveEvent("mt");
+        } else if(alarm == "축제") {
+            setActiveEvent("festival");
+        } else if(alarm=="학석사 연계과정 신청"){
+            setActiveEvent("startMaster");
+        } else if(alarm == "인턴 지원"){
+            setActiveEvent("applyIntern");
+        } else if(alarm == "공모전 참가"){
+            setActiveEvent("prepareContest");
+        } else if(alarm == "교환학생 지원"){
+            setActiveEvent("exchangeStudent");
+        } else if(alarm == "졸업인증제"){
+            setActiveEvent("prepareGraduate");
+        } else if(alarm == "전공 포기"){
+            setActiveEvent("giveUpMajor");
         }
     };
     
@@ -67,10 +92,15 @@ export default function MailList(){
             {activeEvent === "club" && <Club/>}
             {activeEvent === "majorStudy" && <MajorStudy/>}
             {activeEvent === "external" && <External/>}
-
-
-
-
+            {activeEvent === "mt" && <MT />}
+            {activeEvent === "festival" && <Festival />}
+            {activeEvent === "koreaScholarship" && <KoreaScholarship />}
+            {activeEvent === "startMaster" && <StartMaster />}
+            {activeEvent === "applyIntern" && <ApplyIntern />}
+            {activeEvent === "prepareContest" && <PrepareContest />}
+            {activeEvent === "exchangeStudent" && <ExchangeStudent />}
+            {activeEvent === "prepareGraduate" && <PrepareGraduate/>}
+            {activeEvent === "giveUpMajor" && <GiveUpMajor />}
         </>
     );
 }
