@@ -1,24 +1,23 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-export default function SelectMajor(){
-    const [major, setMajor] = useState("");
+export default function GiveUpMajor(){
+    const [major, setMajor] = useState("복수전공"); //백엔드에서 복/부전공 여부 받아올 것 
+    const [isApply, setIsApply] = useState(undefined);
     
-    if (major !== "") return null;
+    if(isApply !== undefined) return null;
 
     return(
         <Container>
             <TextContainer>
-                <Text>3~5학기부터는 전공 선택이 가능해.</Text>
-                <Text>복수전공, 부전공, 심화전공 중 선택이 가능한데 5학기까지 선택하지 않으면 자동으로 심화전공이 선택돼.</Text>
-                <Text>지금 전공을 선택할까?</Text>
+                <Text>8학기 이후에도 복수전공과 부전공을 포기할 수 있는 전공포기 제도가 있어.</Text>
+                <Text>지금 하고 있는 {major}을 포기할까?</Text>
+
             </TextContainer>
 
             <SelectContainer>
-                <SelectOption onClick={()=> setMajor("복수전공")}>복수전공</SelectOption>
-                <SelectOption onClick={()=> setMajor("부전공")}>부전공</SelectOption>
-                <SelectOption onClick={()=> setMajor("심화전공")}>심화전공</SelectOption>
-                <SelectOption>선택하지 않는다.</SelectOption>
+                <SelectOption onClick={()=>setIsApply(true)}>포기한다 (Y)</SelectOption>
+                <SelectOption onClick={()=>setIsApply(false)}>포기하지 않는다. (N)</SelectOption>
             </SelectContainer>
         </Container>
     );
@@ -26,7 +25,7 @@ export default function SelectMajor(){
 
 const Container = styled.div`
     width: 40vw;
-    height: 40vh;
+    height: 23vh;
     display : flex;
     position : fixed;
     flex-direction : column;
