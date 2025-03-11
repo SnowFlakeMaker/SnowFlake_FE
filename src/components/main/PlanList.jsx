@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PlanObject from "./PlanObject";
+import ProgressingList from "./ProgressingList";
 
 export default function PlanList(){
     const defaultPlans = {
@@ -71,9 +72,32 @@ export default function PlanList(){
         },
     };
 
+    const [isVacation, setIsVacation] = useState(false);
     const [selectedDate, setSelectedDate] = useState(0);
-    const [calendarPlans, setCalendarPlans] = useState(Array(31).fill(null)); //캘린더에 들어가는 이미지 
-    const [montlyPlans, setMonthlyPlans] = useState(Array(31).fill(null)); //한달 텍스트 계획(백엔드 전송용)
+    const [calendarPlans, setCalendarPlans] = useState([]); //캘린더에 들어가는 이미지 
+    // const [fetchedTodo, setFetchedTodo] = useState([]); // 백엔드에서 받은 이번달 할일  
+    const [monthlyPlans, setMonthlyPlans] = useState([]); //한달 텍스트 계획(백엔드 전송용)
+
+    const [isSubmit, setIsSubmit] = useState(false); //계획리스트 제출 여부
+
+    const fetchedTodo = ["공부", "휴식", "여행"];
+
+    // isVacation 상태가 변경될 때마다 배열 크기 업데이트
+    useEffect(() => {
+        const days = isVacation ? 14 : 31; // 방학이면 14일, 아니면 31일
+        setCalendarPlans(Array(days).fill(null));
+        setMonthlyPlans(Array(days).fill(null));
+        setSelectedDate(0); // 선택된 날짜도 초기화
+    }, [isVacation]);
+
+
+    const filteredTodo = fetchedTodo
+        .map(plan => ({
+            title: plan, 
+            ...defaultPlans[plan]
+        }))
+        .filter(plan => plan.icon !== undefined);
+
 
     const handlePlanClick = (title) => {
         setCalendarPlans((prevPlans) => {
@@ -88,7 +112,7 @@ export default function PlanList(){
             return newTextPlans;
         });
     
-        if (selectedDate < 30) {
+        if (selectedDate < calendarPlans.length - 1) {
             setSelectedDate(selectedDate + 1);
         } else {
             setSelectedDate(null);
@@ -100,7 +124,6 @@ export default function PlanList(){
     // }, [montlyPlans])
 
     return(
-
         <Container>
             <CalenderContainer>
                 <MonthlyContainer>
@@ -129,25 +152,34 @@ export default function PlanList(){
 
             </CalenderContainer>
             
-            <PlannerContainer>
-                <TitleContainer>
-                    <Text>오늘은 무얼할까?</Text>
-                </TitleContainer>
-                
-                <PlanContainer>
-                    {Object.entries(defaultPlans).map(([title, data]) => (
-                        <PlanObject 
-                            key={title} 
-                            title={title} 
-                            icon={data.icon} 
-                            plus={data.plus} 
-                            minus={data.minus} 
-                            onClick={() => handlePlanClick(title)}
-                        />
-                    ))}
-                </PlanContainer>
+            {!isSubmit && ( 
+                <PlannerContainer>
+                    <SubmitButton onClick={()=>setIsSubmit(true)}>제출하기</SubmitButton>
 
-            </PlannerContainer>
+                    <PlanContainer>
+                        {filteredTodo.map(({ icon }, index) => (
+                            <PlanObject
+                                key={index}
+                                title={fetchedTodo[index]}
+                                icon={icon}
+                                plus={defaultPlans[fetchedTodo[index]]?.plus || []}
+                                minus={defaultPlans[fetchedTodo[index]]?.minus || []}
+                                onClick={() => handlePlanClick(fetchedTodo[index])}
+                            />
+                        ))}
+                    </PlanContainer>
+                </PlannerContainer>
+            )}
+
+            {isSubmit &&
+                <ProgressingList 
+                    plans={monthlyPlans.map((plan) => ({
+                        title: plan,
+                        plus: defaultPlans[plan]?.plus || [],
+                        minus: defaultPlans[plan]?.minus || []
+                    }))}
+            />}
+
         </Container>
     );
 }
@@ -168,8 +200,9 @@ const CalenderContainer = styled.div`
     height: 32vh;
     background-color :  ${({ theme }) => theme.colors.mainblue400};
     border : 0.2vw solid  ${({ theme }) => theme.colors.mainblue100};
-    position: relative;
-    right: 0;
+    right: 1vw;
+    position: fixed; 
+    top: 18vh;  
 `;
 
 const SnowIcon = styled.img`
@@ -235,22 +268,18 @@ const PlannerContainer = styled.div`
     right : 5vw;
 `;
 
-const TitleContainer = styled.div`
-    background-color :  ${({ theme }) => theme.colors.mainblue100};
-    border : 0.2vw solid  ${({ theme }) => theme.colors.mainblue400};
+const SubmitButton = styled.button`
+    background-color :  ${({ theme }) => theme.colors.mainblue400};
+    border : none;
     border-radius : 2vw;
     justify-content : center;
     align-items : center;
+    font-size :  ${({ theme }) => theme.typography.title24.fontSize};
+    color : ${({ theme }) => theme.colors.mainblue100};
     width: 15vw;
     height: 5vh;
     display : flex;
     margin-bottom: 0.8vw;
-`;
-
-const Text = styled.span`
-    font-size :  ${({ theme }) => theme.typography.title24.fontSize};
-    color : ${({ theme }) => theme.colors.mainblue400};
-    text-align: center;
 `;
 
 const PlanContainer = styled.div`
