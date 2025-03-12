@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import Dropdown from "react-dropdown";
 import styled from "styled-components";
-import { BlakcImg } from "../../components/BlackImg";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-dropdown/style.css";
 
