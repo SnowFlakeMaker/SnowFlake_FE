@@ -15,11 +15,14 @@ export default function Start(){
 
     return(
         <BackgroundContainer>
+            <LogoImg src="/image/background/logo.png" />
             <ButtonContainer>
-                <GrayButton onClick={GoSignIn}>회원가입</GrayButton>
-                <GrayButton onClick={GoLogIn}>로그인</GrayButton>
+                <BlueButton onClick={GoSignIn}>회원가입</BlueButton>
+                <BlueButton onClick={GoLogIn}>로그인</BlueButton>
             </ButtonContainer> 
-            <BackgroundImg src="/image/background/lobby_temp.png"/>
+            <BlackText>이 게임은 숙명여자대학교 학생들을 위한 대학 생활 안내 게임으로, 회원가입 시 본인 인증을 거친 숙명여자대학교 구글 계정이 필요합니다.</BlackText>
+            <BackgroundImg src="/image/background/lobby.png"/>
+            
         </BackgroundContainer>
         
     );
@@ -33,6 +36,16 @@ const BackgroundContainer = styled.div`
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    display : flex;
+    flex-direction : column;
+`;
+
+const LogoImg = styled.img`
+    z-index : 5;
+    justify-content : center;
+    align-items : center;
+    position: fixed;
+    top : 25vh;
 `;
 
 const BackgroundImg = styled.img`
@@ -46,7 +59,7 @@ const BackgroundImg = styled.img`
 
 const ButtonContainer = styled.div`
     position: fixed;
-    bottom: 10vh;
+    bottom: 25vh;
     display: flex;
     flex-direction: column;
     background-color: transparent; 
@@ -55,13 +68,21 @@ const ButtonContainer = styled.div`
     z-index: 10;
 `;
 
-const GrayButton = styled.button`
+const BlueButton = styled.button`
     width: 25vw; 
     height: 7vh;
-    background-color: rgba(0, 0, 0, 0.7); /* 반투명한 검정색 */
+    background-color: ${({ theme }) => theme.colors.mainblue600};
     color: #ffffff;
     font-size: 24px;
     font-weight: bold;
     border: none;
     border-radius: 1vw;
+`;
+
+const BlackText = styled.span`  
+    font-size :  ${({ theme }) => theme.typography.subtitle15.fontSize};
+    color : black;
+    z-index : 15;
+    position: fixed;
+    bottom: 5vh;
 `;
