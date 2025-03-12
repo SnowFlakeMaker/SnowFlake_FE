@@ -22,6 +22,7 @@ export default function LogIn(){
     return(
         <BackgroundContainer>   
             <ContentWrapper>
+                <LogoImg src="/image/background/logo.png" />
                 <FormContainer>
                     <InputContainer>
                         <InputTitle>이메일</InputTitle>
@@ -58,9 +59,8 @@ export default function LogIn(){
                 </ButtonContainer>
                 
             </ContentWrapper>
-            
             <BlakcImg/>
-            <BackgroundImg src="/image/background/lobby_temp.png"/>
+            <BackgroundImg src="/image/background/lobby.png"/>
         </BackgroundContainer>
             
         
@@ -75,6 +75,7 @@ const BackgroundContainer = styled.div`
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    // background-color: #6B7A87
 `;
 
 const BackgroundImg = styled.img`
@@ -84,6 +85,16 @@ const BackgroundImg = styled.img`
     position: absolute;
     top: 0;
     left: 0;
+`;
+
+const LogoImg = styled.img`
+    z-index : 15;
+    justify-content : center;
+    align-items : center;
+    position: fixed;
+    top : 10vh;
+    width: 25vw; /* 원하는 크기로 조정 */
+    height: auto; /* 가로 비율 유지 */
 `;
 
 const ContentWrapper = styled.div`
@@ -115,7 +126,7 @@ const InputContainer = styled.div`
 
 const InputTitle = styled.span`
     font-size: ${({ theme }) => theme.typography.title24.fontSize};
-    color: ${({ theme }) => theme.colors.mainblue100};
+    color: ${({ theme }) => theme.colors.mainblue400};
     margin-bottom: 0.3vh;
 `;
 
@@ -163,7 +174,7 @@ const PwContainer = styled.div`
 
 const SmallText = styled.span`
     font-size: ${({ theme }) => theme.typography.subtitle15.fontSize};
-    color : ${({ theme }) => theme.colors.mainblue100};
+    color : ${({ theme }) => theme.colors.mainblue400};
 `;
 
 const CheckContainer = styled.div`
@@ -178,14 +189,14 @@ const CheckImoji = styled.img`
 
 const ErrSpan = styled.span`
     font-Size : ${({ theme }) => theme.typography.subtitle15.fontSize};
-    color :   ${({ theme }) => theme.colors.yellow};
+    color : red;
     padding-bottom : 1vh;
 `;
 
 const BlueButton = styled.button`
     width: 23vw;
     height: 7vh;
-    background-color: ${({ theme }) => theme.colors.mainblue200};
+    background-color: ${({ theme }) => theme.colors.mainblue600};
     border: none;
     color: white;
     font-size: ${({ theme }) => theme.typography.title24.fontSize};
@@ -195,7 +206,7 @@ const TransparentBtn = styled.button`
     width: 23vw;
     height: 4vh;
     background-color: transparent;
-    color: white;
+    color: ${({ theme }) => theme.colors.mainblue400};
     font-size: ${({ theme }) => theme.typography.subtitle20.fontSize};
     border : none;
     padding-top : 2vh;
