@@ -23,7 +23,9 @@ export default function ClassRegister(){
     const [field4, setField4] = useState(0);
 
     //전공 영역 신청 개수 
-    const [majors, setMajors] = useState(0);
+    const [majors, setMajors] = useState(0); //본전
+    const [subMajors, setSubmajors] = useState(0); //복,부전
+    const [myMajor, setMyMajor] = useState("복수전공"); //백엔드에서 받을 심전,복전,부전
 
     return(
         <Container>
@@ -89,6 +91,9 @@ export default function ClassRegister(){
                             
                             <Courses>
                                 <InfoWhite>▶ 신청된 전공과목 개수 : {majors}개 </InfoWhite> 
+                                {["복수전공", "부전공"].includes(myMajor) && (
+                                    <InfoWhite>▶ 신청된 {myMajor} 과목 개수 : {subMajors}개</InfoWhite>
+                                )}
                             </Courses>
                             
                         </RegisterCoures>
@@ -257,25 +262,71 @@ export default function ClassRegister(){
                         </CourseLists>
                     </GeneralClass>
 
-                    <MajorClass>
-                        <CourseBlueTitle>
-                            <SnowIcon 
-                                style={ {width : "2vw", height : "2vw"}}
-                                src="/image/icons/blue-snow-icon.png" />
-                            <InfoBlue>전공</InfoBlue>
-                        </CourseBlueTitle>
+                    {myMajor === "심화전공" &&
+                        <MajorClass>
+                            <CourseBlueTitle>
+                                <SnowIcon 
+                                    style={ {width : "2vw", height : "2vw"}}
+                                    src="/image/icons/blue-snow-icon.png" />
+                                <InfoBlue>전공</InfoBlue>
+                            </CourseBlueTitle>
 
-                        <MajorButtonContainer>
-                            <RegisterButton  onClick={() => {
-                                if (totalCredit >= 18) return;
-                                setTotalCredit(prev =>  prev + 3)
-                                setMajors(prev => prev + 1)}}>신청하기</RegisterButton>
-                            <CancelButton  onClick={() => {
-                                setTotalCredit(prev => Math.max(0, prev - 3))
-                                setMajors(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
-                        </MajorButtonContainer>
-                    </MajorClass>
+                            <MajorButtonContainer>
+                                <RegisterButton  onClick={() => {
+                                    if (totalCredit >= 18) return;
+                                    setTotalCredit(prev =>  prev + 3)
+                                    setMajors(prev => prev + 1)}}>신청하기</RegisterButton>
+                                <CancelButton  onClick={() => {
+                                    setTotalCredit(prev => Math.max(0, prev - 3))
+                                    setMajors(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                            </MajorButtonContainer>
+                        </MajorClass>
+                    }
 
+                    { (myMajor === "복수전공" || myMajor === "부전공") && 
+                        <SubMajorContainer>
+                            <SubMajorClass>
+                                <CourseBlueTitle>
+                                    <SnowIcon 
+                                        style={ {width : "2vw", height : "2vw"}}
+                                        src="/image/icons/blue-snow-icon.png" />
+                                    <InfoBlue>전공</InfoBlue>
+                                </CourseBlueTitle>
+
+                                <MajorButtonContainer>
+                                    <RegisterButton  onClick={() => {
+                                        if (totalCredit >= 18) return;
+                                        setTotalCredit(prev =>  prev + 3)
+                                        setMajors(prev => prev + 1)}}>신청하기</RegisterButton>
+                                    <CancelButton  onClick={() => {
+                                        setTotalCredit(prev => Math.max(0, prev - 3))
+                                        setMajors(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                </MajorButtonContainer>
+                            </SubMajorClass>
+
+                            <SubMajorClass>
+                            <CourseBlueTitle>
+                                <SnowIcon 
+                                    style={ {width : "2vw", height : "2vw"}}
+                                    src="/image/icons/blue-snow-icon.png" />
+                                <InfoBlue>{myMajor}</InfoBlue>
+                            </CourseBlueTitle>
+
+                            <MajorButtonContainer>
+                                <RegisterButton  onClick={() => {
+                                    if (totalCredit >= 18) return;
+                                    setTotalCredit(prev =>  prev + 3)
+                                    setSubmajors(prev => prev + 1)}}>신청하기</RegisterButton>
+                                <CancelButton  onClick={() => {
+                                    setTotalCredit(prev => Math.max(0, prev - 3))
+                                    setSubmajors(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                            </MajorButtonContainer>
+                            </SubMajorClass>
+                        </SubMajorContainer>
+                    }
+                    
+                    
+                    <ApplyButton>신청하기</ApplyButton>
                 </ClassContainer>
             </ClassRegisterContainer>
         </Container>
@@ -317,7 +368,7 @@ const ClassRegisterContainer = styled.div`
     display : flex;
     flex-direction : row;
     width : 85vw;
-    height : 70vh;
+    height : 75vh;
     gap : 1vw;
 `;
 
@@ -334,11 +385,12 @@ const ClassContainer = styled.div`
     display : flex;
     flex-direction : column;
     gap : 1vh;
+    align-items : center;
 `;
 
 const GeneralClass = styled.div`
     width : 100%;
-    height : 40%;
+    height : 33%;
     background-color :  ${({ theme }) => theme.colors.mainblue100};
     border : 0.2vw solid  ${({ theme }) => theme.colors.mainblue400};
 `;
@@ -348,6 +400,32 @@ const MajorClass = styled.div`
     height : 20%;
     background-color :  ${({ theme }) => theme.colors.mainblue100};
     border : 0.2vw solid  ${({ theme }) => theme.colors.mainblue400};
+`;
+
+const SubMajorContainer = styled.div`
+    width : 100%;
+    height : 18%;
+    display : flex;
+    flex-direction : row;
+    gap : 1vw;
+`;
+
+const SubMajorClass = styled.div`
+    width : 50%;
+    height : 100%;
+    background-color :  ${({ theme }) => theme.colors.mainblue100};
+    border : 0.2vw solid  ${({ theme }) => theme.colors.mainblue400};
+`;
+
+const ApplyButton = styled.button`
+    width : 15vw;
+    height : 8%;
+    border : none;
+    border-radius : 40px;
+    background-color : ${({ theme }) => theme.colors.mainblue400};
+    color : white;
+    font-size :  ${({ theme }) => theme.typography.title24.fontSize};
+    margin-top : 1vh;
 `;
 
 const ProfileContainer = styled.div`
@@ -446,7 +524,7 @@ const MajorButtonContainer = styled.div`
     gap : 1vw;
     align-items: center;
     justify-content : center;
-    margin-top : 1vh;
+    margin-top : 2vh;
 `;
 
 
