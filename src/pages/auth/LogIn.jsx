@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { BlakcImg } from "../../components/BlackImg";
 
 export default function LogIn(){
     const navigate = useNavigate();
@@ -59,7 +58,6 @@ export default function LogIn(){
                 </ButtonContainer>
                 
             </ContentWrapper>
-            <BlakcImg/>
             <BackgroundImg src="/image/background/lobby.png"/>
         </BackgroundContainer>
             
