@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import MailList from "./MailList";
+import Logout from "../../pages/auth/Logout";
 
 export default function InfoBar(){
     const [showMail, setShowMail] = useState(false);
+    const [showLogout, setShowLogout] = useState(false);
     const count = 3; //알림 갯수
 
     const handleMailList =()=>{
-        setShowMail((prev) => !prev)
+        setShowMail((prev) => !prev);
     }
+
+    const handleLogout =()=>{
+        setShowLogout((prev) => !prev);
+    }
+
     return(
         <Conatiner>
             <CoinContainer>
@@ -26,10 +33,11 @@ export default function InfoBar(){
                 {count > 0 && <Badge>{count}</Badge>}
             </SettingContainer>
             <SettingContainer>
-                <Icon src="image/icons/setting.png"/>
+                <Icon onClick={handleLogout} src="image/icons/setting.png"/>
             </SettingContainer>
 
             {showMail && <MailList/>}
+            {showLogout && <Logout/>}
         </Conatiner>
     );
 }
@@ -74,7 +82,8 @@ const Icon = styled.img`
     width: 4vw;
     height: 4vw;
     object-fit: contain; 
-   padding: 0.5vw;
+    padding: 0.5vw;
+    cursor : pointer;
 `;
 
 const SettingContainer = styled.div`
