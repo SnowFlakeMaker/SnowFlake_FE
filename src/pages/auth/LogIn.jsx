@@ -1,18 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useCookies } from "react-cookie";
+import axios from "axios";
 
 export default function LogIn(){
+    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const [eyesOpen, setEyesOpen] = useState(false);
     const [saveID, setSaveID] = useState(false);
-    const [passwordErr, setPasswordErr] = useState(true);
+    const [cookies, setCookie, removeCookie] = useCookies(["rememberEmail"]); 
+    const [passwordErr, setPasswordErr] = useState(null);
 
-    const postLogIn =()=>{
-        console.log(email, password);
+    useEffect(() => {
+    	/*저장된 쿠키값이 있으면, CheckBox TRUE 및 UserID에 값 셋팅*/
+        if (cookies.rememberEmail !== undefined) {
+            setEmail(cookies.rememberEmail);
+            setSaveID(true); 
+        }
+    }, []);
+
+    const handleSaveID =(newSaveID)=>{
+        if (newSaveID) {
+            setCookie("rememberEmail", email, { path: "/", expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) }); //7일 유지
+        } else {
+            removeCookie("rememberEmail"); 
+        }
+    }
+
+    const postLogIn = async()=>{
+        const emailId = email.split("@")[0]; 
+        console.log(emailId, password);
+        
+        try {
+            const response = await axios.post(`${SERVER_URL}/auth/login`, {
+                email: emailId,
+                password: password,
+            });
+
+            if (response.status === 200 && response.data.data) {
+                console.log("로그인 성공:", response.data);
+                navigate("/main");
+            } else {
+                setPasswordErr(true);
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const GoSignIn =()=>{
@@ -40,10 +78,15 @@ export default function LogIn(){
                             onClick={() => setEyesOpen((prev) => !prev)}
                             src = {eyesOpen ? "/image/icons/eyes_close.png" : "/image/icons/eyes.png"}/>
                         <PwContainer>
-                            <SmallText>비밀번호 찾기</SmallText>
                             <CheckContainer>
                                 <CheckImoji
-                                    onClick={() => setSaveID((prev) => !prev)}
+                                    onClick={() => {
+                                        setSaveID((prev) => {
+                                            const newSaveID = !prev;
+                                            handleSaveID(newSaveID);
+                                            return newSaveID;
+                                        });
+                                    }}
                                     src={saveID ? "/image/icons/EllipseCheck.png" : "/image/icons/Ellipse.png"}/>
                                 <SmallText>아이디 저장</SmallText>
                             </CheckContainer>
@@ -52,7 +95,7 @@ export default function LogIn(){
                 </FormContainer>
                 
                 <ButtonContainer>
-                    <ErrSpan>비밀번호가 올바르지 않습니다</ErrSpan>
+                    {passwordErr && <ErrSpan>비밀번호가 올바르지 않습니다</ErrSpan> }
                     <BlueButton onClick={postLogIn}>확인</BlueButton>
                     <TransparentBtn onClick={GoSignIn}>회원가입하기</TransparentBtn>
                 </ButtonContainer>
@@ -73,7 +116,6 @@ const BackgroundContainer = styled.div`
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    // background-color: #6B7A87
 `;
 
 const BackgroundImg = styled.img`

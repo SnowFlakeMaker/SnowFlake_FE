@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { createGlobalStyle } from "styled-components";
+import { CookiesProvider } from "react-cookie"; 
 import theme from "./theme";
 import SignIn from "./pages/auth/SignIn";
 import LogIn from "./pages/auth/LogIn";
@@ -13,6 +14,7 @@ import Start from "./pages/intro/Start";
 import OT from "./pages/intro/OT";
 import Entrance from "./pages/intro/Entrance";
 import Main from "./pages/main/Main";
+import InfoNew from "./pages/auth/InfoNew";
 
 function App() {
 
@@ -23,7 +25,7 @@ function App() {
 `;
 
   return (
-    <>
+    <CookiesProvider>
       <ThemeProvider theme={theme}>
       <GlobalStyle/>
       
@@ -32,13 +34,15 @@ function App() {
             <Route path="/" element={<Start/>} />
             <Route path="/signin" element={<SignIn/>} />
             <Route path="/login" element={<LogIn/>} />
+            <Route path="/info" element={<InfoNew/>} />
+            <Route path="/entrance" element={<Entrance />} />
             <Route path="/ot" element={<OT/>} />
             <Route path="/welcome" element={<Entrance/>} />
             <Route path="/main" element={<Main/>}/>
           </Routes>
         </Router>
       </ThemeProvider>
-    </>
+    </CookiesProvider>
   )
 }
 
