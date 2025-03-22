@@ -3,7 +3,7 @@ import axios from 'axios';
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 export const apiClient = axios.create({
-    baseURL: SERVER_URL,
+    baseURL: "/api",
     withCredentials: true  // ✅ 모든 요청에 쿠키 포함
 });
 
@@ -47,6 +47,7 @@ apiClient.interceptors.response.use(
             try {
                 await refreshToken();  // ✅ 토큰 갱신 시도
                 console.log("✅ 토큰 갱신 완료 → 원래 요청 재시도");
+                originalRequest.withCredentials = true;
                 return apiClient(originalRequest);  // ✅ 원래 요청 다시 보내기
             } catch (refreshError) {
                 console.error("❌ 리프레시 토큰 갱신 실패:", refreshError);
