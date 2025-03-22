@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useState } from "react";
 import PlanList from "./PlanList";
 import Status from "./Status";
+import axios from "axios";
+import { apiClient } from "../../apiClient";
 import { useTutorial } from "../../pages/intro/Tutorial";
 
 export default function Profile( { isHighlight } ){
+    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
     const [showStatus, setShowStatus] = useState(false);
     const [showList, setShowList] = useState(false);
-    const { isTutorial } = useTutorial(); //튜토리얼 여부
+    const [name, setName] = useState("");
+    const [major, setMajor] = useState("");
+    const [semester, setSemester] = useState("");
+    const { isTutorial } = useTutorial(); 
 
     const handleStatus = ()=>{
         if (isTutorial) return;
@@ -20,15 +26,35 @@ export default function Profile( { isHighlight } ){
         setShowList((prev) => !prev);
     };
 
+    useEffect(()=>{
+        const getPlayer = async () =>{
+            try{
+                const response = await apiClient.get('/main/player');
+                if(response.status === 200) {
+                    console.log(response.data)
+                    const data = response.data.data.player_info;
+                    setName(data.nickname);
+                    setMajor(data.major);
+                }
+            } catch(error) {
+                console.log(error);
+            }
+
+        }
+
+        getPlayer();
+    }, [])
+
+
     return(
         <Container $highlight={isHighlight}>
             <ProfileContainer>
                 <NameContainer onClick={handleStatus}>
                     <SnowIcon src = "/image/icons/snow-icon.png" />
-                    <NameText>김눈꽃송이</NameText>
+                    <NameText>{name}</NameText>
                     <SnowIcon src = "/image/icons/snow-icon.png" />
                 </NameContainer>
-                <SemText>공과대학 5학기</SemText>
+                <SemText>{major} {semester}</SemText>
                 
             </ProfileContainer>
 
