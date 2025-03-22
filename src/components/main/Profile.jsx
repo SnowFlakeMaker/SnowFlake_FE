@@ -25,11 +25,10 @@ export default function Profile(){
     useEffect(()=>{
         const getPlayer = async () =>{
             try{
-                const response = await axios.get('/api/main/player', {
-                    withCredentials: true
-                });
+                const response = await apiClient.get('/main/player');
                 if(response.status === 200) {
-                    const data = response.data.data;
+                    console.log(response.data)
+                    const data = response.data.data.player_info;
                     setName(data.nickname);
                     setMajor(data.major);
                 }
