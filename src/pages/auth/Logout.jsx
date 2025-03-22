@@ -10,10 +10,7 @@ export default function Logout(){
 
     const getLogout = async() => {
         try {
-            const response = await axios.get(`/api/auth/logout`, {
-            withCredentials: true  
-            });
-
+            const response = await apiClient.get(`/auth/logout`);
             if (response.status === 200) {
                 console.log("로그아웃 성공:", response.data);
                 navigate("/");
