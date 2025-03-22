@@ -43,7 +43,7 @@ export default function ClassRegister(){
     const [showResultModal, setShowResultModal] = useState(false);// 수강신청 완료 모달 
     const [subjectLists, setSubjectLists] = useState([]); //수강신청 확정 과목 
 
-    const [hasSubmitted, setHasSubmitted] = useState(() => {
+    const [hasSubmitted, setHasSubmitted] = useState(() => { //학기당 한번만 모달이 뜨도록 제어
         const saved = localStorage.getItem(`submitted_${semester}`);
         return saved === "true";
     });
@@ -271,288 +271,248 @@ export default function ClassRegister(){
 
     return(
         <Container>
-            <TitleContainer>
-                <Title>{semester} 수강신청</Title>
-            </TitleContainer>
-
             {!hasSubmitted && !showResultModal && (
-            <ClassRegisterContainer>
-                <RegisterContainer>
-                    <ProfileContainer>
-                        <InfoWhite>
-                            현재 전공 : {myMajor} <br/>
-                            심화전공 / 복수전공 / 부전공 여부 : {majorType} <br/>
-                            현재까지 이수한 학점 : {calculateCredits()}학점
-                        </InfoWhite>
-                    </ProfileContainer>
+                <>
+                <TitleContainer>
+                    <Title>{semester} 수강신청</Title>
+                </TitleContainer>
 
-                    <Register>
-                        <InfoYellow>최대 학점은 18학점으로 한 과목 당 3학점입니다.</InfoYellow> 
-                        <InfoWhite>현재 신청한 학점 : {totalCredit}학점</InfoWhite>
+                <ClassRegisterContainer>
+                    <RegisterContainer>
+                        <ProfileContainer>
+                            <InfoWhite>
+                                현재 전공 : {myMajor} <br/>
+                                심화전공 / 복수전공 / 부전공 여부 : {majorType} <br/>
+                                현재까지 이수한 학점 : {calculateCredits()}학점
+                            </InfoWhite>
+                        </ProfileContainer>
 
-                        <RegisterCoures>
-                            <CourseTitle>
-                                <SnowIcon 
+                        <Register>
+                            <InfoYellow>최대 학점은 18학점으로 한 과목 당 3학점입니다.</InfoYellow> 
+                            <InfoWhite>현재 신청한 학점 : {totalCredit}학점</InfoWhite>
+
+                            <RegisterCoures>
+                                <CourseTitle>
+                                    <SnowIcon 
+                                        style={ {width : "1.5vw", height : "1.5vw"}}
+                                        src="/image/icons/blue-snow-icon.png" />
+                                    <InfoWhite>교양필수</InfoWhite> 
+                                </CourseTitle>
+                                
+                                <Courses>
+                                    <InfoWhite>▶ 디지털 시대의 사고와 의사소통 : {isAlreadyDigital ? "이수 완료" : (digital ? "신청" : "-")}</InfoWhite> 
+                                    <InfoWhite>▶ 미래 설계와 나의 브랜딩 : {isAlreadyBranding ? "이수 완료" : (branding ? "신청" : "-")}</InfoWhite>
+                                    <InfoWhite>▶ 영어 교양 필수 : {isAlreadyEnglish ? "이수 완료" : (english ? "신청" : "-")} </InfoWhite>
+                                    <InfoWhite>▶ 논리적 사고와 소프트웨어 : {isAlreadySoftware ? "이수 완료" : (software ? "신청" : "-")}</InfoWhite>
+                                </Courses>
+                                
+                            </RegisterCoures>
+
+                            <RegisterCoures>
+                                <CourseTitle>
+                                    <SnowIcon 
+                                        style={ {width : "1.5vw", height : "1.5vw"}}
+                                        src="/image/icons/blue-snow-icon.png" />
+                                    <InfoWhite>교양선택 ({core1Count + core2Count +core3Count + core4Count}/15)</InfoWhite> 
+                                </CourseTitle>
+                                
+                                <Courses>
+                                    <InfoWhite>▶ 교선핵심 1영역 : {field1 ?? 0}개 </InfoWhite> 
+                                    <InfoWhite>▶ 교선핵심 2영역 : {field2 ?? 0}개 </InfoWhite>
+                                    <InfoWhite>▶ 교선핵심 3영역 : {field3 ?? 0}개 </InfoWhite>
+                                    <InfoWhite>▶ 교선핵심 4영역 : {field4 ?? 0}개 </InfoWhite>
+                                </Courses>
+                                
+                            </RegisterCoures>
+
+                            <RegisterCoures>
+                                <CourseTitle>
+                                    <SnowIcon 
                                     style={ {width : "1.5vw", height : "1.5vw"}}
                                     src="/image/icons/blue-snow-icon.png" />
-                                <InfoWhite>교양필수</InfoWhite> 
-                            </CourseTitle>
-                            
-                            <Courses>
-                                <InfoWhite>▶ 디지털 시대의 사고와 의사소통 : {isAlreadyDigital ? "이수 완료" : (digital ? "신청" : "-")}</InfoWhite> 
-                                <InfoWhite>▶ 미래 설계와 나의 브랜딩 : {isAlreadyBranding ? "이수 완료" : (branding ? "신청" : "-")}</InfoWhite>
-                                <InfoWhite>▶ 영어 교양 필수 : {isAlreadyEnglish ? "이수 완료" : (english ? "신청" : "-")} </InfoWhite>
-                                <InfoWhite>▶ 논리적 사고와 소프트웨어 : {isAlreadySoftware ? "이수 완료" : (software ? "신청" : "-")}</InfoWhite>
-                            </Courses>
-                            
-                        </RegisterCoures>
-
-                        <RegisterCoures>
-                            <CourseTitle>
-                                <SnowIcon 
-                                    style={ {width : "1.5vw", height : "1.5vw"}}
-                                    src="/image/icons/blue-snow-icon.png" />
-                                <InfoWhite>교양선택 ({core1Count + core2Count +core3Count + core4Count}/15)</InfoWhite> 
-                            </CourseTitle>
-                            
-                            <Courses>
-                                <InfoWhite>▶ 교선핵심 1영역 : {field1 ?? 0}개 </InfoWhite> 
-                                <InfoWhite>▶ 교선핵심 2영역 : {field2 ?? 0}개 </InfoWhite>
-                                <InfoWhite>▶ 교선핵심 3영역 : {field3 ?? 0}개 </InfoWhite>
-                                <InfoWhite>▶ 교선핵심 4영역 : {field4 ?? 0}개 </InfoWhite>
-                            </Courses>
-                            
-                        </RegisterCoures>
-
-                        <RegisterCoures>
-                            <CourseTitle>
-                                <SnowIcon 
-                                style={ {width : "1.5vw", height : "1.5vw"}}
-                                src="/image/icons/blue-snow-icon.png" />
-                                <InfoWhite>전공 ({majorCount}/63)</InfoWhite> 
-                            </CourseTitle>
-                            
-                            <Courses>
-                                <InfoWhite>▶ 신청된 전공과목 개수 : {majorsEssential + majorsElective}개 </InfoWhite> 
-                                {["복수전공", "부전공"].includes(myMajor) && (
-                                    <InfoWhite>▶ 신청된 {myMajor} 과목 개수 : {subMajors}개</InfoWhite>
-                                )}
-                            </Courses>
-                            
-                        </RegisterCoures>
-                        
-                        
-                    </Register>
-
-                </RegisterContainer>
-
-                <ClassContainer>
-                    <GeneralClass>
-                        <CourseBlueTitle>
-                            <SnowIcon 
-                                style={ {width : "2vw", height : "2vw"}}
-                                src="/image/icons/blue-snow-icon.png" />
-                            <InfoBlue>교양 필수</InfoBlue>
-                        </CourseBlueTitle>
-
-                        <CourseLists>
-                            <CourseList>
-                                <InfoDarkBlue>디지털 시대의 사고와 의사소통</InfoDarkBlue>
-                                <ButtonContainer>
-                                    {isAlreadyDigital ? (
-                                        <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
-                                            신청하기
-                                        </RegisterButton>
-                                    ) : (
-                                        digital ? (
-                                            <CancelButton onClick={() => setDigital(prev => !prev)}>
-                                                취소하기
-                                            </CancelButton>
-                                        ) : (
-                                            <RegisterButton onClick={() => setDigital(prev => !prev)}>
-                                                신청하기
-                                            </RegisterButton>
-                                        )
+                                    <InfoWhite>전공 ({majorCount}/63)</InfoWhite> 
+                                </CourseTitle>
+                                
+                                <Courses>
+                                    <InfoWhite>▶ 신청된 전공과목 개수 : {majorsEssential + majorsElective}개 </InfoWhite> 
+                                    {["복수전공", "부전공"].includes(myMajor) && (
+                                        <InfoWhite>▶ 신청된 {myMajor} 과목 개수 : {subMajors}개</InfoWhite>
                                     )}
-                                </ButtonContainer>
-                            </CourseList>
+                                </Courses>
+                                
+                            </RegisterCoures>
+                            
+                            
+                        </Register>
 
-                            <CourseList>
-                                <InfoDarkBlue>미래 설계와 나의 브랜딩</InfoDarkBlue>
-                                <ButtonContainer>
-                                    {isAlreadyBranding ? (
-                                        <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
-                                            신청하기
-                                        </RegisterButton>
-                                    ) : (
-                                        branding ? (
-                                            <CancelButton onClick={() => setBranding(prev => !prev)}>
-                                                취소하기
-                                            </CancelButton>
-                                        ) : (
-                                            <RegisterButton onClick={() => setBranding(prev => !prev)}>
-                                                신청하기
-                                            </RegisterButton>
-                                        )
-                                    )}
-                                </ButtonContainer>
-                            </CourseList>
+                    </RegisterContainer>
 
-                            <CourseList>
-                                <InfoDarkBlue>영어 교양 필수</InfoDarkBlue>
-                                <ButtonContainer>
-                                    {isAlreadyEnglish ? (
-                                        <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
-                                            신청하기
-                                        </RegisterButton>
-                                    ) : (
-                                        english ? (
-                                            <CancelButton onClick={() => setEnglish(prev => !prev)}>
-                                                취소하기
-                                            </CancelButton>
-                                        ) : (
-                                            <RegisterButton onClick={() => setEnglish(prev => !prev)}>
-                                                신청하기
-                                            </RegisterButton>
-                                        )
-                                    )}
-                                </ButtonContainer>
-                            </CourseList>
-
-                            <CourseList>
-                                <InfoDarkBlue>논리적 사고와 소프트웨어</InfoDarkBlue>
-                                <ButtonContainer>
-                                    {isAlreadySoftware ? (
-                                        <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
-                                            신청하기
-                                        </RegisterButton>
-                                    ) : (
-                                        software ? (
-                                            <CancelButton onClick={() => setSoftware(prev => !prev)}>
-                                                취소하기
-                                            </CancelButton>
-                                        ) : (
-                                            <RegisterButton onClick={() => setSoftware(prev => !prev)}>
-                                                신청하기
-                                            </RegisterButton>
-                                        )
-                                    )}
-                                </ButtonContainer>
-                            </CourseList>
-                        </CourseLists>
-                    </GeneralClass>
-
-                    <GeneralClass>
-                        <CourseBlueTitle>
-                            <SnowIcon 
-                                style={ {width : "2vw", height : "2vw"}}
-                                src="/image/icons/blue-snow-icon.png" />
-                            <InfoBlue>교양 선택</InfoBlue>
-                        </CourseBlueTitle>
-                        
-                        <CourseLists>
-                            <CourseList>
-                                <InfoDarkBlue>교선핵심 1영역</InfoDarkBlue>
-                                <ButtonContainer>
-                                    <RegisterButton onClick={() => {
-                                        if (totalCredit >= 18) return;
-                                        setTotalCredit(prev =>  prev + 3)
-                                        setField1(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
-                                    <CancelButton  onClick={() => {
-                                        setTotalCredit(prev => Math.max(0, prev - 3))
-                                        setField1(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
-                                </ButtonContainer>
-                            </CourseList>
-
-                            <CourseList>
-                                <InfoDarkBlue>교선핵심 2영역</InfoDarkBlue>
-                                <ButtonContainer>
-                                    <RegisterButton onClick={() => {
-                                        if (totalCredit >= 18) return;
-                                        setTotalCredit(prev =>  prev + 3)
-                                        setField2(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
-                                    <CancelButton  onClick={() => {
-                                        setTotalCredit(prev => Math.max(0, prev - 3))
-                                        setField2(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
-                                </ButtonContainer>
-                            </CourseList>
-
-                            <CourseList>
-                                <InfoDarkBlue>교선핵심 3영역</InfoDarkBlue>
-                                <ButtonContainer>
-                                    <RegisterButton onClick={() => {
-                                        if (totalCredit >= 18) return;
-                                        setTotalCredit(prev =>  prev + 3)
-                                        setField3(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
-                                    <CancelButton  onClick={() => {
-                                        setTotalCredit(prev => Math.max(0, prev - 3))
-                                        setField3(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
-                                </ButtonContainer>
-                            </CourseList>
-
-                            <CourseList>
-                                <InfoDarkBlue>교선핵심 4영역</InfoDarkBlue>
-                                <ButtonContainer>
-                                    <RegisterButton onClick={() => {
-                                        if (totalCredit >= 18) return;
-                                        setTotalCredit(prev =>  prev + 3)
-                                        setField4(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
-                                    <CancelButton  onClick={() => {
-                                        setTotalCredit(prev => Math.max(0, prev - 3))
-                                        setField4(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
-                                </ButtonContainer>
-                            </CourseList>
-                        </CourseLists>
-                    </GeneralClass>
-
-                    {(["심화전공", "미정"].includes(majorType?.trim())) &&
-                        <MajorClass>
+                    <ClassContainer>
+                        <GeneralClass>
                             <CourseBlueTitle>
                                 <SnowIcon 
                                     style={ {width : "2vw", height : "2vw"}}
                                     src="/image/icons/blue-snow-icon.png" />
-                                <InfoBlue>전공</InfoBlue>
+                                <InfoBlue>교양 필수</InfoBlue>
                             </CourseBlueTitle>
 
                             <CourseLists>
                                 <CourseList>
-                                    <InfoDarkBlue>전공 필수</InfoDarkBlue>
+                                    <InfoDarkBlue>디지털 시대의 사고와 의사소통</InfoDarkBlue>
                                     <ButtonContainer>
-                                        <RegisterButton onClick={() => {
-                                            if (totalCredit >= 18) return;
-                                            setTotalCredit(prev =>  prev + 3)
-                                            setMajorsEssentail(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
-                                        <CancelButton  onClick={() => {
-                                            setTotalCredit(prev => Math.max(0, prev - 3))
-                                            setMajorsEssentail(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                        {isAlreadyDigital ? (
+                                            <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                                신청하기
+                                            </RegisterButton>
+                                        ) : (
+                                            digital ? (
+                                                <CancelButton onClick={() => setDigital(prev => !prev)}>
+                                                    취소하기
+                                                </CancelButton>
+                                            ) : (
+                                                <RegisterButton onClick={() => setDigital(prev => !prev)}>
+                                                    신청하기
+                                                </RegisterButton>
+                                            )
+                                        )}
                                     </ButtonContainer>
                                 </CourseList>
 
                                 <CourseList>
-                                    <InfoDarkBlue>전공 선택</InfoDarkBlue>
+                                    <InfoDarkBlue>미래 설계와 나의 브랜딩</InfoDarkBlue>
+                                    <ButtonContainer>
+                                        {isAlreadyBranding ? (
+                                            <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                                신청하기
+                                            </RegisterButton>
+                                        ) : (
+                                            branding ? (
+                                                <CancelButton onClick={() => setBranding(prev => !prev)}>
+                                                    취소하기
+                                                </CancelButton>
+                                            ) : (
+                                                <RegisterButton onClick={() => setBranding(prev => !prev)}>
+                                                    신청하기
+                                                </RegisterButton>
+                                            )
+                                        )}
+                                    </ButtonContainer>
+                                </CourseList>
+
+                                <CourseList>
+                                    <InfoDarkBlue>영어 교양 필수</InfoDarkBlue>
+                                    <ButtonContainer>
+                                        {isAlreadyEnglish ? (
+                                            <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                                신청하기
+                                            </RegisterButton>
+                                        ) : (
+                                            english ? (
+                                                <CancelButton onClick={() => setEnglish(prev => !prev)}>
+                                                    취소하기
+                                                </CancelButton>
+                                            ) : (
+                                                <RegisterButton onClick={() => setEnglish(prev => !prev)}>
+                                                    신청하기
+                                                </RegisterButton>
+                                            )
+                                        )}
+                                    </ButtonContainer>
+                                </CourseList>
+
+                                <CourseList>
+                                    <InfoDarkBlue>논리적 사고와 소프트웨어</InfoDarkBlue>
+                                    <ButtonContainer>
+                                        {isAlreadySoftware ? (
+                                            <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                                신청하기
+                                            </RegisterButton>
+                                        ) : (
+                                            software ? (
+                                                <CancelButton onClick={() => setSoftware(prev => !prev)}>
+                                                    취소하기
+                                                </CancelButton>
+                                            ) : (
+                                                <RegisterButton onClick={() => setSoftware(prev => !prev)}>
+                                                    신청하기
+                                                </RegisterButton>
+                                            )
+                                        )}
+                                    </ButtonContainer>
+                                </CourseList>
+                            </CourseLists>
+                        </GeneralClass>
+
+                        <GeneralClass>
+                            <CourseBlueTitle>
+                                <SnowIcon 
+                                    style={ {width : "2vw", height : "2vw"}}
+                                    src="/image/icons/blue-snow-icon.png" />
+                                <InfoBlue>교양 선택</InfoBlue>
+                            </CourseBlueTitle>
+                            
+                            <CourseLists>
+                                <CourseList>
+                                    <InfoDarkBlue>교선핵심 1영역</InfoDarkBlue>
                                     <ButtonContainer>
                                         <RegisterButton onClick={() => {
                                             if (totalCredit >= 18) return;
                                             setTotalCredit(prev =>  prev + 3)
-                                            setMajorsElective(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
+                                            setField1(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
                                         <CancelButton  onClick={() => {
                                             setTotalCredit(prev => Math.max(0, prev - 3))
-                                            setMajorsElective(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                            setField1(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                    </ButtonContainer>
+                                </CourseList>
+
+                                <CourseList>
+                                    <InfoDarkBlue>교선핵심 2영역</InfoDarkBlue>
+                                    <ButtonContainer>
+                                        <RegisterButton onClick={() => {
+                                            if (totalCredit >= 18) return;
+                                            setTotalCredit(prev =>  prev + 3)
+                                            setField2(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
+                                        <CancelButton  onClick={() => {
+                                            setTotalCredit(prev => Math.max(0, prev - 3))
+                                            setField2(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                    </ButtonContainer>
+                                </CourseList>
+
+                                <CourseList>
+                                    <InfoDarkBlue>교선핵심 3영역</InfoDarkBlue>
+                                    <ButtonContainer>
+                                        <RegisterButton onClick={() => {
+                                            if (totalCredit >= 18) return;
+                                            setTotalCredit(prev =>  prev + 3)
+                                            setField3(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
+                                        <CancelButton  onClick={() => {
+                                            setTotalCredit(prev => Math.max(0, prev - 3))
+                                            setField3(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                    </ButtonContainer>
+                                </CourseList>
+
+                                <CourseList>
+                                    <InfoDarkBlue>교선핵심 4영역</InfoDarkBlue>
+                                    <ButtonContainer>
+                                        <RegisterButton onClick={() => {
+                                            if (totalCredit >= 18) return;
+                                            setTotalCredit(prev =>  prev + 3)
+                                            setField4(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
+                                        <CancelButton  onClick={() => {
+                                            setTotalCredit(prev => Math.max(0, prev - 3))
+                                            setField4(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
                                     </ButtonContainer>
                                 </CourseList>
                             </CourseLists>
-                        </MajorClass> 
-                    }
-                    
+                        </GeneralClass>
 
-                    { (["복수전공", "부전공"].includes(majorType?.trim())) && 
-                        <SubMajorContainer>
-                            <SubMajorClass>
+                        {(["심화전공", "미정"].includes(majorType?.trim())) &&
+                            <MajorClass>
                                 <CourseBlueTitle>
                                     <SnowIcon 
                                         style={ {width : "2vw", height : "2vw"}}
                                         src="/image/icons/blue-snow-icon.png" />
-                                    <InfoBlue>전공 ({majorCount}/63) ({majorType} : {subMajorCount}/42)</InfoBlue>
+                                    <InfoBlue>전공</InfoBlue>
                                 </CourseBlueTitle>
 
                                 <CourseLists>
@@ -582,33 +542,75 @@ export default function ClassRegister(){
                                         </ButtonContainer>
                                     </CourseList>
                                 </CourseLists>
-                            </SubMajorClass>
+                            </MajorClass> 
+                        }
+                        
 
-                            <SubMajorClass>
-                                <CourseBlueTitle>
-                                    <SnowIcon 
-                                        style={ {width : "2vw", height : "2vw"}}
-                                        src="/image/icons/blue-snow-icon.png" />
-                                    <InfoBlue>{myMajor}</InfoBlue>
-                                </CourseBlueTitle>
+                        { (["복수전공", "부전공"].includes(majorType?.trim())) && 
+                            <SubMajorContainer>
+                                <SubMajorClass>
+                                    <CourseBlueTitle>
+                                        <SnowIcon 
+                                            style={ {width : "2vw", height : "2vw"}}
+                                            src="/image/icons/blue-snow-icon.png" />
+                                        <InfoBlue>전공 ({majorCount}/63) ({majorType} : {subMajorCount}/42)</InfoBlue>
+                                    </CourseBlueTitle>
 
-                                <MajorButtonContainer>
-                                    <RegisterButton  onClick={() => {
-                                        if (totalCredit >= 18) return;
-                                        setTotalCredit(prev =>  prev + 3)
-                                        setSubmajors(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
-                                    <CancelButton  onClick={() => {
-                                        setTotalCredit(prev => Math.max(0, prev - 3))
-                                        setSubmajors(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
-                                </MajorButtonContainer>
-                            </SubMajorClass>
-                        </SubMajorContainer>
-                    }
-                    
-                    
-                    <ApplyButton onClick={patchRegister}>신청하기</ApplyButton>
-                </ClassContainer>
-            </ClassRegisterContainer>
+                                    <CourseLists>
+                                        <CourseList>
+                                            <InfoDarkBlue>전공 필수</InfoDarkBlue>
+                                            <ButtonContainer>
+                                                <RegisterButton onClick={() => {
+                                                    if (totalCredit >= 18) return;
+                                                    setTotalCredit(prev =>  prev + 3)
+                                                    setMajorsEssentail(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
+                                                <CancelButton  onClick={() => {
+                                                    setTotalCredit(prev => Math.max(0, prev - 3))
+                                                    setMajorsEssentail(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                            </ButtonContainer>
+                                        </CourseList>
+
+                                        <CourseList>
+                                            <InfoDarkBlue>전공 선택</InfoDarkBlue>
+                                            <ButtonContainer>
+                                                <RegisterButton onClick={() => {
+                                                    if (totalCredit >= 18) return;
+                                                    setTotalCredit(prev =>  prev + 3)
+                                                    setMajorsElective(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
+                                                <CancelButton  onClick={() => {
+                                                    setTotalCredit(prev => Math.max(0, prev - 3))
+                                                    setMajorsElective(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                            </ButtonContainer>
+                                        </CourseList>
+                                    </CourseLists>
+                                </SubMajorClass>
+
+                                <SubMajorClass>
+                                    <CourseBlueTitle>
+                                        <SnowIcon 
+                                            style={ {width : "2vw", height : "2vw"}}
+                                            src="/image/icons/blue-snow-icon.png" />
+                                        <InfoBlue>{myMajor}</InfoBlue>
+                                    </CourseBlueTitle>
+
+                                    <MajorButtonContainer>
+                                        <RegisterButton  onClick={() => {
+                                            if (totalCredit >= 18) return;
+                                            setTotalCredit(prev =>  prev + 3)
+                                            setSubmajors(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
+                                        <CancelButton  onClick={() => {
+                                            setTotalCredit(prev => Math.max(0, prev - 3))
+                                            setSubmajors(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                    </MajorButtonContainer>
+                                </SubMajorClass>
+                            </SubMajorContainer>
+                        }
+                        
+                        
+                        <ApplyButton onClick={patchRegister}>신청하기</ApplyButton>
+                    </ClassContainer>
+                </ClassRegisterContainer>
+            </>
             )}
 
             {showResultModal && (
