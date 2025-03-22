@@ -5,20 +5,24 @@ import PlanList from "./PlanList";
 import Status from "./Status";
 import axios from "axios";
 import { apiClient } from "../../apiClient";
+import { useTutorial } from "../../pages/intro/Tutorial";
 
-export default function Profile(){
+export default function Profile( { isHighlight } ){
     const SERVER_URL = import.meta.env.VITE_SERVER_URL;
     const [showStatus, setShowStatus] = useState(false);
     const [showList, setShowList] = useState(false);
     const [name, setName] = useState("");
     const [major, setMajor] = useState("");
     const [semester, setSemester] = useState("");
+    const { isTutorial } = useTutorial(); 
 
     const handleStatus = ()=>{
+        if (isTutorial) return;
         setShowStatus((prev) => !prev);
     }
 
     const handlePlanList = () => {
+        if (isTutorial) return;
         setShowList((prev) => !prev);
     };
 
@@ -43,7 +47,7 @@ export default function Profile(){
 
 
     return(
-        <Container>
+        <Container $highlight={isHighlight}>
             <ProfileContainer>
                 <NameContainer onClick={handleStatus}>
                     <SnowIcon src = "/image/icons/snow-icon.png" />
@@ -72,7 +76,7 @@ const Container = styled.div`
     height: 22vh;
     margin: 1vw;
     border : none;
-    z-index : 5;
+    z-index :  ${(props) => (props.$highlight ? 20 : 5)};
     display : flex;
     flex-direction : column;
     gap: 0.7vw;
