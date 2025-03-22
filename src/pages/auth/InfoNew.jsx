@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 
 export default function InfoNew(){
     const [stage, setStage] = useState(0);
+    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
     const location = useLocation();
     const email = location.state?.email || "";
 
@@ -47,12 +48,13 @@ export default function InfoNew(){
 
     const postInfo = async() => {
         const formattedBirthday = format(birthday, "yyyy-MM-dd");
-        console.log(nickname, formattedBirthday, mbti, hobby, dream)
+        console.log(email, nickname, formattedBirthday, mbti, hobby, dream)
         try {
             const response = await axios.post(`${SERVER_URL}/intro/info-new`, {
                 email : email,
                 nickname : nickname, 
                 birthday : formattedBirthday, 
+                major : major,
                 mbti : mbti, 
                 hobby : hobby, 
                 dream : dream

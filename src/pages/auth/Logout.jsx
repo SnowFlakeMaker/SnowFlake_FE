@@ -9,11 +9,7 @@ export default function Logout(){
 
     const getLogout = async() => {
         try {
-            const response = await axios.post(`${SERVER_URL}/auth/logout`, {
-               headers : {
-                    withCredentials: true
-               }
-            });
+            const response = await axios.post(`${SERVER_URL}/auth/logout`, {}, { withCredentials: true });  
 
             if (response.status === 200) {
                 console.log("로그아웃 성공:", response.data);

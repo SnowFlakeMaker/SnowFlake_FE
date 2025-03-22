@@ -1,45 +1,166 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { apiClient } from "../../apiClient";
 
 export default function ClassRegister(){
+    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
     const [totalCredit, setTotalCredit] = useState(0); //현재 신청한 학점 
 
+    const [myMajor, setMyMajor] = useState(""); 
+    const [majorType, setMajorType] = useState("");
+    const [semester, setSemester] = useState("");
+    
     //교필 수강신청 여부 
-    const [digital, setDigital] = useState(false); //디사의
-    const [branding, setBranding] = useState(false); //미래설계
-    const [english, setEnglish] = useState(false); //영교필
-    const [software, setSoftware] = useState(false); //논사소
+    const [digital, setDigital] = useState(null); //디사의
+    const [branding, setBranding] = useState(null); //미래설계
+    const [english, setEnglish] = useState(null); //영교필
+    const [software, setSoftware] = useState(null); //논사소
 
-    //교필 이수 여부 (백엔드에서 받을 것임)
-    const [isAlreadyDigital, setIsAlredayDigital] = useState(false);
-    const [isAlreadyBranding, setIsAlredayBranding] = useState(false);
-    const [isAlreadyEnglish, setIsAlredayEnglish] = useState(false);
-    const [isAlreadySoftware, setIsAlredaySoftware] = useState(false);
+    //현재까지 이수한 학점 내역 (백엔드에서 받을 것임)
+    const [isAlreadyDigital, setIsAlredayDigital] = useState(false); //디사의
+    const [isAlreadyBranding, setIsAlredayBranding] = useState(false); //미래설계
+    const [isAlreadyEnglish, setIsAlredayEnglish] = useState(false); //영교필 
+    const [isAlreadySoftware, setIsAlredaySoftware] = useState(false); //논사소
+    const [core1Count, setCore1Count] = useState(0);
+    const [core2Count, setCore2Count] = useState(0);
+    const [core3Count, setCore3Count] = useState(0);
+    const [core4Count, setCore4Count] = useState(0);
+    const [majorCount, setMajorCount] = useState(0);
+    const [subMajorCount, setSubMajorCount] = useState(0);
 
     // 교션 영역 과목 신청 개수
-    const [field1, setField1] = useState(0);
-    const [field2, setField2] = useState(0);
-    const [field3, setField3] = useState(0);
-    const [field4, setField4] = useState(0);
+    const [field1, setField1] = useState(null);
+    const [field2, setField2] = useState(null);
+    const [field3, setField3] = useState(null);
+    const [field4, setField4] = useState(null);
 
     //전공 영역 신청 개수 
-    const [majors, setMajors] = useState(0); //본전
-    const [subMajors, setSubmajors] = useState(0); //복,부전
-    const [myMajor, setMyMajor] = useState("복수전공"); //백엔드에서 받을 심전,복전,부전
+    const [majorsEssential, setMajorsEssentail] = useState(null); //본전 전필
+    const [majorsElective, setMajorsElective] = useState(null); //본전 전선 
+    const [subMajors, setSubmajors] = useState(null); //복,부전
+
+    useEffect(()=>{
+        const getCourse = async() => {
+            try{
+                const response = await apiClient.get("/course/main", { withCredentials: true });
+                
+                if(response.status === 200) {
+                    const currentStatus = response.data.current_credit;
+                    console.log(response.data);
+                    setSemester(currentStatus.semester);
+                    setMyMajor(currentStatus.major);
+                    selectMajorType(currentStatus.majorType);
+                    setMajorCount(currentStatus.currentElectivesCredits + currentStatus.currentCoreCredits)
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        const getRequired = async() => {
+            try{
+                const response = await apiClient.get("/course/required");
+
+                if(response.status === 200) {
+                    const currentStatus = response.data.required_list;
+                    console.log(response.data);
+                    setIsAlredayDigital(currentStatus.디사의);
+                    setIsAlredayBranding(currentStatus.미래설계);
+                    setIsAlredayEnglish(currentStatus.영교필);
+                    setIsAlredaySoftware(currentStatus.논사소);
+                }
+
+            } catch(error){
+                console.error(error);
+            }
+        };
+
+        const getCore = async() => {
+            try{
+                const response = await apiClient.get("/course/core");
+                if(response.status === 200) {
+                    const currentStatus = response.core_list;
+                    setCore1Count(currentStatus.core1);
+                    setCore2Count(currentStatus.core2);
+                    setCore3Count(currentStatus.core3);
+                    setCore4Count(currentStatus.core4);
+                }
+            } catch(error) {
+                console.error(error);
+            }
+        };
+
+        const fetchData = async () => {
+            try {
+                await postRefresh();
+                await getCourse();
+                await getRequired();
+                await getCore();
+            } catch (error) {
+                console.error("데이터 가져오기 실패:", error);
+            }
+        };
+
+        fetchData();
+    }, [])
+
+    const selectMajorType =(majorType)=>{
+        switch(majorType){
+            case "DOUBLE_MAJOR" : setMajorType("복수전공");
+            case "SUB_MAJOR" : setMajorType("부전공");
+            case "ADVANCED_MAJOR" : setMajorType("심화전공");
+            default : setMajorType("미정");
+        }
+    }
+
+    const calculateCredits = () => {
+        let sum = 0;
+        
+        if (isAlreadyDigital) sum += 3;
+        if (isAlreadyBranding) sum += 3;
+        if (isAlreadyEnglish) sum += 3;
+        if (isAlreadySoftware) sum += 3;
+
+        sum = core1Count + core2Count + core3Count + core4Count + majorCount + subMajorCount;
+    
+        return sum;
+    };
+
+    //수강신청 시간표 제출 
+    const patchRegister = async()=>{
+        try{
+            const response = await axios.patch(`${SERVER_URL}/course/submit`,{
+                디사의 : digital || null,
+                미래설계 : branding || null,
+                영교필 : english || null,
+                논사소 : software || null,
+                essential : majorsEssential || null,
+                elective : majorsElective || null , 
+                core1: field1 || null,
+                core2 : field2 || null,
+                core3 : field3 || null,
+                core4 : field4 || null, //FIX : 복부전 추가 
+            })
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    
 
     return(
         <Container>
             <TitleContainer>
-                <Title>1학년 1학기 수강신청</Title>
+                <Title>{semester} 수강신청</Title>
             </TitleContainer>
 
             <ClassRegisterContainer>
                 <RegisterContainer>
                     <ProfileContainer>
                         <InfoWhite>
-                            현재 단과대 : 공과대학 <br/>
-                            심화전공 / 복수전공 / 부전공 여부 : 미정 <br/>
-                            현재까지 이수한 학점 : 0학점
+                            현재 전공 : {myMajor} <br/>
+                            심화전공 / 복수전공 / 부전공 여부 : {majorType} <br/>
+                            현재까지 이수한 학점 : {calculateCredits}학점
                         </InfoWhite>
                     </ProfileContainer>
 
@@ -69,14 +190,14 @@ export default function ClassRegister(){
                                 <SnowIcon 
                                     style={ {width : "1.5vw", height : "1.5vw"}}
                                     src="/image/icons/blue-snow-icon.png" />
-                                <InfoWhite>교양선택</InfoWhite> 
+                                <InfoWhite>교양선택 ({core1Count + core2Count +core3Count + core4Count}/15)</InfoWhite> 
                             </CourseTitle>
                             
                             <Courses>
-                                <InfoWhite>▶ 교선핵심 1영역 : {field1}개 </InfoWhite> 
-                                <InfoWhite>▶ 교선핵심 2영역 : {field2}개 </InfoWhite>
-                                <InfoWhite>▶ 교선핵심 3영역 : {field3}개 </InfoWhite>
-                                <InfoWhite>▶ 교선핵심 4영역 : {field4}개 </InfoWhite>
+                                <InfoWhite>▶ 교선핵심 1영역 : {field1 ?? 0}개 </InfoWhite> 
+                                <InfoWhite>▶ 교선핵심 2영역 : {field2 ?? 0}개 </InfoWhite>
+                                <InfoWhite>▶ 교선핵심 3영역 : {field3 ?? 0}개 </InfoWhite>
+                                <InfoWhite>▶ 교선핵심 4영역 : {field4 ?? 0}개 </InfoWhite>
                             </Courses>
                             
                         </RegisterCoures>
@@ -90,7 +211,7 @@ export default function ClassRegister(){
                             </CourseTitle>
                             
                             <Courses>
-                                <InfoWhite>▶ 신청된 전공과목 개수 : {majors}개 </InfoWhite> 
+                                <InfoWhite>▶ 신청된 전공과목 개수 : {majorsEssential + majorsElective}개 </InfoWhite> 
                                 {["복수전공", "부전공"].includes(myMajor) && (
                                     <InfoWhite>▶ 신청된 {myMajor} 과목 개수 : {subMajors}개</InfoWhite>
                                 )}
@@ -214,7 +335,7 @@ export default function ClassRegister(){
                                     <RegisterButton onClick={() => {
                                         if (totalCredit >= 18) return;
                                         setTotalCredit(prev =>  prev + 3)
-                                        setField1(prev => prev + 1)}}>신청하기</RegisterButton>
+                                        setField1(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
                                     <CancelButton  onClick={() => {
                                         setTotalCredit(prev => Math.max(0, prev - 3))
                                         setField1(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
@@ -227,7 +348,7 @@ export default function ClassRegister(){
                                     <RegisterButton onClick={() => {
                                         if (totalCredit >= 18) return;
                                         setTotalCredit(prev =>  prev + 3)
-                                        setField2(prev => prev + 1)}}>신청하기</RegisterButton>
+                                        setField2(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
                                     <CancelButton  onClick={() => {
                                         setTotalCredit(prev => Math.max(0, prev - 3))
                                         setField2(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
@@ -240,7 +361,7 @@ export default function ClassRegister(){
                                     <RegisterButton onClick={() => {
                                         if (totalCredit >= 18) return;
                                         setTotalCredit(prev =>  prev + 3)
-                                        setField3(prev => prev + 1)}}>신청하기</RegisterButton>
+                                        setField3(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
                                     <CancelButton  onClick={() => {
                                         setTotalCredit(prev => Math.max(0, prev - 3))
                                         setField3(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
@@ -253,7 +374,7 @@ export default function ClassRegister(){
                                     <RegisterButton onClick={() => {
                                         if (totalCredit >= 18) return;
                                         setTotalCredit(prev =>  prev + 3)
-                                        setField4(prev => prev + 1)}}>신청하기</RegisterButton>
+                                        setField4(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
                                     <CancelButton  onClick={() => {
                                         setTotalCredit(prev => Math.max(0, prev - 3))
                                         setField4(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
@@ -262,26 +383,45 @@ export default function ClassRegister(){
                         </CourseLists>
                     </GeneralClass>
 
-                    {myMajor === "심화전공" &&
+                    {(myMajor === "심화전공" || myMajor === "미정") &&
                         <MajorClass>
                             <CourseBlueTitle>
                                 <SnowIcon 
                                     style={ {width : "2vw", height : "2vw"}}
                                     src="/image/icons/blue-snow-icon.png" />
-                                <InfoBlue>전공</InfoBlue>
+                                <InfoBlue>전공 ({majorCount}/63)</InfoBlue>
                             </CourseBlueTitle>
 
-                            <MajorButtonContainer>
-                                <RegisterButton  onClick={() => {
-                                    if (totalCredit >= 18) return;
-                                    setTotalCredit(prev =>  prev + 3)
-                                    setMajors(prev => prev + 1)}}>신청하기</RegisterButton>
-                                <CancelButton  onClick={() => {
-                                    setTotalCredit(prev => Math.max(0, prev - 3))
-                                    setMajors(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
-                            </MajorButtonContainer>
-                        </MajorClass>
+                            <CourseLists>
+                                <CourseList>
+                                    <InfoDarkBlue>전공 필수</InfoDarkBlue>
+                                    <ButtonContainer>
+                                        <RegisterButton onClick={() => {
+                                            if (totalCredit >= 18) return;
+                                            setTotalCredit(prev =>  prev + 3)
+                                            setMajorsEssentail(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
+                                        <CancelButton  onClick={() => {
+                                            setTotalCredit(prev => Math.max(0, prev - 3))
+                                            setMajorsEssentail(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                    </ButtonContainer>
+                                </CourseList>
+
+                                <CourseList>
+                                    <InfoDarkBlue>전공 선택</InfoDarkBlue>
+                                    <ButtonContainer>
+                                        <RegisterButton onClick={() => {
+                                            if (totalCredit >= 18) return;
+                                            setTotalCredit(prev =>  prev + 3)
+                                            setMajorsElective(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
+                                        <CancelButton  onClick={() => {
+                                            setTotalCredit(prev => Math.max(0, prev - 3))
+                                            setMajorsElective(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                    </ButtonContainer>
+                                </CourseList>
+                            </CourseLists>
+                        </MajorClass> 
                     }
+                    
 
                     { (myMajor === "복수전공" || myMajor === "부전공") && 
                         <SubMajorContainer>
@@ -290,43 +430,61 @@ export default function ClassRegister(){
                                     <SnowIcon 
                                         style={ {width : "2vw", height : "2vw"}}
                                         src="/image/icons/blue-snow-icon.png" />
-                                    <InfoBlue>전공</InfoBlue>
+                                    <InfoBlue>전공 ({majorCount}/63) ({majorType} : {subMajorCount}/42)</InfoBlue>
+                                </CourseBlueTitle>
+
+                                <CourseLists>
+                                    <CourseList>
+                                        <InfoDarkBlue>전공 필수</InfoDarkBlue>
+                                        <ButtonContainer>
+                                            <RegisterButton onClick={() => {
+                                                if (totalCredit >= 18) return;
+                                                setTotalCredit(prev =>  prev + 3)
+                                                setMajorsEssentail(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
+                                            <CancelButton  onClick={() => {
+                                                setTotalCredit(prev => Math.max(0, prev - 3))
+                                                setMajorsEssentail(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                        </ButtonContainer>
+                                    </CourseList>
+
+                                    <CourseList>
+                                        <InfoDarkBlue>전공 선택</InfoDarkBlue>
+                                        <ButtonContainer>
+                                            <RegisterButton onClick={() => {
+                                                if (totalCredit >= 18) return;
+                                                setTotalCredit(prev =>  prev + 3)
+                                                setMajorsElective(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
+                                            <CancelButton  onClick={() => {
+                                                setTotalCredit(prev => Math.max(0, prev - 3))
+                                                setMajorsElective(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                        </ButtonContainer>
+                                    </CourseList>
+                                </CourseLists>
+                            </SubMajorClass>
+
+                            <SubMajorClass>
+                                <CourseBlueTitle>
+                                    <SnowIcon 
+                                        style={ {width : "2vw", height : "2vw"}}
+                                        src="/image/icons/blue-snow-icon.png" />
+                                    <InfoBlue>{myMajor}</InfoBlue>
                                 </CourseBlueTitle>
 
                                 <MajorButtonContainer>
                                     <RegisterButton  onClick={() => {
                                         if (totalCredit >= 18) return;
                                         setTotalCredit(prev =>  prev + 3)
-                                        setMajors(prev => prev + 1)}}>신청하기</RegisterButton>
+                                        setSubmajors(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
                                     <CancelButton  onClick={() => {
                                         setTotalCredit(prev => Math.max(0, prev - 3))
-                                        setMajors(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
+                                        setSubmajors(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
                                 </MajorButtonContainer>
-                            </SubMajorClass>
-
-                            <SubMajorClass>
-                            <CourseBlueTitle>
-                                <SnowIcon 
-                                    style={ {width : "2vw", height : "2vw"}}
-                                    src="/image/icons/blue-snow-icon.png" />
-                                <InfoBlue>{myMajor}</InfoBlue>
-                            </CourseBlueTitle>
-
-                            <MajorButtonContainer>
-                                <RegisterButton  onClick={() => {
-                                    if (totalCredit >= 18) return;
-                                    setTotalCredit(prev =>  prev + 3)
-                                    setSubmajors(prev => prev + 1)}}>신청하기</RegisterButton>
-                                <CancelButton  onClick={() => {
-                                    setTotalCredit(prev => Math.max(0, prev - 3))
-                                    setSubmajors(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
-                            </MajorButtonContainer>
                             </SubMajorClass>
                         </SubMajorContainer>
                     }
                     
                     
-                    <ApplyButton>신청하기</ApplyButton>
+                    <ApplyButton onClick={patchRegister}>신청하기</ApplyButton>
                 </ClassContainer>
             </ClassRegisterContainer>
         </Container>
@@ -476,7 +634,7 @@ const Courses = styled.div`
 `;
 
 const CourseLists = styled.div`
-    margin-top : 2vh;
+    margin-top : 1.5vh;
     margin-left : 4vw;
     display : flex;
     flex-direction : column;

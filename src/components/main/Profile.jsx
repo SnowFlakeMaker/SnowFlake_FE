@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useState } from "react";
 import PlanList from "./PlanList";
 import Status from "./Status";
+import axios from "axios";
+import { apiClient } from "../../apiClient";
 
 export default function Profile(){
+    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
     const [showStatus, setShowStatus] = useState(false);
     const [showList, setShowList] = useState(false);
+    const [name, setName] = useState("");
+    const [major, setMajor] = useState("");
+    const [semester, setSemester] = useState("");
 
     const handleStatus = ()=>{
         setShowStatus((prev) => !prev);
@@ -16,15 +22,34 @@ export default function Profile(){
         setShowList((prev) => !prev);
     };
 
+    useEffect(()=>{
+        const getPlayer = async () =>{
+            try{
+                const response = await apiClient.get("/main/player", { withCredentials: true });
+                if(response.status === 200) {
+                    const data = response.data.data;
+                    setName(data.nickname);
+                    setMajor(data.major);
+                }
+            } catch(error) {
+                console.log(error);
+            }
+
+        }
+
+        getPlayer();
+    }, [])
+
+
     return(
         <Container>
             <ProfileContainer>
                 <NameContainer onClick={handleStatus}>
                     <SnowIcon src = "/image/icons/snow-icon.png" />
-                    <NameText>김눈꽃송이</NameText>
+                    <NameText>{name}</NameText>
                     <SnowIcon src = "/image/icons/snow-icon.png" />
                 </NameContainer>
-                <SemText>공과대학 5학기</SemText>
+                <SemText>{major} {semester}</SemText>
                 
             </ProfileContainer>
 

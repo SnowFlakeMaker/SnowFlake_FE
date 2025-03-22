@@ -37,10 +37,17 @@ export default function LogIn(){
         console.log(emailId, password);
         
         try {
-            const response = await axios.post(`${SERVER_URL}/auth/login`, {
-                email: emailId,
-                password: password,
-            });
+            const response = await axios.post(
+                `${SERVER_URL}/auth/login`, 
+                {
+                    email: emailId,
+                    password: password,
+                },
+                {
+                    withCredentials: true  // ✅ 쿠키 포함 설정
+                }
+            );
+    
 
             if (response.status === 200 && response.data.data) {
                 console.log("로그인 성공:", response.data);
