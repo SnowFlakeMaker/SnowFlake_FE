@@ -40,18 +40,26 @@ export default function ClassRegister(){
     const [majorsElective, setMajorsElective] = useState(null); //본전 전선 
     const [subMajors, setSubmajors] = useState(null); //복,부전
 
+    const [showResultModal, setShowResultModal] = useState(false);// 수강신청 완료 모달 
+    const [subjectLists, setSubjectLists] = useState([]); //수강신청 확정 과목 
+
+    const [hasSubmitted, setHasSubmitted] = useState(() => {
+        const saved = localStorage.getItem(`submitted_${semester}`);
+        return saved === "true";
+    });
+
     useEffect(()=>{
         const getCourse = async() => {
             try{
                 const response = await apiClient.get("/course/main", { withCredentials: true });
                 
                 if(response.status === 200) {
-                    const currentStatus = response.data.current_credit;
                     console.log(response.data);
-                    setSemester(currentStatus.semester);
+                    const currentStatus = response.data.data.current_credit;
+                    selectSemester(currentStatus.semester);
                     setMyMajor(currentStatus.major);
                     selectMajorType(currentStatus.majorType);
-                    setMajorCount(currentStatus.currentElectivesCredits + currentStatus.currentCoreCredits)
+                    setMajorCount(currentStatus.currentElectivesCredits + currentStatus.currentCoreCredits);
                 }
             } catch (error) {
                 console.error(error);
@@ -63,7 +71,7 @@ export default function ClassRegister(){
                 const response = await apiClient.get("/course/required");
 
                 if(response.status === 200) {
-                    const currentStatus = response.data.required_list;
+                    const currentStatus = response.data.data.required_list;
                     console.log(response.data);
                     setIsAlredayDigital(currentStatus.디사의);
                     setIsAlredayBranding(currentStatus.미래설계);
@@ -80,11 +88,12 @@ export default function ClassRegister(){
             try{
                 const response = await apiClient.get("/course/core");
                 if(response.status === 200) {
-                    const currentStatus = response.core_list;
-                    setCore1Count(currentStatus.core1);
-                    setCore2Count(currentStatus.core2);
-                    setCore3Count(currentStatus.core3);
-                    setCore4Count(currentStatus.core4);
+                    console.log(response.data);
+                    const currentStatus = response.data.data.core_list;
+                    setCore1Count(Number(currentStatus.교핵_1영역));
+                    setCore2Count(Number(currentStatus.교핵_2영역));
+                    setCore3Count(Number(currentStatus.교핵_3영역));
+                    setCore4Count(Number(currentStatus.교핵_4영역));
                 }
             } catch(error) {
                 console.error(error);
@@ -93,7 +102,6 @@ export default function ClassRegister(){
 
         const fetchData = async () => {
             try {
-                await postRefresh();
                 await getCourse();
                 await getRequired();
                 await getCore();
@@ -105,32 +113,112 @@ export default function ClassRegister(){
         fetchData();
     }, [])
 
+    const selectSemester =(semester) => {
+        switch(semester){
+            case "SEM_S_1":
+                setSemester("1학년 1학기");
+                break;
+            case "SEM_W_1":
+                setSemester("1학년 2학기");
+                break;
+            case "VAC_S_1":
+                setSemester("1학년 여름방학");
+                break;
+            case "VAC_W_1":
+                setSemester("1학년 겨울방학");
+                break;
+
+            case "SEM_S_2":
+                setSemester("2학년 1학기");
+                break;
+            case "SEM_W_2":
+                setSemester("2학년 2학기");
+                break;
+            case "VAC_S_2":
+                setSemester("2학년 여름방학");
+                break;
+            case "VAC_W_2":
+                setSemester("2학년 겨울방학");
+                break;
+
+            case "SEM_S_3":
+                setSemester("3학년 1학기");
+                break;
+            case "SEM_W_3":
+                setSemester("3학년 2학기");
+                break;
+            case "VAC_S_3":
+                setSemester("3학년 여름방학");
+                break;
+            case "VAC_W_3":
+                setSemester("3학년 겨울방학");
+                break;
+
+            case "SEM_S_4":
+                setSemester("4학년 1학기");
+                break;
+            case "SEM_W_4":
+                setSemester("4학년 2학기");
+                break;
+            case "VAC_S_4":
+                setSemester("4학년 여름방학");
+                break;
+            case "VAC_W_4":
+                setSemester("4학년 겨울방학");
+                break;
+
+            default:
+                setSemester("알 수 없음");
+        }
+    }
+
     const selectMajorType =(majorType)=>{
         switch(majorType){
             case "DOUBLE_MAJOR" : setMajorType("복수전공");
             case "SUB_MAJOR" : setMajorType("부전공");
             case "ADVANCED_MAJOR" : setMajorType("심화전공");
-            default : setMajorType("미정");
+            case "UNKNOWN" : setMajorType("미정");
         }
     }
 
     const calculateCredits = () => {
         let sum = 0;
-        
+
         if (isAlreadyDigital) sum += 3;
         if (isAlreadyBranding) sum += 3;
         if (isAlreadyEnglish) sum += 3;
         if (isAlreadySoftware) sum += 3;
 
-        sum = core1Count + core2Count + core3Count + core4Count + majorCount + subMajorCount;
-    
+        sum += 
+            (core1Count || 0) + 
+            (core2Count || 0) + 
+            (core3Count || 0) + 
+            (core4Count || 0) + 
+            (majorCount || 0) + 
+            (subMajorCount || 0);
+
+        console.log("총합:", sum);
         return sum;
     };
 
     //수강신청 시간표 제출 
     const patchRegister = async()=>{
+        const subjectNameMap = {
+            "디사의": "디지털 시대의 사고와 의사소통",
+            "미래설계": "미래 설계와 나의 브랜딩",
+            "영교필": "영어 교양 필수",
+            "논사소": "논리적 사고와 소프트웨어",
+            core1: "교선핵심 1영역",
+            core2: "교선핵심 2영역",
+            core3: "교선핵심 3영역",
+            core4: "교선핵심 4영역",
+            coreCredits : "전공필수",
+            electiveCredits : "전공선택",
+            dmCredits: `${majorType}`,
+        };
+
         try{
-            const response = await axios.patch(`${SERVER_URL}/course/submit`,{
+            const response = await apiClient.patch(`/course/submit`,{
                 디사의 : digital || null,
                 미래설계 : branding || null,
                 영교필 : english || null,
@@ -140,13 +228,46 @@ export default function ClassRegister(){
                 core1: field1 || null,
                 core2 : field2 || null,
                 core3 : field3 || null,
-                core4 : field4 || null, //FIX : 복부전 추가 
-            })
-        } catch (error) {
+                core4 : field4 || null,
+                dmCredits : subMajors || null
+            });
+
+            if(response.status===200) {
+                const updateResults = response.data.data.updateResults;
+
+                const confirmedSubjects = [];
+
+                Object.entries(updateResults).forEach(([key, value]) => {
+                if (Array.isArray(value)) {
+                    // 배열인 경우: index 기준으로 반복
+                    value.forEach((v, i) => {
+                    if (v === true) {
+                        const name = subjectNameMap[key] || key;
+                        confirmedSubjects.push(`${name} ${i + 1}`);
+                    }
+                    });
+                } else if (value === true) {
+                    // 단일 boolean: true면 추가
+                    const name = subjectNameMap[key] || key;
+                    confirmedSubjects.push(name);
+                }
+                });
+
+                setSubjectLists(confirmedSubjects);
+                localStorage.setItem(`submitted_${semester}`, "true");
+                setHasSubmitted(true);
+                setShowResultModal(true);
+            }}
+        catch (error) {
             console.error(error);
         }
+                
     }
     
+    useEffect(() => {
+        const saved = localStorage.getItem(`submitted_${semester}`);
+        setHasSubmitted(saved === "true");
+      }, [semester]);
 
     return(
         <Container>
@@ -154,13 +275,14 @@ export default function ClassRegister(){
                 <Title>{semester} 수강신청</Title>
             </TitleContainer>
 
+            {!hasSubmitted && !showResultModal && (
             <ClassRegisterContainer>
                 <RegisterContainer>
                     <ProfileContainer>
                         <InfoWhite>
                             현재 전공 : {myMajor} <br/>
                             심화전공 / 복수전공 / 부전공 여부 : {majorType} <br/>
-                            현재까지 이수한 학점 : {calculateCredits}학점
+                            현재까지 이수한 학점 : {calculateCredits()}학점
                         </InfoWhite>
                     </ProfileContainer>
 
@@ -207,7 +329,7 @@ export default function ClassRegister(){
                                 <SnowIcon 
                                 style={ {width : "1.5vw", height : "1.5vw"}}
                                 src="/image/icons/blue-snow-icon.png" />
-                                <InfoWhite>전공 </InfoWhite> 
+                                <InfoWhite>전공 ({majorCount}/63)</InfoWhite> 
                             </CourseTitle>
                             
                             <Courses>
@@ -383,13 +505,13 @@ export default function ClassRegister(){
                         </CourseLists>
                     </GeneralClass>
 
-                    {(myMajor === "심화전공" || myMajor === "미정") &&
+                    {(["심화전공", "미정"].includes(majorType?.trim())) &&
                         <MajorClass>
                             <CourseBlueTitle>
                                 <SnowIcon 
                                     style={ {width : "2vw", height : "2vw"}}
                                     src="/image/icons/blue-snow-icon.png" />
-                                <InfoBlue>전공 ({majorCount}/63)</InfoBlue>
+                                <InfoBlue>전공</InfoBlue>
                             </CourseBlueTitle>
 
                             <CourseLists>
@@ -423,7 +545,7 @@ export default function ClassRegister(){
                     }
                     
 
-                    { (myMajor === "복수전공" || myMajor === "부전공") && 
+                    { (["복수전공", "부전공"].includes(majorType?.trim())) && 
                         <SubMajorContainer>
                             <SubMajorClass>
                                 <CourseBlueTitle>
@@ -487,6 +609,18 @@ export default function ClassRegister(){
                     <ApplyButton onClick={patchRegister}>신청하기</ApplyButton>
                 </ClassContainer>
             </ClassRegisterContainer>
+            )}
+
+            {showResultModal && (
+                <ModalOverlay>
+                    <InfoWhite>수강신청이 확정되었습니다.</InfoWhite>
+                    <InfoWhite>
+                        확정 과목: {subjectLists.length > 0 ? subjectLists.join(", ") : "없음"}
+                    </InfoWhite>
+                    <RegisterButton onClick={() => setShowResultModal(false)}>닫기</RegisterButton>
+                </ModalOverlay>
+            )}
+
         </Container>
     );
 }
@@ -584,6 +718,7 @@ const ApplyButton = styled.button`
     color : white;
     font-size :  ${({ theme }) => theme.typography.title24.fontSize};
     margin-top : 1vh;
+    cursor: pointer;
 `;
 
 const ProfileContainer = styled.div`
@@ -651,6 +786,7 @@ const CourseList = styled.div`
 const InfoWhite = styled.span`
     font-size :  ${({ theme }) => theme.typography.subtitle20.fontSize};
     color : ${({ theme }) => theme.colors.mainblue100};
+    white-space: pre-wrap;
 `;
 
 const InfoYellow = styled.span`
@@ -694,6 +830,7 @@ const RegisterButton = styled.button`
     background-color : ${({ theme }) => theme.colors.mainblue600};
     color : white;
     font-size :  ${({ theme }) => theme.typography.subtitle15.fontSize};
+    cursor: pointer;
 `;
 
 const CancelButton = styled.button`
@@ -704,4 +841,25 @@ const CancelButton = styled.button`
     background-color : ${({ theme }) => theme.colors.mainblue300};
     color : white;
     font-size :  ${({ theme }) => theme.typography.subtitle15.fontSize};
+    cursor: pointer;
+`;
+
+
+const ModalOverlay = styled.div`
+    position: fixed;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30vw;
+    height: 30vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    margin-top: 30vh;
+    flex-direction: column;
+    padding-left: 3vw;
+    padding-right: 3vw;
+    gap : 3vh;
 `;
