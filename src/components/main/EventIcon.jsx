@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
-export default function EventIcon(){
+export default function EventIcon( { isHighlight }){
     return(
-        <Container>
+        <Container $highlight={isHighlight}>
             <Icon src="image/icons/home.png" />
             <Icon src="image/icons/festival.png" />
             <Icon src="image/icons/school.png" />
@@ -19,7 +19,7 @@ const Container = styled.div`
     display : flex;
     flex-direction : row;
     gap: 0.5vw; 
-    z-index : 5;
+    z-index :  ${(props) => (props.$highlight ? 20 : 5)};;
     position: absolute;
     top: 0;
     left: 19vw;    

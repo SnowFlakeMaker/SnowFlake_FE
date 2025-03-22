@@ -3,21 +3,25 @@ import styled from "styled-components";
 import { useState } from "react";
 import PlanList from "./PlanList";
 import Status from "./Status";
+import { useTutorial } from "../../pages/intro/Tutorial";
 
-export default function Profile(){
+export default function Profile( { isHighlight } ){
     const [showStatus, setShowStatus] = useState(false);
     const [showList, setShowList] = useState(false);
+    const { isTutorial } = useTutorial(); //튜토리얼 여부
 
     const handleStatus = ()=>{
+        if (isTutorial) return;
         setShowStatus((prev) => !prev);
     }
 
     const handlePlanList = () => {
+        if (isTutorial) return;
         setShowList((prev) => !prev);
     };
 
     return(
-        <Container>
+        <Container $highlight={isHighlight}>
             <ProfileContainer>
                 <NameContainer onClick={handleStatus}>
                     <SnowIcon src = "/image/icons/snow-icon.png" />
@@ -46,7 +50,7 @@ const Container = styled.div`
     height: 22vh;
     margin: 1vw;
     border : none;
-    z-index : 5;
+    z-index :  ${(props) => (props.$highlight ? 20 : 5)};
     display : flex;
     flex-direction : column;
     gap: 0.7vw;
