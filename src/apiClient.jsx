@@ -10,7 +10,7 @@ export const apiClient = axios.create({
 const refreshToken = async () => {
     try {
         console.log("🔄 토큰 갱신 요청 시작");
-        const response = await apiClient.post("/auth/refresh");
+        const response = await apiClient.get("/auth/refresh");
         if(response.status===200) { 
             console.log("✅ 토큰 갱신 성공:", response.data);
         }

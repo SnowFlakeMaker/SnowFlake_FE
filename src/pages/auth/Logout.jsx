@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { apiClient } from "../../apiClient";
 
 export default function Logout(){
     const SERVER_URL = import.meta.env.VITE_SERVER_URL;
@@ -9,7 +10,9 @@ export default function Logout(){
 
     const getLogout = async() => {
         try {
-            const response = await axios.post(`${SERVER_URL}/auth/logout`, {}, { withCredentials: true });  
+            const response = await axios.get(`/api/auth/logout`, {
+            withCredentials: true  
+            });
 
             if (response.status === 200) {
                 console.log("로그아웃 성공:", response.data);

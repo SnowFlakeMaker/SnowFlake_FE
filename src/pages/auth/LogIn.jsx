@@ -38,7 +38,7 @@ export default function LogIn(){
         
         try {
             const response = await axios.post(
-                `${SERVER_URL}/auth/login`, 
+                `/apiauth/login`, 
                 {
                     email: emailId,
                     password: password,

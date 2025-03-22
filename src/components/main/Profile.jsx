@@ -25,7 +25,9 @@ export default function Profile(){
     useEffect(()=>{
         const getPlayer = async () =>{
             try{
-                const response = await apiClient.get("/main/player", { withCredentials: true });
+                const response = await axios.get('/api/main/player', {
+                    withCredentials: true
+                });
                 if(response.status === 200) {
                     const data = response.data.data;
                     setName(data.nickname);
