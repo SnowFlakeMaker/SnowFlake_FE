@@ -2,22 +2,26 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import MailList from "./MailList";
 import Logout from "../../pages/auth/Logout";
+import { useTutorial } from "../../pages/intro/Tutorial";
 
-export default function InfoBar(){
+export default function InfoBar( { isHighlight }){
     const [showMail, setShowMail] = useState(false);
     const [showLogout, setShowLogout] = useState(false);
     const count = 3; //알림 갯수
+    const { isTutorial } = useTutorial(); //튜토리얼 여부
 
     const handleMailList =()=>{
+        if (isTutorial) return;
         setShowMail((prev) => !prev);
     }
 
     const handleLogout =()=>{
+        if (isTutorial) return;
         setShowLogout((prev) => !prev);
     }
 
     return(
-        <Conatiner>
+        <Conatiner $highlight={isHighlight}>
             <CoinContainer>
                 <Icon src="image/icons/coin.svg"/>
                 <TextContainer>
@@ -52,7 +56,7 @@ const Conatiner = styled.div`
     display : flex;
     flex-direction : row;
     gap: 1vw;
-    z-index : 5;
+    z-index : ${(props) => (props.$highlight ? 20 : 5)};
     margin : 1vw;
 `;
 

@@ -15,6 +15,7 @@ import OT from "./pages/intro/OT";
 import Entrance from "./pages/intro/Entrance";
 import Main from "./pages/main/Main";
 import InfoNew from "./pages/auth/InfoNew";
+import { TutorialProvider } from "./pages/intro/Tutorial";
 
 function App() {
 
@@ -26,22 +27,24 @@ function App() {
 
   return (
     <CookiesProvider>
-      <ThemeProvider theme={theme}>
-      <GlobalStyle/>
-      
-        <Router>
-          <Routes>
-            <Route path="/" element={<Start/>} />
-            <Route path="/signin" element={<SignIn/>} />
-            <Route path="/login" element={<LogIn/>} />
-            <Route path="/info" element={<InfoNew/>} />
-            <Route path="/entrance" element={<Entrance />} />
-            <Route path="/ot" element={<OT/>} />
-            <Route path="/welcome" element={<Entrance/>} />
-            <Route path="/main" element={<Main/>}/>
-          </Routes>
-        </Router>
-      </ThemeProvider>
+      <TutorialProvider>
+        <ThemeProvider theme={theme}>
+        <GlobalStyle/>
+        
+          <Router>
+            <Routes>
+              <Route path="/" element={<Start/>} />
+              <Route path="/signin" element={<SignIn/>} />
+              <Route path="/login" element={<LogIn/>} />
+              <Route path="/info" element={<InfoNew/>} />
+              <Route path="/entrance" element={<Entrance />} />
+              <Route path="/ot" element={<OT/>} />
+              <Route path="/welcome" element={<Entrance/>} />
+              <Route path="/main" element={<Main/>}/>
+            </Routes>
+          </Router>
+        </ThemeProvider>
+      </TutorialProvider>
     </CookiesProvider>
   )
 }
