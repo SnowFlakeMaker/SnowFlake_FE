@@ -15,7 +15,7 @@ export const TutorialProvider = ({ children }) => {
     const [isTutorial, setIsTutorial] = useState(true);
     const [currentStep, setCurrentStep] = useState(0);
   
-    const maxStep = 4; 
+    const maxStep = 3; 
   
     useEffect(() => {
       const finished = localStorage.getItem("tutorialFinished") === "true";
