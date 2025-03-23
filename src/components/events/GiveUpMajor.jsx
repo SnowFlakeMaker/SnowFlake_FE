@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { apiClient } from "../../apiClient";
 
 export default function GiveUpMajor(){
     const [major, setMajor] = useState("복수전공"); //백엔드에서 복/부전공 여부 받아올 것 
@@ -7,6 +8,16 @@ export default function GiveUpMajor(){
     
     if(isApply !== undefined) return null;
 
+    const postDrop = async()=> {
+        try{
+            const response = await apiClient.post('/event/major/drop');
+            if(response.status===200){
+                console.log(response.data);
+            }
+        }catch(error){
+            console.log(error);
+        }
+    }
     return(
         <Container>
             <TextContainer>
@@ -16,7 +27,7 @@ export default function GiveUpMajor(){
             </TextContainer>
 
             <SelectContainer>
-                <SelectOption onClick={()=>setIsApply(true)}>포기한다 (Y)</SelectOption>
+                <SelectOption onClick={()=>{setIsApply(true); postDrop();}}>포기한다 (Y)</SelectOption>
                 <SelectOption onClick={()=>setIsApply(false)}>포기하지 않는다. (N)</SelectOption>
             </SelectContainer>
         </Container>

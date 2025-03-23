@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { apiClient } from "../../apiClient";
 
 export default function ClassRegister(){
-    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
     const [totalCredit, setTotalCredit] = useState(0); //현재 신청한 학점 
 
     const [myMajor, setMyMajor] = useState(""); 

@@ -1,11 +1,28 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { apiClient } from "../../apiClient";
 
 export default function MT(){
     const [isApply, setIsApply] = useState(undefined);
     
     if(isApply !== undefined) return null;
 
+    const postMT = async()=>{
+        try{
+            const response = await apiClient.post('/event/mt');
+            if(response.status === 200) {
+                console.log(response.data);
+            }
+        } catch(error) {
+            if (error.response?.status === 405){
+                navigate('/stress_ending');
+            }
+            else { 
+                console.log(error);
+            }
+        }
+    }
+    
     return(
         <Container>
             <TextContainer>
@@ -13,7 +30,7 @@ export default function MT(){
             </TextContainer>
 
             <SelectContainer>
-                <SelectOption onClick={()=>setIsApply(true)}>간다. (Y)</SelectOption>
+                <SelectOption onClick={()=>{setIsApply(true); postMT();}}>간다. (Y)</SelectOption>
                 <SelectOption onClick={()=>setIsApply(false)}>가지 않는다. (N)</SelectOption>
             </SelectContainer>
         </Container>

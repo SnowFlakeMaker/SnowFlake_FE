@@ -5,6 +5,7 @@ import PlanList from "./PlanList";
 import Status from "./Status";
 import { apiClient } from "../../apiClient";
 import { useTutorial } from "../../pages/intro/Tutorial";
+import { useDate } from "./DateContext";
 
 export default function Profile( { isHighlight } ){
     const [showStatus, setShowStatus] = useState(false);
@@ -13,6 +14,7 @@ export default function Profile( { isHighlight } ){
     const [major, setMajor] = useState("");
     const [semester, setSemester] = useState("");
     const { isTutorial } = useTutorial(); 
+    const { currentDay, currentMonth } = useDate();
 
     const handleStatus = ()=>{
         if (isTutorial) return;
@@ -78,7 +80,7 @@ export default function Profile( { isHighlight } ){
             </ProfileContainer>
 
             <DateContainer onClick={handlePlanList} >
-                <DateText>3월 24일</DateText>
+                <DateText>{currentMonth} {currentDay}일</DateText>
             </DateContainer>
 
             {showStatus && <Status />}

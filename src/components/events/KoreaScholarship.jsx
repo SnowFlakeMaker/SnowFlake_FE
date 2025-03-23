@@ -1,10 +1,26 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { apiClient } from "../../apiClient";
 
 export default function KoreaScholarship(){
     const [isApply, setIsApply] = useState(undefined);
     
     if(isApply !== undefined) return null;
+
+    const postScholarships = async()=>{
+            try{
+                const response = await apiClient.post('/event/scholarships');
+                if(response.status === 200){
+                    console.log(response.data);
+                }
+                else{
+                    alert(response.data.data);
+                }
+            } catch(error){
+                console.log(error);
+                
+            }
+        }
 
     return(
         <Container>
@@ -14,7 +30,7 @@ export default function KoreaScholarship(){
             </TextContainer>
 
             <SelectContainer>
-                <SelectOption onClick={()=>setIsApply(true)}>신청한다 (Y)</SelectOption>
+                <SelectOption onClick={()=>{setIsApply(true); postScholarships();}}>신청한다 (Y)</SelectOption>
                 <SelectOption onClick={()=>setIsApply(false)}>신청하지 않는다. (N)</SelectOption>
             </SelectContainer>
         </Container>

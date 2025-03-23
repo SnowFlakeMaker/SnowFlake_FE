@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { apiClient } from "../../apiClient";
 
 export default function Club(){
     const [isApply, setIsApply] = useState(undefined);
@@ -8,6 +9,17 @@ export default function Club(){
     
     if(isClosed == true) return null;
 
+    const postClub = async() => {
+        try{
+            const response = await apiClient.post('/event/club');
+            if(response.status === 200){
+                console.log(response.data);
+                setIsAllowed(response.data.data.success);
+            }
+        } catch(error){
+            console.log(error);
+        }
+    }
     return(
         <Container>
             {isApply === undefined &&
@@ -17,7 +29,7 @@ export default function Club(){
                     </TextContainer>
 
                     <SelectContainer>
-                        <SelectOption onClick={()=>setIsApply(true)}>지원한다. (Y)</SelectOption>
+                        <SelectOption onClick={()=>{setIsApply(true); postClub();}}>지원한다. (Y)</SelectOption>
                         <SelectOption onClick={()=>setIsApply(false)}>지원하지 않는다. (N)</SelectOption>
                     </SelectContainer>
                 </>
@@ -36,7 +48,7 @@ export default function Club(){
             {isAllowed === false &&
                 <>
                     <TextContainer>
-                        <Text>아쉽게도 동아리에 불합격했어.</Text>
+                        <Text>아쉽게도 동아리에 불합격했어. 그래도 열심히 학교생활을 해보자!</Text>
                     </TextContainer>
 
                     <SelectContainer>

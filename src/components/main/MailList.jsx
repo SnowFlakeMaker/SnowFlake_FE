@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import ClassRegister from "../events/ClassRegister";
 import OpeningMeeting from "../events/OpeningMeeting";
@@ -17,14 +17,23 @@ import ApplyIntern from "../events/ApplyIntern";
 import PrepareContest from "../events/PrepareContest";
 import ExchangeStudent from "../events/exchangeStudent";
 import PrepareGraduate from "../events/prepareGraduate";
+import { EventSourcePolyfill } from 'event-source-polyfill';
+import Tuition from "../events/Tuituion";
+import { apiClient } from "../../apiClient";
 
-export default function MailList(){
+
+export default function MailList( { alarmList }){
+    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
     const [showMailList, setShowMailList] = useState(true);
     const [clickedAlarms, setClickedAlarms] = useState({}); //클릭된 알림 
     const [activeEvent, setActiveEvent] = useState(null); // 하나의 이벤트만 렌더링
+    const [userId, setUserId] = useState(null);
+    
 
     //백엔드에서 get해올 현재 알림 목록 
-    const alarmList = ["수강신청", "국가장학금 신청"];
+    // const alarmList = ["수강신청", "국가장학금 신청", "개강총회", "등록금 납부"];
+    // const [alarmList, setAlarmList] = useState([]);
 
     const handleRead = (alarm) => {
         setClickedAlarms(prev => ({ ...prev, [alarm]: true }));
@@ -64,9 +73,43 @@ export default function MailList(){
             setActiveEvent("prepareGraduate");
         } else if(alarm == "전공 포기"){
             setActiveEvent("giveUpMajor");
+        } else if(alarm == "등록금 납부") {
+            setActiveEvent("tuition");
         }
     };
+   
+      
+    // useEffect(() => {
+    //     const getUserId = async () => {
+    //         try {
+    //         const response = await apiClient.get('/sse/get-userid');
+    //         if (response.status === 200) {
+    //             console.log(response.data);
+    //             setUserId(response.data.data);
+    //         }
+    //         } catch (error) {
+    //         console.log(error);
+    //         }
+    //     };
+        
+    //     getUserId();
+    // }, []);
+
+    // useEffect(() => {
+    //     if (!userId) return; 
+    //     const source = new EventSourcePolyfill(`${SERVER_URL}/sse/subscribe/${userId}`, {
+    //         withCredentials: true,
+    //     });
     
+    //     source.addEventListener("onetime_event", (event) => {
+    //         const parsed = JSON.parse(event.data);
+    //         const newAlarms = Array.isArray(parsed.data) ? parsed.data : JSON.parse(parsed.data);
+    //         setAlarmList((prev) => [...new Set([...prev, ...newAlarms])]);
+    //     });
+    
+    //     return () => source.close();
+    // }, [userId]);
+
     return(
         <>
             {showMailList && (
@@ -101,6 +144,7 @@ export default function MailList(){
             {activeEvent === "exchangeStudent" && <ExchangeStudent />}
             {activeEvent === "prepareGraduate" && <PrepareGraduate/>}
             {activeEvent === "giveUpMajor" && <GiveUpMajor />}
+            {activeEvent === "tuition" && <Tuition/>}
         </>
     );
 }

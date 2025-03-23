@@ -2,85 +2,104 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PlanObject from "./PlanObject";
 import ProgressingList from "./ProgressingList";
+import { apiClient } from "../../apiClient";
+import { useDate } from "./DateContext";
+import { useNavigate } from "react-router-dom";
 
 export default function PlanList(){
     const defaultPlans = {
         "수업": {
             icon: "/image/icons/planlist/class.png",
+            img : "/image/cutscene/cutimg_class.PNG",
             plus: ["지력", "근성", "스트레스"],
             minus: ["체력"]
         },
         "공부": {
             icon: "/image/icons/planlist/study.png",
+            img : "/image/cutscene/cutimg_study.PNG",
             plus: ["지력", "근성", "스트레스"],
             minus: ["체력"]
         },
         "외국어": {
             icon: "/image/icons/planlist/eng.png",
+            img : "/image/cutscene/cutimg_english.PNG",
             plus: ["외국어", "지력", "근성", "스트레스"],
             minus: ["체력"]
         },
         "아르바이트": {
             icon: "/image/icons/planlist/work.png",
+            img : "/image/cutscene/cutimg_parttimejob.PNG",
             plus: ["스트레스", "사회성", "코인", "근성"],
             minus: ["-"]
         },
         "동아리": {
             icon: "/image/icons/planlist/club.png",
+            img : "/image/cutscene/cutimg_club.PNG",
             plus: ["리더십", "사회성", "스트레스"],
             minus: ["체력"]
         },
         "휴식" : {
             icon: "/image/icons/planlist/rest.png",
+            img : "/image/cutscene/cutimg_rest.PNG",
             plus: ["리더십", "사회성", "스트레스"],
             minus: ["체력"]
         },
         "취미" : {
             icon: "/image/icons/planlist/hobby.png",
+            img : "/image/cutscene/cutimg_hobby.PNG",
             plus: ["-"],
             minus: ["스트레스", "근성", "사회성", "지력"]
         },
         "운동" : {
             icon: "/image/icons/planlist/exercise.png",
+            img : "/image/cutscene/cutimg_exercise.PNG",
             plus: ["체력", "근성"],
             minus: ["스트레스"]
         },
         "약속" : {
             icon: "/image/icons/planlist/promise.png",
+            img : "/image/cutscene/cutimg_appointment.PNG",
             plus: ["사회성"],
             minus: ["체력", "스트레스", "코인"]
         },
         "봉사" : {
             icon: "/image/icons/planlist/volunteer.png",
+            img : "/image/cutscene/cutimg_volunteer.PNG",
             plus: ["사회성", "근성"],
             minus: ["체력"]
         },
         "여행" : {
             icon: "/image/icons/planlist/travel.png",
+            img : "/image/cutscene/cutimg_travel.PNG",
             plus: ["-"],
             minus: ["체력", "스트레스", "코인", "지력"]
         },
         "전공학회" : {
             icon: "/image/icons/planlist/majorStudy.png",
+            img : "/image/cutscene/cutimg_majorsociety.PNG",
             plus: ["지력", "리더십", "사회성", "스트레스"],
             minus: ["체력"]
         },
         "자소서 작성" : {
             icon: "/image/icons/planlist/writePR.png",
+            img : "/image/cutscene/cutimg_selfintroduction.PNG",
             plus: ["스트레스", "근성"],
             minus: ["체력"]
         },
     };
 
-    const [isVacation, setIsVacation] = useState(false);
+    const navigate = useNavigate();
+    const [isVacation, setIsVacation] = useState(undefined);
     const [selectedDate, setSelectedDate] = useState(0);
     const [calendarPlans, setCalendarPlans] = useState([]); //캘린더에 들어가는 이미지 
-    // const [fetchedTodo, setFetchedTodo] = useState([]); // 백엔드에서 받은 이번달 할일  
+    const [fetchedTodo, setFetchedTodo] = useState(["공부", "여행", "휴식", "아르바이트", "외국어", "약속", "봉사", "수업", "운동", "취미"]); //이번달 할일  + 백엔드에서 받아서 뒤에 더 추가
     const [monthlyPlans, setMonthlyPlans] = useState([]); //한달 텍스트 계획(백엔드 전송용)
 
     const [isSubmit, setIsSubmit] = useState(false); //계획리스트 제출 여부
+    const { currentMonth } = useDate();
+    const [executedPlans, setExecutedPlans] = useState([]); //백엔드 execute로 받은 실행결과 
 
-    const fetchedTodo = ["공부", "휴식", "여행"];
+    const isAllPlansFilled = monthlyPlans.every((plan) => plan !== null);
 
     // isVacation 상태가 변경될 때마다 배열 크기 업데이트
     useEffect(() => {
@@ -89,6 +108,77 @@ export default function PlanList(){
         setMonthlyPlans(Array(days).fill(null));
         setSelectedDate(0); // 선택된 날짜도 초기화
     }, [isVacation]);
+
+
+    useEffect(() => {
+        const getPlan = async()=>{
+            try{
+                const response = await apiClient.get('/plan/specialist');
+                if(response.status===200){
+                    console.log(response.data);
+                    const newItems = response.data.data; 
+                    setFetchedTodo((prev) => [...prev, ...newItems]);
+                }
+            } catch(error) {
+                console.log(error);
+            }
+        }
+
+        const getSemester = async()=>{
+            try{
+                const response = await apiClient.get('/main/chapter');
+                if(response.status===200){
+                    console.log(response.data);
+                    const data = response.data.data.current_chapter.chapter;
+                    if (data.includes("1학기")) {
+                        setIsVacation(false);
+                    } else if (data.includes("2학기")) {
+                        setIsVacation(false);
+                    } else if (data.includes("여름방학")) {
+                        setIsVacation(true);
+                    } else if (data.includes("겨울방학")) {
+                        setIsVacation(true);
+                    }
+                }
+            } catch(error) {
+                console.log(error);
+            }
+        }
+        
+        const fetchData = async () => {
+            try {
+                await getPlan();
+                await getSemester();
+            } catch (error) {
+                console.error("데이터 가져오기 실패:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const postExecute = async()=>{
+        try{
+            const body = monthlyPlans.map((plan) => ({
+                taskName: plan
+            }));
+
+            console.log(body);
+
+            const response = await apiClient.post('/plan/execute', body);
+            if(response.status === 200){
+                console.log(response.data);
+                setExecutedPlans(response.data.data);
+            }
+        } catch(error){
+            if (error.response?.status === 405){
+                navigate('/stress_ending');
+            }
+            else { 
+                console.log(error);
+            }
+        }
+    }
 
 
     const filteredTodo = fetchedTodo
@@ -125,60 +215,92 @@ export default function PlanList(){
 
     return(
         <Container>
-            <CalenderContainer>
-                <MonthlyContainer>
-                    <SnowIcon  src="/image/icons/snow-icon.png" />
-                    <MonthText>3월</MonthText>
-                </MonthlyContainer>
+            {!isSubmit && (
+                <>
+                    <CalenderContainer>
+                    <MonthlyContainer>
+                        <SnowIcon  src="/image/icons/snow-icon.png" />
+                        <MonthText>{currentMonth}</MonthText>
+                    </MonthlyContainer>
 
-                <Calender>
-                    <DaysContainer>
-                        {[...Array(7)].map((_, i) => (
-                            <DaysOfWeek key={i} />
-                        ))}
-                    </DaysContainer>
- 
-                    <DatesContainer>
-                        {calendarPlans.map((plan, i) => (
-                            <DateBox 
-                                key={i} 
-                                isSelected={i === selectedDate}
-                            >
-                                {plan && <PlanIcon src={plan} />}
-                            </DateBox>
-                        ))}
-                    </DatesContainer>
-                </Calender>
+                    <Calender>
+                        <DaysContainer>
+                            {[...Array(7)].map((_, i) => (
+                                <DaysOfWeek key={i} />
+                            ))}
+                        </DaysContainer>
+    
+                        <DatesContainer>
+                            {calendarPlans.map((plan, i) => (
+                                <DateBox 
+                                    key={i} 
+                                    isSelected={i === selectedDate}
+                                >
+                                    {plan && <PlanIcon src={plan} />}
+                                </DateBox>
+                            ))}
+                        </DatesContainer>
+                    </Calender>
 
-            </CalenderContainer>
-            
-            {!isSubmit && ( 
-                <PlannerContainer>
-                    <SubmitButton onClick={()=>setIsSubmit(true)}>제출하기</SubmitButton>
+                </CalenderContainer>
+                
+                    <PlannerContainer>
+                        <SubmitButton 
+                            disabled={!isAllPlansFilled}
+                            onClick={()=>{
+                                if (!isAllPlansFilled) return;
+                                setIsSubmit(true); 
+                                postExecute();}}>
+                                제출하기
+                            </SubmitButton>
 
-                    <PlanContainer>
-                        {filteredTodo.map(({ icon }, index) => (
-                            <PlanObject
-                                key={index}
-                                title={fetchedTodo[index]}
-                                icon={icon}
-                                plus={defaultPlans[fetchedTodo[index]]?.plus || []}
-                                minus={defaultPlans[fetchedTodo[index]]?.minus || []}
-                                onClick={() => handlePlanClick(fetchedTodo[index])}
-                            />
-                        ))}
-                    </PlanContainer>
-                </PlannerContainer>
+                        <PlanContainer>
+                            {filteredTodo.map(({ icon }, index) => (
+                                <PlanObject
+                                    key={index}
+                                    title={fetchedTodo[index]}
+                                    icon={icon}
+                                    plus={defaultPlans[fetchedTodo[index]]?.plus || []}
+                                    minus={defaultPlans[fetchedTodo[index]]?.minus || []}
+                                    onClick={() => handlePlanClick(fetchedTodo[index])}
+                                />
+                            ))}
+                        </PlanContainer>
+                    </PlannerContainer>
+                </>
             )}
 
             {isSubmit &&
-                <ProgressingList 
-                    plans={monthlyPlans.map((plan) => ({
-                        title: plan,
-                        plus: defaultPlans[plan]?.plus || [],
-                        minus: defaultPlans[plan]?.minus || []
-                    }))}
-            />}
+                <ProgressingList
+                    plans={executedPlans.map((item) => {
+                    const effectMap = {
+                        GRIT: "근성",
+                        STRENGTH: "체력",
+                        INTELLIGENCE: "지력",
+                        SOCIAL: "사회성",
+                        STRESS: "스트레스",
+                        LEADERSHIP: "리더십",
+                        FOREIGNLANG: "외국어",
+                        COIN : "코인"
+                    };
+              
+                    const plus = Object.entries(item.effects)
+                        .filter(([_, value]) => value > 0)
+                        .map(([key]) => effectMap[key] || key);
+                
+                    const minus = Object.entries(item.effects)
+                        .filter(([_, value]) => value < 0)
+                        .map(([key]) => effectMap[key] || key);
+                
+                    return {
+                        title: item.taskName,
+                        img: defaultPlans[item.taskName]?.img || "",
+                        plus,
+                        minus,
+                    };
+                    })}
+                />
+            }
 
         </Container>
     );
@@ -280,6 +402,7 @@ const SubmitButton = styled.button`
     height: 5vh;
     display : flex;
     margin-bottom: 0.8vw;
+    cursor: ${({ disabled }) => disabled ? "not-allowed" : "pointer"};
 `;
 
 const PlanContainer = styled.div`
