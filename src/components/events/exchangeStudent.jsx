@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { apiClient } from "../../apiClient";
 
 export default function ExchangeStudent(){
     const [isApply, setIsApply] = useState(undefined);
@@ -7,6 +8,17 @@ export default function ExchangeStudent(){
     const [isClosed, setIsClosed] = useState(false);
     
     if(isClosed == true) return null;
+
+    const postExchange = async()=>{
+        try{
+            const response = await apiClient.post('/event/exchange/apply');
+            if(response.status === 200){
+                setIsAllowed(response.data);
+            }
+        } catch(error){
+            console.log(error);
+        }
+    }
 
     return(
         <Container>
@@ -17,7 +29,7 @@ export default function ExchangeStudent(){
                     </TextContainer>
 
                     <SelectContainer>
-                        <SelectOption onClick={()=>setIsApply(true)}>지원한다. (Y)</SelectOption>
+                        <SelectOption onClick={()=>{setIsApply(true), postExchange();}}>지원한다. (Y)</SelectOption>
                         <SelectOption onClick={()=>setIsApply(false)}>지원하지 않는다. (N)</SelectOption>
                     </SelectContainer>
                 </>

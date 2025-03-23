@@ -1,10 +1,20 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-
+import { apiClient } from "../../apiClient";
 export default function SelectMajor(){
     const [major, setMajor] = useState("");
     
     if (major !== "") return null;
+
+    const postMajor = async(majorChoice)=>{
+        try {
+            const response = await apiClient.post(`/event/major?majorChoice=${majorChoice}`);
+            console.log("전공 신청 성공:", response.data);
+          } catch (error) {
+            console.error("전공 신청 실패:", error);
+          }
+    }
+
 
     return(
         <Container>
@@ -15,10 +25,10 @@ export default function SelectMajor(){
             </TextContainer>
 
             <SelectContainer>
-                <SelectOption onClick={()=> setMajor("복수전공")}>복수전공</SelectOption>
-                <SelectOption onClick={()=> setMajor("부전공")}>부전공</SelectOption>
-                <SelectOption onClick={()=> setMajor("심화전공")}>심화전공</SelectOption>
-                <SelectOption>선택하지 않는다.</SelectOption>
+                <SelectOption onClick={()=> {setMajor("복수전공"); postMajor(major);} }>복수전공</SelectOption>
+                <SelectOption onClick={()=> {setMajor("부전공"); postMajor(major);}}>부전공</SelectOption>
+                <SelectOption onClick={()=> {setMajor("심화전공"); postMajor(major);}}>심화전공</SelectOption>
+                <SelectOption onClick={()=> {setMajor("선택안함"); postMajor(major);}} >선택하지 않는다.</SelectOption>
             </SelectContainer>
         </Container>
     );

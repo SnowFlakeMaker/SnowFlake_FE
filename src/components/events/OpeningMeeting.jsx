@@ -1,10 +1,28 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { apiClient } from "../../apiClient";
 
 export default function OpeningMeeting(){
     const [isMeeting, setIsMeeting] = useState(undefined);
 
     if (isMeeting !== undefined) return null;
+
+    const postOrientation = async()=>{
+        try{
+            const response = await apiClient.post('/event/orientation');
+            if(response.status === 200){
+                console.log(response.data);
+            }
+        } catch(error){
+            if (error.response?.status === 405){
+                navigate('/stress_ending');
+            }
+            else { 
+                console.log(error);
+            }
+        }
+    }
+    
     return(
         <Container>
             <TextContainer>
@@ -13,7 +31,10 @@ export default function OpeningMeeting(){
             </TextContainer>
 
             <SelectContainer>
-                <SelectOption onClick={() => setIsMeeting(true)}>참석한다 (Y)</SelectOption>
+                <SelectOption onClick={() => {
+                    setIsMeeting(true);
+                    postOrientation();
+                }}>참석한다 (Y)</SelectOption>
                 <SelectOption onClick={() => setIsMeeting(false)}>참석하지 않는다 (N)</SelectOption>
             </SelectContainer>
         </Container>

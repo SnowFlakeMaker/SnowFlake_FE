@@ -1,12 +1,35 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { apiClient } from "../../apiClient";
 
 export default function PrepareGraduate(){
     const [isApply, setIsApply] = useState(undefined);
     const [isAllowed, setIsAllowed] = useState(undefined); //백엔드에서 받을 졸업 충족 여부 
     const [isClosed, setIsClosed] = useState(false);
+    const [reason, setReason] = useState("");
     
     if(isClosed == true) return null;
+
+    const getGraduation = async()=>{
+        try{
+            const response = await apiClient.get('/event/graduation');
+            if(response.status === 200){
+                const data = response.data.data;
+                setIsAllowed(data.isGraduatable);
+
+                if (!data.isGraduatable) {
+                    // isGraduatable을 제외한 key만 추출해서 문자열로 합치기
+                    const reasons = Object.keys(data)
+                    .filter((key) => key !== "isGraduatable")
+                    .join(", "); // 또는 "\n" 으로 줄바꿈 가능
+
+                    setReason(reasons);
+                }
+            }
+        } catch(error){
+            console.log(error);
+        }
+    }
 
     return(
         <Container>
@@ -17,7 +40,7 @@ export default function PrepareGraduate(){
                     </TextContainer>
 
                     <SelectContainer>
-                        <SelectOption onClick={()=>setIsApply(true)}>확인한다. (Y)</SelectOption>
+                        <SelectOption onClick={()=>{setIsApply(true); getGraduation();}}>확인한다. (Y)</SelectOption>
                         <SelectOption onClick={()=>setIsApply(false)}>확인하지 않는다. (N)</SelectOption>
                     </SelectContainer>
                 </>
@@ -36,7 +59,7 @@ export default function PrepareGraduate(){
             {isAllowed === false &&
                 <>
                     <TextContainer>
-                        <Text>~때문에 졸업요건을 충족하지 못했어.</Text>
+                        <Text>{reason}으로 졸업요건을 충족하지 못했어.</Text>
                     </TextContainer>
 
                     <SelectContainer>

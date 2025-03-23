@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { apiClient } from "../../apiClient";
+import { useNavigate } from "react-router-dom";
 
 export default function Tuition(){
     const [isParentSupport, setIsParentSupport] = useState(null); //대리납부 여부 
     const [text, setText] = useState(""); //납부완료 텍스트
     const [money, setMoney] = useState("");
+
+    const navigate = useNavigate();
     
     useEffect(()=>{
         const postTuition = async() => {
@@ -40,7 +43,12 @@ export default function Tuition(){
                 setText(response.data.message);
             }
         } catch(error){
-            console.log(error);
+            if (error.response?.status === 405){
+                navigate('/stress_ending');
+            }
+            else { 
+                console.log(error);
+            }
         }
     }
 

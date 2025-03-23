@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { apiClient } from "../../apiClient";
 
 export default function StudentCouncil(){
     const [isApply, setIsApply] = useState(undefined);
@@ -7,6 +8,18 @@ export default function StudentCouncil(){
     const [isClosed, setIsClosed] = useState(false);
     
     if(isClosed == true) return null;
+
+    const postCouncil = async() => {
+            try{
+                const response = await apiClient.post('/event/council');
+                if(response.status === 200){
+                    console.log(response.data);
+                    setIsAllowed(response.data.data.success);
+                }
+            } catch(error){
+                console.log(error);
+            }
+        }
 
     return(
         <Container>
@@ -18,7 +31,7 @@ export default function StudentCouncil(){
                     </TextContainer>
 
                     <SelectContainer>
-                        <SelectOption onClick={()=>setIsApply(true)}>지원한다. (Y)</SelectOption>
+                        <SelectOption onClick={()=>{setIsApply(true); postCouncil();}}>지원한다. (Y)</SelectOption>
                         <SelectOption onClick={()=>setIsApply(false)}>지원하지 않는다. (N)</SelectOption>
                     </SelectContainer>
                 </>
