@@ -67,8 +67,8 @@ export default function Main(){
             {/* 튜토리얼 중이면 어두운 배경 */}
             {isTutorial && <Overlay />}
             <Profile isHighlight={isTutorial && currentStep === 0} />
-            <EventIcon isHighlight={isTutorial && currentStep === 1} />
-            <InfoBar isHighlight={isTutorial && currentStep === 2} alarmList={alarmList} />
+            {/* <EventIcon isHighlight={isTutorial && currentStep === 1} /> */}
+            <InfoBar isHighlight={isTutorial && currentStep === 1} alarmList={alarmList} />
 
             {isTutorialStep && (
                 <TutorialContainer  onClick={isTutorial ? nextStep : undefined}>
