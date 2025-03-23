@@ -215,57 +215,59 @@ export default function PlanList(){
 
     return(
         <Container>
-            <CalenderContainer>
-                <MonthlyContainer>
-                    <SnowIcon  src="/image/icons/snow-icon.png" />
-                    <MonthText>{currentMonth}</MonthText>
-                </MonthlyContainer>
+            {!isSubmit && (
+                <>
+                    <CalenderContainer>
+                    <MonthlyContainer>
+                        <SnowIcon  src="/image/icons/snow-icon.png" />
+                        <MonthText>{currentMonth}</MonthText>
+                    </MonthlyContainer>
 
-                <Calender>
-                    <DaysContainer>
-                        {[...Array(7)].map((_, i) => (
-                            <DaysOfWeek key={i} />
-                        ))}
-                    </DaysContainer>
- 
-                    <DatesContainer>
-                        {calendarPlans.map((plan, i) => (
-                            <DateBox 
-                                key={i} 
-                                isSelected={i === selectedDate}
-                            >
-                                {plan && <PlanIcon src={plan} />}
-                            </DateBox>
-                        ))}
-                    </DatesContainer>
-                </Calender>
+                    <Calender>
+                        <DaysContainer>
+                            {[...Array(7)].map((_, i) => (
+                                <DaysOfWeek key={i} />
+                            ))}
+                        </DaysContainer>
+    
+                        <DatesContainer>
+                            {calendarPlans.map((plan, i) => (
+                                <DateBox 
+                                    key={i} 
+                                    isSelected={i === selectedDate}
+                                >
+                                    {plan && <PlanIcon src={plan} />}
+                                </DateBox>
+                            ))}
+                        </DatesContainer>
+                    </Calender>
 
-            </CalenderContainer>
-            
-            {!isSubmit && ( 
-                <PlannerContainer>
-                    <SubmitButton 
-                        disabled={!isAllPlansFilled}
-                        onClick={()=>{
-                            if (!isAllPlansFilled) return;
-                            setIsSubmit(true); 
-                            postExecute();}}>
-                            제출하기
-                        </SubmitButton>
+                </CalenderContainer>
+                
+                    <PlannerContainer>
+                        <SubmitButton 
+                            disabled={!isAllPlansFilled}
+                            onClick={()=>{
+                                if (!isAllPlansFilled) return;
+                                setIsSubmit(true); 
+                                postExecute();}}>
+                                제출하기
+                            </SubmitButton>
 
-                    <PlanContainer>
-                        {filteredTodo.map(({ icon }, index) => (
-                            <PlanObject
-                                key={index}
-                                title={fetchedTodo[index]}
-                                icon={icon}
-                                plus={defaultPlans[fetchedTodo[index]]?.plus || []}
-                                minus={defaultPlans[fetchedTodo[index]]?.minus || []}
-                                onClick={() => handlePlanClick(fetchedTodo[index])}
-                            />
-                        ))}
-                    </PlanContainer>
-                </PlannerContainer>
+                        <PlanContainer>
+                            {filteredTodo.map(({ icon }, index) => (
+                                <PlanObject
+                                    key={index}
+                                    title={fetchedTodo[index]}
+                                    icon={icon}
+                                    plus={defaultPlans[fetchedTodo[index]]?.plus || []}
+                                    minus={defaultPlans[fetchedTodo[index]]?.minus || []}
+                                    onClick={() => handlePlanClick(fetchedTodo[index])}
+                                />
+                            ))}
+                        </PlanContainer>
+                    </PlannerContainer>
+                </>
             )}
 
             {isSubmit &&
@@ -282,22 +284,22 @@ export default function PlanList(){
                         COIN : "코인"
                     };
               
-                  const plus = Object.entries(item.effects)
-                    .filter(([_, value]) => value > 0)
-                    .map(([key]) => effectMap[key] || key);
-              
-                  const minus = Object.entries(item.effects)
-                    .filter(([_, value]) => value < 0)
-                    .map(([key]) => effectMap[key] || key);
-              
-                  return {
-                    title: item.taskName,
-                    img: defaultPlans[item.taskName]?.img || "",
-                    plus,
-                    minus,
-                  };
-                })}
-              />
+                    const plus = Object.entries(item.effects)
+                        .filter(([_, value]) => value > 0)
+                        .map(([key]) => effectMap[key] || key);
+                
+                    const minus = Object.entries(item.effects)
+                        .filter(([_, value]) => value < 0)
+                        .map(([key]) => effectMap[key] || key);
+                
+                    return {
+                        title: item.taskName,
+                        img: defaultPlans[item.taskName]?.img || "",
+                        plus,
+                        minus,
+                    };
+                    })}
+                />
             }
 
         </Container>
