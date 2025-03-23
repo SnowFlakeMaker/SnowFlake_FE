@@ -18,10 +18,8 @@ export const TutorialProvider = ({ children }) => {
     const maxStep = 4; 
   
     useEffect(() => {
-        const finished = localStorage.getItem("tutorialFinished") === "true";
-        if (!finished) {
-          setIsTutorial(true);
-        }
+      const finished = localStorage.getItem("tutorialFinished") === "true";
+      setIsTutorial(!finished); // 🔥 true면 false로, false면 true로
     }, []);
 
       
