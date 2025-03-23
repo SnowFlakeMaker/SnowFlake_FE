@@ -1,24 +1,52 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { apiClient } from "../../apiClient";
 
 export default function Status(){
-    const strength= 60; //체력
-    const intelli = 70; //지식
-    const social = 80; //사회성
-    const stress = 30; //스트레스
-    const leadership = 90; //리더십
-    const generalAssess = 60; //평가
-    const langAssess = 30; //외국어
+    const [grit, setGrit] = useState(0); //근성
+    const [strength, setStrength] = useState(0); //체력
+    const [intelli, setInteli] = useState(0); //지식
+    const [social, setSocial] = useState(0); //사회성
+    const [stress, setStress] = useState(0); //스트레스
+    const [leadership, setLeadership] = useState(0); //리더십
+    const [generalAssess, setGeneralAssess] = useState(0); //평가
+    const [foreignLang, setForeignLang] = useState(0); //외국어
+
+    useEffect(()=>{
+        const getStatus = async () =>{
+            try{
+                const response = await apiClient.get('/main/status');
+                if(response.status === 200) {
+                    console.log(response.data)
+                    const data = response.data.data;
+                    setGrit(data.grit);
+                    setStrength(data.strength);
+                    setInteli(data.intelligence);
+                    setForeignLang(data.foreignLang);
+                    setStress(data.stress);
+                    setSocial(data.social);
+                    setLeadership(data.leadership);
+                    setGeneralAssess(data.generalAssess);
+                }
+            } catch(error) {
+                console.log(error);
+            }
+
+        }
+
+        getStatus();
+    }, [])
+    
 
     return(
         <Container>
             {[  {title: "체력", value: strength},
                 {title: "지식", value: intelli},
-                {title: "근성", value: strength},
+                {title: "근성", value: grit},
                 {title: "사회성", value: social},
                 {title: "스트레스", value: stress},
                 {title: "리더십", value: leadership},
-                {title: "외국어", value: langAssess},
+                {title: "외국어", value: foreignLang},
                 {title: "평가", value: generalAssess}
             ].map((item, index) => (
                 <StatusContainer key={index}>
@@ -26,7 +54,9 @@ export default function Status(){
                     <Icon src="/image/icons/status-bar.png"/>
                     <Bar>
                         <StatusBarContainer>
-                            <StatusBarFill percentage={item.value} />
+                            <StatusBarFill 
+                                color={item.title === "스트레스" ? "#EE2F2F" : undefined}
+                                percentage={item.value} />
                         </StatusBarContainer>
                     </Bar>
                 </StatusContainer>
@@ -86,7 +116,7 @@ const StatusBarContainer = styled.div`
 
 /** 바 진행 부분 **/
 const StatusBarFill = styled.div`
-  background-color: ${({ theme }) => theme.colors.mainblue200};
+  background-color: ${({ color, theme }) => color || theme.colors.mainblue200};
   width: ${({ percentage }) => (percentage > 100 ? 100 : percentage)}%;
   height: 100%;
   transition: width 0.3s ease; /* 값 변경 시 애니메이션 */

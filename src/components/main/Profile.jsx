@@ -3,12 +3,10 @@ import styled from "styled-components";
 import { useState } from "react";
 import PlanList from "./PlanList";
 import Status from "./Status";
-import axios from "axios";
 import { apiClient } from "../../apiClient";
 import { useTutorial } from "../../pages/intro/Tutorial";
 
 export default function Profile( { isHighlight } ){
-    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
     const [showStatus, setShowStatus] = useState(false);
     const [showList, setShowList] = useState(false);
     const [name, setName] = useState("");
@@ -39,10 +37,31 @@ export default function Profile( { isHighlight } ){
             } catch(error) {
                 console.log(error);
             }
-
         }
 
-        getPlayer();
+        const getSemester = async()=>{
+            try{
+                const response = await apiClient.get('/main/chapter');
+                if(response.status===200){
+                    console.log(response.data);
+                    const data = response.data.data.current_chapter.chapter;
+                    setSemester(data);
+                }
+            } catch(error) {
+                console.log(error);
+            }
+        }
+
+        const fetchData = async () => {
+            try {
+                await getPlayer();
+                await getSemester();
+            } catch (error) {
+                console.error("데이터 가져오기 실패:", error);
+            }
+        };
+
+        fetchData();
     }, [])
 
 
