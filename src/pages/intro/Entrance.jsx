@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { apiClient } from "../../apiClient";
 
 export default function Entrance(){
     const [showNextText, setShowNextText] = useState(false);
@@ -15,9 +16,17 @@ export default function Entrance(){
     }, []);
     
 
-    const handleClick = () => {
+    const handleClick = async() => {
         if (showNextText) {
-            navigate("/ot");
+            try { 
+                const response = await apiClient.post('/main/change-semester');
+                if(response.status === 200){
+                    console.log(response.data);
+                    navigate("/ot");
+                }
+            } catch(error){
+                console.log(error);
+            }
         }
     };
 
@@ -27,7 +36,7 @@ export default function Entrance(){
                 <Text>입학식에 왔다. 앞으로의 대학생활이 기대된다!</Text>
                 {showNextText && <NextText> ▶ 클릭하여 다음으로</NextText>}
             </TextContainer>
-            <BackgroundImg src="/image/cutscene/entrance.png" />
+            <BackgroundImg src="/image/cutscene/img_entrance.PNG" />
         </BackgroundContainer>
     );
 }
