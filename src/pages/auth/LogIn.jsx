@@ -38,7 +38,7 @@ export default function LogIn(){
         
         try {
             const response = await axios.post(
-                `/apiauth/login`, 
+                `/api/auth/login`, 
                 {
                     email: emailId,
                     password: password,
@@ -247,6 +247,7 @@ const BlueButton = styled.button`
     border: none;
     color: white;
     font-size: ${({ theme }) => theme.typography.title24.fontSize};
+    cursor: pointer;
 `;
 
 const TransparentBtn = styled.button`
@@ -257,4 +258,5 @@ const TransparentBtn = styled.button`
     font-size: ${({ theme }) => theme.typography.subtitle20.fontSize};
     border : none;
     padding-top : 2vh;
+    cursor: pointer;
 `;
