@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import MailList from "./MailList";
 import Logout from "../../pages/auth/Logout";
 import { useTutorial } from "../../pages/intro/Tutorial";
+import { apiClient } from "../../apiClient";
 
 export default function InfoBar( { isHighlight }){
     const [showMail, setShowMail] = useState(false);
     const [showLogout, setShowLogout] = useState(false);
     const count = 3; //알림 갯수
     const { isTutorial } = useTutorial(); //튜토리얼 여부
+
+    const [coin, setCoin] = useState(0);
 
     const handleMailList =()=>{
         if (isTutorial) return;
@@ -20,12 +23,31 @@ export default function InfoBar( { isHighlight }){
         setShowLogout((prev) => !prev);
     }
 
+    useEffect(()=>{
+        const getCoin = async () =>{
+            try{
+                const response = await apiClient.get('/main/status');
+                if(response.status === 200) {
+                    console.log(response.data)
+                    const data = response.data.data;
+                    setCoin(data.coin);
+                }
+            } catch(error) {
+                console.log(error);
+            }
+        }
+
+        getCoin();
+    }, [])
+    
+
+    
     return(
         <Conatiner $highlight={isHighlight}>
             <CoinContainer>
                 <Icon src="image/icons/coin.svg"/>
                 <TextContainer>
-                    <CoinText>1610</CoinText>
+                    <CoinText>{coin}</CoinText>
                     <CoinText>C</CoinText>
                 </TextContainer>
             </CoinContainer>
