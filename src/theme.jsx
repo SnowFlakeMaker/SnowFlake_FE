@@ -10,7 +10,8 @@ const theme = {
         gray : "#D9D9D9",
         white : "#FFFFFF",
         yellow : "#FFEE96",
-        orange : "#FFAE00"
+        orange : "#FFAE00",
+        red : "#EE2F2F"
     },
     typography : {
       title32 : {
