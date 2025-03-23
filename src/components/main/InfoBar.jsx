@@ -5,10 +5,10 @@ import Logout from "../../pages/auth/Logout";
 import { useTutorial } from "../../pages/intro/Tutorial";
 import { apiClient } from "../../apiClient";
 
-export default function InfoBar( { isHighlight }){
+export default function InfoBar( { isHighlight, alarmList }){
     const [showMail, setShowMail] = useState(false);
     const [showLogout, setShowLogout] = useState(false);
-    const count = 3; //알림 갯수
+    const count = alarmList.length; //알림 갯수
     const { isTutorial } = useTutorial(); //튜토리얼 여부
 
     const [coin, setCoin] = useState(0);
@@ -62,7 +62,7 @@ export default function InfoBar( { isHighlight }){
                 <Icon onClick={handleLogout} src="image/icons/setting.png"/>
             </SettingContainer>
 
-            {showMail && <MailList/>}
+            {showMail && <MailList alarmList={alarmList} />}
             {showLogout && <Logout/>}
         </Conatiner>
     );
