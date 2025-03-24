@@ -21,6 +21,11 @@ export default function Main(){
     const [canProceedExchange, setCanProceedExchange] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
+ 
+    const [postNextChapterCalled, setPostNextChapterCalled] = useState(false); //다음학기 호출 
+
+    const [oneTimeAlarmList, setOneTimeAlarmList] = useState([]); //onetime만 관리
+    const [hasReceivedOneTimeEvent, setHasReceivedOneTimeEvent] = useState(false); //onetime 도착 추적 
     
     useEffect(() => {
         const getUserId = async () => {
@@ -60,7 +65,11 @@ export default function Main(){
                 console.log("⚠️ onetime_event에 data가 없습니다:", event);
                 return;
             }
-            setAlarmList((prev) => [...new Set([...prev, ...JSON.parse(event.data)])]);
+            const newAlarms = JSON.parse(event.data);
+
+            setAlarmList((prev) => [...new Set([...prev, ...newAlarms])]);
+            setOneTimeAlarmList((prev) => [...new Set([...prev, ...newAlarms])]); 
+            setHasReceivedOneTimeEvent(true);
         });
 
         source.addEventListener("regular_event", (event) => {
@@ -75,7 +84,31 @@ export default function Main(){
         return () => source.close();
     }, [userId]);
 
-    useEffect(() => {
+    useEffect(() => { //단발성 이벤트 끝난 후 다음 챕터 이동 
+        if (hasReceivedOneTimeEvent && oneTimeAlarmList.length === 0 && !postNextChapterCalled) {
+          const callNextChapter = async () => {
+            const semester = await getSemester();
+            if (semester === "4학년 겨울방학") {
+              navigate("/ending");
+            } else {
+              try {
+                const response = await apiClient.post("/main/change-semester");
+                if (response.status === 200) {
+                  console.log("✅ 다음 챕터로 이동");
+                  setPostNextChapterCalled(true);
+                  setHasReceivedOneTimeEvent(false);
+                }
+              } catch (error) {
+                console.error(error);
+              }
+            }
+          };
+      
+          callNextChapter();
+        }
+    }, [oneTimeAlarmList], hasReceivedOneTimeEvent);
+
+    useEffect(() => { //교환학생 페이지 전환 
         if (IsExchangeAccepted === true) {
           const postExchangeProceed = async () => {
             try {
@@ -98,13 +131,28 @@ export default function Main(){
         }
     }, [IsExchangeAccepted]);
     
+    
+
+    const getSemester = async()=>{
+        try{
+            const response = await apiClient.get('/main/chapter');
+            if(response.status===200){
+                console.log(response.data);
+                const data = response.data.data.current_chapter.chapter;
+                return data;
+            }
+        } catch(error) {
+            console.log(error);
+        }
+    };
+    
     return(
         <BackgroundContainer>
             {/* 튜토리얼 중이면 어두운 배경 */}
             {isTutorial && <Overlay />}
-            <Profile isHighlight={isTutorial && currentStep === 0} />
+            <Profile isHighlight={isTutorial && currentStep === 0}/>
             {/* <EventIcon isHighlight={isTutorial && currentStep === 1} /> */}
-            <InfoBar isHighlight={isTutorial && currentStep === 1} alarmList={alarmList} />
+            <InfoBar isHighlight={isTutorial && currentStep === 1} alarmList={alarmList} setAlarmList={setAlarmList} setOneTimeAlarmList={setOneTimeAlarmList} />
 
             {isTutorialStep && (
                 <TutorialContainer  onClick={isTutorial ? nextStep : undefined}>
