@@ -22,6 +22,7 @@ import { ExchangeProvider } from "./components/contexts/ExchangeContext";
 import Ending from "./pages/ending/Ending";
 import ExchangeProceeding from "./components/events/ExchangeProceeding";
 import Credit from "./pages/main/Credit";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function App() {
 
@@ -29,10 +30,14 @@ function App() {
     * {
         font-family: 'Moneygraphy', sans-serif;
     }
-`;
+  `;
+
+  const queryClient = new QueryClient();
+
 
   return (
     <CookiesProvider>
+      <QueryClientProvider client={queryClient}>
           <TutorialProvider>
           <ExchangeProvider>
             <DateProvider>
@@ -60,7 +65,7 @@ function App() {
             </DateProvider>
           </ExchangeProvider>
           </TutorialProvider>
-          
+      </QueryClientProvider>
 
     </CookiesProvider>
   )

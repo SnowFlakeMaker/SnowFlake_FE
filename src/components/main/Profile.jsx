@@ -6,16 +6,26 @@ import Status from "./Status";
 import { apiClient } from "../../apiClient";
 import { useTutorial } from "../../pages/intro/Tutorial";
 import { useDate } from "./DateContext";
+import { useQuery } from '@tanstack/react-query';
 
 export default function Profile( { isHighlight } ){
     const [showStatus, setShowStatus] = useState(false);
     const [showList, setShowList] = useState(false);
     const [name, setName] = useState("");
     const [major, setMajor] = useState("");
-    const [semester, setSemester] = useState("");
     const { isTutorial } = useTutorial(); 
     const { currentDay, currentMonth } = useDate();
 
+
+    const { data: semester } = useQuery({
+        queryKey: ['semester'],
+        queryFn: async () => {
+          const response = await apiClient.get('/main/chapter');
+          return response.data.data.current_chapter.chapter;
+        },
+        refetchInterval: 5000,
+    });
+    
     const handleStatus = ()=>{
         if (isTutorial) return;
         setShowStatus((prev) => !prev);
@@ -57,7 +67,7 @@ export default function Profile( { isHighlight } ){
         const fetchData = async () => {
             try {
                 await getPlayer();
-                await getSemester();
+                // await getSemester();
             } catch (error) {
                 console.error("데이터 가져오기 실패:", error);
             }
