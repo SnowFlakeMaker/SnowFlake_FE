@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import styled from "styled-components";
+import { apiClient } from "../../apiClient";
 
 const TutorialContext = createContext();
 
@@ -17,9 +18,21 @@ export const TutorialProvider = ({ children }) => {
   
     const maxStep = 3; 
   
+    const postNextChapter = async()=>{
+        try { 
+            const response = await apiClient.post('/main/change-semester');
+            if(response.status === 200){
+                console.log(response.data);
+            }
+        } catch(error){
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
       const finished = localStorage.getItem("tutorialFinished") === "true";
       setIsTutorial(!finished); // 🔥 true면 false로, false면 true로
+      
     }, []);
 
       
@@ -29,6 +42,7 @@ export const TutorialProvider = ({ children }) => {
       } else {
         // 마지막 단계였으면 튜토리얼 종료
         setIsTutorial(false);
+        postNextChapter();
         localStorage.setItem("tutorialFinished", "true"); 
       }
     };

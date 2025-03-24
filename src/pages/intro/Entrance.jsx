@@ -18,15 +18,7 @@ export default function Entrance(){
 
     const handleClick = async() => {
         if (showNextText) {
-            try { 
-                const response = await apiClient.post('/main/change-semester');
-                if(response.status === 200){
-                    console.log(response.data);
-                    navigate("/ot");
-                }
-            } catch(error){
-                console.log(error);
-            }
+            navigate("/ot");
         }
     };
 
