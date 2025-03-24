@@ -51,19 +51,6 @@ export default function Profile( { isHighlight } ){
             }
         }
 
-        const getSemester = async()=>{
-            try{
-                const response = await apiClient.get('/main/chapter');
-                if(response.status===200){
-                    console.log(response.data);
-                    const data = response.data.data.current_chapter.chapter;
-                    setSemester(data);
-                }
-            } catch(error) {
-                console.log(error);
-            }
-        }
-
         const fetchData = async () => {
             try {
                 await getPlayer();
@@ -94,7 +81,7 @@ export default function Profile( { isHighlight } ){
             </DateContainer>
 
             {showStatus && <Status />}
-            {showList && <PlanList />}
+            {showList && <PlanList/>}
         </Container>
     );
 }
