@@ -18,6 +18,10 @@ import InfoNew from "./pages/auth/InfoNew";
 import { TutorialProvider } from "./pages/intro/Tutorial";
 import { DateProvider } from "./components/main/DateContext";
 import StressEnding from "./pages/ending/StressEnding";
+import { ExchangeProvider } from "./components/contexts/ExchangeContext";
+import Ending from "./pages/ending/Ending";
+import ExchangeProceeding from "./components/events/ExchangeProceeding";
+import Credit from "./pages/main/Credit";
 
 function App() {
 
@@ -29,27 +33,35 @@ function App() {
 
   return (
     <CookiesProvider>
-      <TutorialProvider>
-        <DateProvider>
-          <ThemeProvider theme={theme}>
-            <GlobalStyle/>
+          <TutorialProvider>
+          <ExchangeProvider>
+            <DateProvider>
+              <ThemeProvider theme={theme}>
+                <GlobalStyle/>
+              
+                <Router>
+                  <Routes>
+                    <Route path="/" element={<Start/>} />
+                    <Route path="/signin" element={<SignIn/>} />
+                    <Route path="/login" element={<LogIn/>} />
+                    <Route path="/info" element={<InfoNew/>} />
+                    <Route path="/entrance" element={<Entrance />} />
+                    <Route path="/ot" element={<OT/>} />
+                    <Route path="/welcome" element={<Entrance/>} />
+                    <Route path="/main" element={<Main/>}/>
+                    <Route path="/stress_ending" element={<StressEnding/>} />
+                    <Route path="/ending" element={<Ending/>} />
+                    <Route path="/exchgane" element={<ExchangeProceeding/>} />
+                    <Route path="/credit" element={<Credit/>} />
+
+                  </Routes>
+                </Router>
+              </ThemeProvider>
+            </DateProvider>
+          </ExchangeProvider>
+          </TutorialProvider>
           
-            <Router>
-              <Routes>
-                <Route path="/" element={<Start/>} />
-                <Route path="/signin" element={<SignIn/>} />
-                <Route path="/login" element={<LogIn/>} />
-                <Route path="/info" element={<InfoNew/>} />
-                <Route path="/entrance" element={<Entrance />} />
-                <Route path="/ot" element={<OT/>} />
-                <Route path="/welcome" element={<Entrance/>} />
-                <Route path="/main" element={<Main/>}/>
-                <Route path="/stress_ending" element={<StressEnding/>} />
-              </Routes>
-            </Router>
-          </ThemeProvider>
-        </DateProvider>
-      </TutorialProvider>
+
     </CookiesProvider>
   )
 }
