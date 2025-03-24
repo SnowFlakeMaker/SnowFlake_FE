@@ -209,10 +209,6 @@ export default function PlanList(){
         }
     };
 
-    // useEffect(() => {
-    //     console.log("업데이트된 montlyPlans:", montlyPlans);
-    // }, [montlyPlans])
-
     return(
         <Container>
             {!isSubmit && (
@@ -284,6 +280,10 @@ export default function PlanList(){
                         COIN : "코인"
                     };
               
+                    const fallbackImageMap = {
+                        "코인 부족": "", //이미지 추가 
+                      };
+
                     const plus = Object.entries(item.effects)
                         .filter(([_, value]) => value > 0)
                         .map(([key]) => effectMap[key] || key);
@@ -294,7 +294,8 @@ export default function PlanList(){
                 
                     return {
                         title: item.taskName,
-                        img: defaultPlans[item.taskName]?.img || "",
+                        img: defaultPlans[item.taskName]?.img ||
+                            fallbackImageMap[item.taskName] || "",
                         plus,
                         minus,
                     };
