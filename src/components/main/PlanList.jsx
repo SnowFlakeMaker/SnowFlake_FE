@@ -98,8 +98,12 @@ export default function PlanList(){
     const [isSubmit, setIsSubmit] = useState(false); //계획리스트 제출 여부
     const { currentMonth } = useDate();
     const [executedPlans, setExecutedPlans] = useState([]); //백엔드 execute로 받은 실행결과 
+    
+    const [executeInternship, setExecuteInternsip] = useState(undefined);
 
     const isAllPlansFilled = monthlyPlans.every((plan) => plan !== null);
+
+    const [plansFinished, setPlansFinished] = useState(false);
 
     // isVacation 상태가 변경될 때마다 배열 크기 업데이트
     useEffect(() => {
@@ -117,7 +121,11 @@ export default function PlanList(){
                 if(response.status===200){
                     console.log(response.data);
                     const newItems = response.data.data; 
-                    setFetchedTodo((prev) => [...prev, ...newItems]);
+                    setFetchedTodo((prev) => {
+                        const existing = new Set(prev); // 기존 항목들
+                        const filteredNewItems = newItems.filter(item => !existing.has(item));
+                        return [...prev, ...filteredNewItems];
+                      });
                 }
             } catch(error) {
                 console.log(error);
@@ -144,11 +152,24 @@ export default function PlanList(){
                 console.log(error);
             }
         }
+
+        const getInternship = async()=>{
+            try{
+                const response = await apiClient.get('/event/internship/check');
+                if(response.status === 200){
+                    setExecuteInternsip(response.data.data);
+                    console.log(response.data);
+                }
+            } catch(error){
+                console.log(error);
+            }
+        }
         
         const fetchData = async () => {
             try {
                 await getPlan();
                 await getSemester();
+                await getInternship();
             } catch (error) {
                 console.error("데이터 가져오기 실패:", error);
             }
@@ -156,6 +177,29 @@ export default function PlanList(){
 
         fetchData();
     }, []);
+
+    useEffect(() => {
+        if (executeInternship === true && isVacation === false) {
+          const totalDays = 31;
+          const internDays = 14;
+          const internIcon = "/image/icons/planlist/work.png";
+          const internTitle = "인턴";
+      
+          const newCalendarPlans = Array.from({ length: totalDays }, (_, i) =>
+            i < internDays ? internIcon : null
+          );
+      
+          const newMonthlyPlans = Array.from({ length: totalDays }, (_, i) =>
+            i < internDays ? internTitle : null
+          );
+      
+          setCalendarPlans(newCalendarPlans);
+          setMonthlyPlans(newMonthlyPlans);
+          setSelectedDate(internDays); // 14일 이후부터 선택 가능
+        }
+      }, [executeInternship, isVacation]);
+
+
 
     const postExecute = async()=>{
         try{
@@ -266,8 +310,9 @@ export default function PlanList(){
                 </>
             )}
 
-            {isSubmit &&
+            {isSubmit && !plansFinished && 
                 <ProgressingList
+                    setPlansFinished={setPlansFinished}
                     plans={executedPlans.map((item) => {
                     const effectMap = {
                         GRIT: "근성",
