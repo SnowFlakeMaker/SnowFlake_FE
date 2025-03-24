@@ -360,16 +360,18 @@ export default function ClassRegister(){
                                     <InfoDarkBlue>디지털 시대의 사고와 의사소통</InfoDarkBlue>
                                     <ButtonContainer>
                                         {isAlreadyDigital ? (
-                                            <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                            <RegisterButton 
+                                                onClick={()=>setTotalCredit(prev =>  prev + 3)}
+                                                style={{ backgroundColor: "#D9D9D9" }} disabled>
                                                 신청하기
                                             </RegisterButton>
                                         ) : (
                                             digital ? (
-                                                <CancelButton onClick={() => setDigital(prev => !prev)}>
+                                                <CancelButton onClick={() => {setDigital(prev => !prev); setTotalCredit(prev => Math.max(0, prev - 3));}}>
                                                     취소하기
                                                 </CancelButton>
                                             ) : (
-                                                <RegisterButton onClick={() => setDigital(prev => !prev)}>
+                                                <RegisterButton onClick={() => {setDigital(prev => !prev); setTotalCredit(prev =>  prev + 3);}}>
                                                     신청하기
                                                 </RegisterButton>
                                             )
@@ -381,16 +383,18 @@ export default function ClassRegister(){
                                     <InfoDarkBlue>미래 설계와 나의 브랜딩</InfoDarkBlue>
                                     <ButtonContainer>
                                         {isAlreadyBranding ? (
-                                            <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                            <RegisterButton 
+                                                onClick={()=>setTotalCredit(prev =>  prev + 3)}
+                                                style={{ backgroundColor: "#D9D9D9" }} disabled>
                                                 신청하기
                                             </RegisterButton>
                                         ) : (
                                             branding ? (
-                                                <CancelButton onClick={() => setBranding(prev => !prev)}>
+                                                <CancelButton onClick={() => {setBranding(prev => !prev); setTotalCredit(prev => Math.max(0, prev - 3));}}>
                                                     취소하기
                                                 </CancelButton>
                                             ) : (
-                                                <RegisterButton onClick={() => setBranding(prev => !prev)}>
+                                                <RegisterButton onClick={() => {setBranding(prev => !prev); setTotalCredit(prev =>  prev + 3);}}>
                                                     신청하기
                                                 </RegisterButton>
                                             )
@@ -402,16 +406,18 @@ export default function ClassRegister(){
                                     <InfoDarkBlue>영어 교양 필수</InfoDarkBlue>
                                     <ButtonContainer>
                                         {isAlreadyEnglish ? (
-                                            <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                            <RegisterButton 
+                                                onClick={()=>setTotalCredit(prev =>  prev + 3)}
+                                                style={{ backgroundColor: "#D9D9D9" }} disabled>
                                                 신청하기
                                             </RegisterButton>
                                         ) : (
                                             english ? (
-                                                <CancelButton onClick={() => setEnglish(prev => !prev)}>
+                                                <CancelButton onClick={() => {setEnglish(prev => !prev);setTotalCredit(prev => Math.max(0, prev - 3));}}>
                                                     취소하기
                                                 </CancelButton>
                                             ) : (
-                                                <RegisterButton onClick={() => setEnglish(prev => !prev)}>
+                                                <RegisterButton onClick={() => {setEnglish(prev => !prev);setTotalCredit(prev =>  prev + 3);}}>
                                                     신청하기
                                                 </RegisterButton>
                                             )
@@ -423,16 +429,18 @@ export default function ClassRegister(){
                                     <InfoDarkBlue>논리적 사고와 소프트웨어</InfoDarkBlue>
                                     <ButtonContainer>
                                         {isAlreadySoftware ? (
-                                            <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                            <RegisterButton 
+                                                onClick={()=>setTotalCredit(prev =>  prev + 3)}
+                                                style={{ backgroundColor: "#D9D9D9" }} disabled>
                                                 신청하기
                                             </RegisterButton>
                                         ) : (
                                             software ? (
-                                                <CancelButton onClick={() => setSoftware(prev => !prev)}>
+                                                <CancelButton onClick={() => {setSoftware(prev => !prev); setTotalCredit(prev => Math.max(0, prev - 3));}}>
                                                     취소하기
                                                 </CancelButton>
                                             ) : (
-                                                <RegisterButton onClick={() => setSoftware(prev => !prev)}>
+                                                <RegisterButton onClick={() => {setSoftware(prev => !prev); setTotalCredit(prev =>  prev + 3);}}>
                                                     신청하기
                                                 </RegisterButton>
                                             )
@@ -456,10 +464,10 @@ export default function ClassRegister(){
                                     <ButtonContainer>
                                         <RegisterButton onClick={() => {
                                             if (totalCredit >= 18) return;
-                                            setTotalCredit(prev =>  prev + 3)
+                                            setTotalCredit(prev =>  prev + 3);
                                             setField1(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
                                         <CancelButton  onClick={() => {
-                                            setTotalCredit(prev => Math.max(0, prev - 3))
+                                            setTotalCredit(prev => Math.max(0, prev - 3));
                                             setField1(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
                                     </ButtonContainer>
                                 </CourseList>
@@ -469,10 +477,10 @@ export default function ClassRegister(){
                                     <ButtonContainer>
                                         <RegisterButton onClick={() => {
                                             if (totalCredit >= 18) return;
-                                            setTotalCredit(prev =>  prev + 3)
+                                            setTotalCredit(prev =>  prev + 3);
                                             setField2(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
                                         <CancelButton  onClick={() => {
-                                            setTotalCredit(prev => Math.max(0, prev - 3))
+                                            setTotalCredit(prev => Math.max(0, prev - 3));
                                             setField2(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
                                     </ButtonContainer>
                                 </CourseList>
@@ -482,10 +490,10 @@ export default function ClassRegister(){
                                     <ButtonContainer>
                                         <RegisterButton onClick={() => {
                                             if (totalCredit >= 18) return;
-                                            setTotalCredit(prev =>  prev + 3)
+                                            setTotalCredit(prev =>  prev + 3);
                                             setField3(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
                                         <CancelButton  onClick={() => {
-                                            setTotalCredit(prev => Math.max(0, prev - 3))
+                                            setTotalCredit(prev => Math.max(0, prev - 3));
                                             setField3(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
                                     </ButtonContainer>
                                 </CourseList>
