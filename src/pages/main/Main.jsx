@@ -92,17 +92,26 @@ export default function Main(){
     }, [userId]);
 
     useEffect(() => {
-        if (hasReceivedOneTimeEvent && oneTimeAlarmList.length === 0 && !postNextChapterCalled && plansFinished) {
-            setShowNextChapterModal(true); // ✅ 단발성이벤트 끝나고 다음챕터 모달 띄우기
+        const hasClearedAllOneTimeAlarms = oneTimeAlarmList.every(
+          (alarm) => !alarmList.includes(alarm)
+        );
+    
+        if (
+          hasReceivedOneTimeEvent &&
+          hasClearedAllOneTimeAlarms &&
+          !postNextChapterCalled &&
+          plansFinished
+        ) {
+          setShowNextChapterModal(true);
         }
-      }, [oneTimeAlarmList, hasReceivedOneTimeEvent, postNextChapterCalled, plansFinished])
+    }, [alarmList, oneTimeAlarmList, hasReceivedOneTimeEvent, postNextChapterCalled, plansFinished]);
 
 
     useEffect(() => { //교환학생 페이지 전환 
         if (IsExchangeAccepted === true) {
-          const postExchangeProceed = async () => {
+          const getExchangeProceed = async () => {
             try {
-              const response = await apiClient.post('exchange/proceed');
+              const response = await apiClient.get('/event/exchange/status');
               if (response.status === 200) {
                 console.log(response.data);
                 setCanProceedExchange(response.data.data.success);
@@ -117,7 +126,7 @@ export default function Main(){
               }
             }
           };
-          postExchangeProceed();
+          getExchangeProceed();
         }
     }, [IsExchangeAccepted]);
     
@@ -163,7 +172,9 @@ export default function Main(){
             {isTutorial && <Overlay />}
             <Profile isHighlight={isTutorial && currentStep === 0} plansFinished={plansFinished} setPlansFinished={setPlansFinished}/>
             {/* <EventIcon isHighlight={isTutorial && currentStep === 1} /> */}
-            <InfoBar isHighlight={isTutorial && currentStep === 1} alarmList={alarmList} setAlarmList={setAlarmList} setOneTimeAlarmList={setOneTimeAlarmList} />
+            <InfoBar isHighlight={isTutorial && currentStep === 1} 
+                    alarmList={alarmList} setAlarmList={setAlarmList}  
+                    setOneTimeAlarmList={setOneTimeAlarmList} plansFinished = {plansFinished} />
 
             {isTutorialStep && (
                 <TutorialContainer  onClick={isTutorial ? nextStep : undefined}>
