@@ -4,9 +4,11 @@ import { apiClient } from "../../apiClient";
 
 export default function Festival(){
     const [isApply, setIsApply] = useState(undefined);
-    const [isAllowed, setIsAllowed] = useState()
+    const [isAllowed, setIsAllowed] = useState(undefined);
+    const [isClosed, setIsClosed] = useState(false);
+
     
-    if(isApply !== undefined) return null;
+    if(isClosed == true) return null;
 
     const postFestival= async()=>{
         try {
