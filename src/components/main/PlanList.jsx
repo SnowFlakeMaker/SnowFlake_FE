@@ -5,8 +5,9 @@ import ProgressingList from "./ProgressingList";
 import { apiClient } from "../../apiClient";
 import { useDate } from "./DateContext";
 import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 
-export default function PlanList(){
+export default function PlanList( { plansFinished, setPlansFinished }){
     const defaultPlans = {
         "수업": {
             icon: "/image/icons/planlist/class.png",
@@ -33,6 +34,18 @@ export default function PlanList(){
             minus: ["-"]
         },
         "동아리": {
+            icon: "/image/icons/planlist/club.png",
+            img : "/image/cutscene/cutimg_club.PNG",
+            plus: ["리더십", "사회성", "스트레스"],
+            minus: ["체력"]
+        },
+        "대외활동": {
+            icon: "/image/icons/planlist/club.png",
+            img : "/image/cutscene/cutimg_club.PNG",
+            plus: ["리더십", "사회성", "스트레스"],
+            minus: ["체력"]
+        },
+        "리더십그룹": {
             icon: "/image/icons/planlist/club.png",
             img : "/image/cutscene/cutimg_club.PNG",
             plus: ["리더십", "사회성", "스트레스"],
@@ -102,8 +115,6 @@ export default function PlanList(){
     const [executeInternship, setExecuteInternsip] = useState(undefined);
 
     const isAllPlansFilled = monthlyPlans.every((plan) => plan !== null);
-
-    const [plansFinished, setPlansFinished] = useState(false);
 
     // isVacation 상태가 변경될 때마다 배열 크기 업데이트
     useEffect(() => {
@@ -182,7 +193,7 @@ export default function PlanList(){
         if (executeInternship === true && isVacation === false) {
           const totalDays = 31;
           const internDays = 14;
-          const internIcon = "/image/icons/planlist/work.png";
+          const internIcon = "/image/icons/planlist/intern.png";
           const internTitle = "인턴";
       
           const newCalendarPlans = Array.from({ length: totalDays }, (_, i) =>
@@ -253,36 +264,71 @@ export default function PlanList(){
         }
     };
 
+    const transformedPlans = useMemo(() => {
+        return executedPlans.map((item) => {
+          const effectMap = {
+            GRIT: "근성",
+            STRENGTH: "체력",
+            INTELLIGENCE: "지력",
+            SOCIAL: "사회성",
+            STRESS: "스트레스",
+            LEADERSHIP: "리더십",
+            FOREIGNLANG: "외국어",
+            COIN: "코인",
+          };
+      
+          const fallbackImageMap = {
+            "코인 부족": "/image/cutscene/cutimg_nomoney.PNG", // 이미지 추가
+          };
+      
+          const plus = Object.entries(item.effects)
+            .filter(([_, value]) => value > 0)
+            .map(([key]) => effectMap[key] || key);
+      
+          const minus = Object.entries(item.effects)
+            .filter(([_, value]) => value < 0)
+            .map(([key]) => effectMap[key] || key);
+      
+          return {
+            title: item.taskName,
+            img: defaultPlans[item.taskName]?.img ||
+                 fallbackImageMap[item.taskName] || "",
+            plus,
+            minus,
+          };
+        });
+      }, [executedPlans]);
+
     return(
         <Container>
             {!isSubmit && (
                 <>
                     <CalenderContainer>
-                    <MonthlyContainer>
-                        <SnowIcon  src="/image/icons/snow-icon.png" />
-                        <MonthText>{currentMonth}</MonthText>
-                    </MonthlyContainer>
+                        <MonthlyContainer>
+                            <SnowIcon  src="/image/icons/snow-icon.png" />
+                            <MonthText>{currentMonth}</MonthText>
+                        </MonthlyContainer>
 
-                    <Calender>
-                        <DaysContainer>
-                            {[...Array(7)].map((_, i) => (
-                                <DaysOfWeek key={i} />
-                            ))}
-                        </DaysContainer>
-    
-                        <DatesContainer>
-                            {calendarPlans.map((plan, i) => (
-                                <DateBox 
-                                    key={i} 
-                                    isSelected={i === selectedDate}
-                                >
-                                    {plan && <PlanIcon src={plan} />}
-                                </DateBox>
-                            ))}
-                        </DatesContainer>
-                    </Calender>
+                        <Calender>
+                            <DaysContainer>
+                                {[...Array(7)].map((_, i) => (
+                                    <DaysOfWeek key={i} />
+                                ))}
+                            </DaysContainer>
+        
+                            <DatesContainer>
+                                {calendarPlans.map((plan, i) => (
+                                    <DateBox 
+                                        key={i} 
+                                        isSelected={i === selectedDate}
+                                    >
+                                        {plan && <PlanIcon src={plan} />}
+                                    </DateBox>
+                                ))}
+                            </DatesContainer>
+                        </Calender>
 
-                </CalenderContainer>
+                    </CalenderContainer>
                 
                     <PlannerContainer>
                         <SubmitButton 
@@ -313,38 +359,7 @@ export default function PlanList(){
             {isSubmit && !plansFinished && 
                 <ProgressingList
                     setPlansFinished={setPlansFinished}
-                    plans={executedPlans.map((item) => {
-                    const effectMap = {
-                        GRIT: "근성",
-                        STRENGTH: "체력",
-                        INTELLIGENCE: "지력",
-                        SOCIAL: "사회성",
-                        STRESS: "스트레스",
-                        LEADERSHIP: "리더십",
-                        FOREIGNLANG: "외국어",
-                        COIN : "코인"
-                    };
-              
-                    const fallbackImageMap = {
-                        "코인 부족": "", //이미지 추가 
-                      };
-
-                    const plus = Object.entries(item.effects)
-                        .filter(([_, value]) => value > 0)
-                        .map(([key]) => effectMap[key] || key);
-                
-                    const minus = Object.entries(item.effects)
-                        .filter(([_, value]) => value < 0)
-                        .map(([key]) => effectMap[key] || key);
-                
-                    return {
-                        title: item.taskName,
-                        img: defaultPlans[item.taskName]?.img ||
-                            fallbackImageMap[item.taskName] || "",
-                        plus,
-                        minus,
-                    };
-                    })}
+                    plans={transformedPlans}
                 />
             }
 

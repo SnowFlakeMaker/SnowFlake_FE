@@ -26,6 +26,10 @@ export default function Main(){
 
     const [oneTimeAlarmList, setOneTimeAlarmList] = useState([]); //onetime만 관리
     const [hasReceivedOneTimeEvent, setHasReceivedOneTimeEvent] = useState(false); //onetime 도착 추적 
+    const [showNextChapterModal, setShowNextChapterModal] = useState(false);
+
+    const [plansFinished, setPlansFinished] = useState(false);
+    
     
     useEffect(() => {
         const getUserId = async () => {
@@ -70,6 +74,7 @@ export default function Main(){
             setAlarmList((prev) => [...new Set([...prev, ...newAlarms])]);
             setOneTimeAlarmList((prev) => [...new Set([...prev, ...newAlarms])]); 
             setHasReceivedOneTimeEvent(true);
+            console.log(oneTimeAlarmList, hasReceivedOneTimeEvent, postNextChapterCalled);
         });
 
         source.addEventListener("regular_event", (event) => {
@@ -79,34 +84,19 @@ export default function Main(){
                 return;
             }
             setAlarmList((prev) => [...new Set([...prev, ...JSON.parse(event.data)])]);
+            
+
         });
 
         return () => source.close();
     }, [userId]);
 
-    useEffect(() => { //단발성 이벤트 끝난 후 다음 챕터 이동 
-        if (hasReceivedOneTimeEvent && oneTimeAlarmList.length === 0 && !postNextChapterCalled) {
-          const callNextChapter = async () => {
-            const semester = await getSemester();
-            if (semester === "4학년 겨울방학") {
-              navigate("/ending");
-            } else {
-              try {
-                const response = await apiClient.post("/main/change-semester");
-                if (response.status === 200) {
-                  console.log("✅ 다음 챕터로 이동");
-                  setPostNextChapterCalled(true);
-                  setHasReceivedOneTimeEvent(false);
-                }
-              } catch (error) {
-                console.error(error);
-              }
-            }
-          };
-      
-          callNextChapter();
+    useEffect(() => {
+        if (hasReceivedOneTimeEvent && oneTimeAlarmList.length === 0 && !postNextChapterCalled && plansFinished) {
+            setShowNextChapterModal(true); // ✅ 단발성이벤트 끝나고 다음챕터 모달 띄우기
         }
-    }, [oneTimeAlarmList], hasReceivedOneTimeEvent);
+      }, [oneTimeAlarmList, hasReceivedOneTimeEvent, postNextChapterCalled, plansFinished])
+
 
     useEffect(() => { //교환학생 페이지 전환 
         if (IsExchangeAccepted === true) {
@@ -145,12 +135,33 @@ export default function Main(){
             console.log(error);
         }
     };
+
+
+    const handleConfirmNextChapter = async () => {
+        const semester = await getSemester();
+    
+        if (semester === "4학년 겨울방학") {
+            navigate("/ending");
+        } else {
+            try {
+                const response = await apiClient.post("/main/change-semester");
+                if (response.status === 200) {
+                    console.log("✅ 다음 챕터로 이동");
+                    setPostNextChapterCalled(true);
+                    setHasReceivedOneTimeEvent(false);
+                    setShowNextChapterModal(false); // ✅ 모달 닫기
+                }
+            } catch (error) {
+                console.error(error);
+        }
+        }
+    };
     
     return(
         <BackgroundContainer>
             {/* 튜토리얼 중이면 어두운 배경 */}
             {isTutorial && <Overlay />}
-            <Profile isHighlight={isTutorial && currentStep === 0}/>
+            <Profile isHighlight={isTutorial && currentStep === 0} plansFinished={plansFinished} setPlansFinished={setPlansFinished}/>
             {/* <EventIcon isHighlight={isTutorial && currentStep === 1} /> */}
             <InfoBar isHighlight={isTutorial && currentStep === 1} alarmList={alarmList} setAlarmList={setAlarmList} setOneTimeAlarmList={setOneTimeAlarmList} />
 
@@ -169,6 +180,13 @@ export default function Main(){
                 <ModalOverlay>
                     <ModalText>코인이 부족하여 교환학생을 갈 수 없습니다.<br/> 숙명여대에서 학기를 진행합니다.</ModalText>
                     <BlueButton onClick={()=> setShowModal(false)}>닫기</BlueButton>
+                </ModalOverlay>
+            )}
+
+            {showNextChapterModal && (
+                <ModalOverlay>
+                    <ModalText>다음 학기로 넘어갑니다.</ModalText>
+                    <BlueButton onClick={handleConfirmNextChapter}>확인</BlueButton>
                 </ModalOverlay>
             )}
             <BackgroundImg src="/image/background/main.png" />

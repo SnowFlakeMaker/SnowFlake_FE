@@ -22,7 +22,7 @@ import Tuition from "../events/Tuituion";
 import { apiClient } from "../../apiClient";
 
 
-export default function MailList( { alarmList }){
+export default function MailList( { alarmList, setAlarmList, setOneTimeAlarmList }){
     const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
     const [showMailList, setShowMailList] = useState(true);
@@ -31,19 +31,21 @@ export default function MailList( { alarmList }){
     const [userId, setUserId] = useState(null);
     
 
-    //백엔드에서 get해올 현재 알림 목록 
-    // const alarmList = ["수강신청", "국가장학금 신청", "개강총회", "등록금 납부"];
-    // const [alarmList, setAlarmList] = useState([]);
-
     const handleRead = (alarm) => {
+        // 클릭 표시
         setClickedAlarms(prev => ({ ...prev, [alarm]: true }));
+
+        // 알람 제거
+        setAlarmList(prev => prev.filter(item => item !== alarm));
+        setOneTimeAlarmList(prev => prev.filter(a => a !== alarm));
+
 
         if (alarm === "수강신청") {
             setShowMailList(false);
             setActiveEvent("classRegister");
         } else if (alarm === "국가장학금 신청") {
             setActiveEvent("koreaScholarship");
-        } else if (alarm === "전공 선택") {
+        } else if (alarm === "전공선택") {
             setActiveEvent("majorSelect");
         } else if(alarm == "개강총회"){
             setActiveEvent("openingMeeting");
@@ -65,9 +67,9 @@ export default function MailList( { alarmList }){
             setActiveEvent("startMaster");
         } else if(alarm == "인턴 지원"){
             setActiveEvent("applyIntern");
-        } else if(alarm == "공모전 참가"){
+        } else if(alarm == "공모전 지원"){
             setActiveEvent("prepareContest");
-        } else if(alarm == "교환학생 지원"){
+        } else if(alarm == "교환학생 신청"){
             setActiveEvent("exchangeStudent");
         } else if(alarm == "졸업인증제"){
             setActiveEvent("prepareGraduate");
@@ -78,38 +80,6 @@ export default function MailList( { alarmList }){
         }
     };
    
-      
-    // useEffect(() => {
-    //     const getUserId = async () => {
-    //         try {
-    //         const response = await apiClient.get('/sse/get-userid');
-    //         if (response.status === 200) {
-    //             console.log(response.data);
-    //             setUserId(response.data.data);
-    //         }
-    //         } catch (error) {
-    //         console.log(error);
-    //         }
-    //     };
-        
-    //     getUserId();
-    // }, []);
-
-    // useEffect(() => {
-    //     if (!userId) return; 
-    //     const source = new EventSourcePolyfill(`${SERVER_URL}/sse/subscribe/${userId}`, {
-    //         withCredentials: true,
-    //     });
-    
-    //     source.addEventListener("onetime_event", (event) => {
-    //         const parsed = JSON.parse(event.data);
-    //         const newAlarms = Array.isArray(parsed.data) ? parsed.data : JSON.parse(parsed.data);
-    //         setAlarmList((prev) => [...new Set([...prev, ...newAlarms])]);
-    //     });
-    
-    //     return () => source.close();
-    // }, [userId]);
-
     return(
         <>
             {showMailList && (

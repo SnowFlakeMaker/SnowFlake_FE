@@ -2,52 +2,62 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useDate } from "./DateContext";
 import { apiClient } from "../../apiClient";
-
-export default function ProgressingList( { plans } ){
+import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
+export default function ProgressingList( { plans, setPlansFinished  } ){
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isComplete, setIsComplete] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const { nextDay } = useDate();
 
-    const intervalRef = useRef(null);
-    
+    const timeoutRef = useRef(null);
+    const indexRef = useRef(0); 
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setIsComplete(true);
+        setPlansFinished(true);
+    };
+
     useEffect(() => {
         if (plans.length === 0) return;
       
-        const maxLength = plans.length;
+        setCurrentIndex(0);
+        setIsComplete(false);
+        setShowModal(false);
+        indexRef.current = 0;
       
-        intervalRef.current = setInterval(() => {
-          setCurrentIndex((prevIndex) => {
-            const nextIndex = prevIndex + 1;
+        const runStep = () => {
+          if (indexRef.current >= plans.length) {
+            setIsComplete(true);
+            setShowModal(true);
+            return;
+          }
       
-            if (nextIndex >= maxLength) {
-              clearInterval(intervalRef.current);
-              setIsComplete(true);
-              setShowModal(true);
-            }
+          timeoutRef.current = setTimeout(() => {
+            nextDay(); // 날짜 먼저 올리고
+            indexRef.current += 1;
+            console.log(indexRef.current);
+            setCurrentIndex(indexRef.current); // 날짜 올라간 후에 index 올림
       
-            return nextIndex < maxLength ? nextIndex : prevIndex;
-          });
+            runStep(); // 다음 타이머 예약
+          }, 3000);
+        };
       
-          nextDay();
-        }, 3000);
+        runStep();
       
-        return () => clearInterval(intervalRef.current);
-      }, [plans]);
+        return () => clearTimeout(timeoutRef.current);
+    }, [plans]);
+
+    useEffect(() => {
+        console.log("🔄 currentIndex", currentIndex);
+        console.log("🧩 currentPlan", plans[currentIndex]);
+        console.log("📦 전체 plans", plans);
+      }, [currentIndex]);
+
 
     const currentPlan = plans[currentIndex];
 
-    
-    const postNextChapter = async () => {
-        try {
-          const response = await apiClient.post('/main/change-semester');
-          if (response.status === 200) {
-            console.log(response);
-          } 
-        } catch (error) {
-          console.error(error);
-        }
-    };
 
     return(
         <>
@@ -55,7 +65,7 @@ export default function ProgressingList( { plans } ){
                 <Container>
                     <DoingContainer>
                         <DoingText>{currentPlan.title}</DoingText>
-                        <DoingImg src={currentPlan.img} />
+                        <DoingImg src={currentPlan.img}  key={currentIndex}/>
                     </DoingContainer>
                     <StatusContainer>
                         {currentPlan.title === "코인부족" && 
@@ -79,7 +89,7 @@ export default function ProgressingList( { plans } ){
             {showModal &&
                 <ModalOverlay>
                     <ModalText>이번 달 계획이 모두 완료되었습니다!</ModalText>
-                    <BlueButton onClick={() => {setShowModal(false); postNextChapter();}}>다음 챕터로</BlueButton>
+                    <BlueButton onClick={handleCloseModal}>닫기</BlueButton>
                 </ModalOverlay>
             }
             

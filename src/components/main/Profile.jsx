@@ -8,7 +8,7 @@ import { useTutorial } from "../../pages/intro/Tutorial";
 import { useDate } from "./DateContext";
 import { useQuery } from '@tanstack/react-query';
 
-export default function Profile( { isHighlight } ){
+export default function Profile( { isHighlight, plansFinished, setPlansFinished } ){
     const [showStatus, setShowStatus] = useState(false);
     const [showList, setShowList] = useState(false);
     const [name, setName] = useState("");
@@ -81,7 +81,7 @@ export default function Profile( { isHighlight } ){
             </DateContainer>
 
             {showStatus && <Status />}
-            {showList && <PlanList/>}
+            {showList && <PlanList plansFinished = {plansFinished} setPlansFinished = {setPlansFinished}/>}
         </Container>
     );
 }
