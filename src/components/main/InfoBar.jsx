@@ -6,14 +6,14 @@ import { useTutorial } from "../../pages/intro/Tutorial";
 import { apiClient } from "../../apiClient";
 import { useQuery } from "@tanstack/react-query";
 
-export default function InfoBar( { isHighlight, alarmList, setAlarmList, setOneTimeAlarmList }){
+export default function InfoBar( { isHighlight, alarmList, setAlarmList, setOneTimeAlarmList, plansFinished }){
     const [showMail, setShowMail] = useState(false);
     const [showLogout, setShowLogout] = useState(false);
     const count = alarmList.length; //알림 갯수
     const { isTutorial } = useTutorial(); //튜토리얼 여부
 
     const handleMailList =()=>{
-        if (isTutorial) return;
+        if (isTutorial || !plansFinished) return; 
         setShowMail((prev) => !prev);
     }
 
@@ -52,7 +52,7 @@ export default function InfoBar( { isHighlight, alarmList, setAlarmList, setOneT
                 <Icon onClick={handleLogout} src="image/icons/setting.png"/>
             </SettingContainer>
 
-            {showMail && <MailList alarmList={alarmList} setAlarmList={setAlarmList} setOneTimeAlarmList={setOneTimeAlarmList}/>}
+            {showMail && <MailList alarmList={alarmList} setAlarmList={setAlarmList} setOneTimeAlarmList={setOneTimeAlarmList} plansFinished={plansFinished}/>}
             {showLogout && <Logout/>}
         </Conatiner>
     );

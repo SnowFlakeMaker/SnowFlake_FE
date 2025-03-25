@@ -22,14 +22,13 @@ import Tuition from "../events/Tuituion";
 import { apiClient } from "../../apiClient";
 
 
-export default function MailList( { alarmList, setAlarmList, setOneTimeAlarmList }){
+export default function MailList( { alarmList, setAlarmList, setOneTimeAlarmList, plansFinished }){
     const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
     const [showMailList, setShowMailList] = useState(true);
     const [clickedAlarms, setClickedAlarms] = useState({}); //클릭된 알림 
     const [activeEvent, setActiveEvent] = useState(null); // 하나의 이벤트만 렌더링
-    const [userId, setUserId] = useState(null);
-    
+
 
     const handleRead = (alarm) => {
         // 클릭 표시
@@ -45,7 +44,7 @@ export default function MailList( { alarmList, setAlarmList, setOneTimeAlarmList
             setActiveEvent("classRegister");
         } else if (alarm === "국가장학금 신청") {
             setActiveEvent("koreaScholarship");
-        } else if (alarm === "전공선택") {
+        } else if (alarm === "전공신청") {
             setActiveEvent("majorSelect");
         } else if(alarm == "개강총회"){
             setActiveEvent("openingMeeting");
@@ -73,7 +72,7 @@ export default function MailList( { alarmList, setAlarmList, setOneTimeAlarmList
             setActiveEvent("exchangeStudent");
         } else if(alarm == "졸업인증제"){
             setActiveEvent("prepareGraduate");
-        } else if(alarm == "전공 포기"){
+        } else if(alarm == "전공포기"){
             setActiveEvent("giveUpMajor");
         } else if(alarm == "등록금 납부") {
             setActiveEvent("tuition");
