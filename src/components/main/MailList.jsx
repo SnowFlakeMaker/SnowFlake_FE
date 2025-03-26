@@ -16,10 +16,8 @@ import StartMaster from "../events/StartMaster";
 import ApplyIntern from "../events/ApplyIntern";
 import PrepareContest from "../events/PrepareContest";
 import ExchangeStudent from "../events/exchangeStudent";
-import PrepareGraduate from "../events/prepareGraduate";
-import { EventSourcePolyfill } from 'event-source-polyfill';
+import PrepareGraduate from "../events/PrepareGraduate";
 import Tuition from "../events/Tuituion";
-import { apiClient } from "../../apiClient";
 
 
 export default function MailList( { alarmList, setAlarmList, setOneTimeAlarmList, plansFinished, setIsEventActive }){
