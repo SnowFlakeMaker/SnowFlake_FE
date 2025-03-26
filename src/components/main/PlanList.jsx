@@ -7,7 +7,7 @@ import { useDate } from "./DateContext";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 
-export default function PlanList( { plansFinished, setPlansFinished }){
+export default function PlanList( { plansFinished, setPlansFinished, setCanClickMail }){
     const defaultPlans = {
         "수업": {
             icon: "/image/icons/planlist/class.png",
@@ -51,6 +51,12 @@ export default function PlanList( { plansFinished, setPlansFinished }){
             plus: ["리더십", "사회성", "스트레스"],
             minus: ["체력"]
         },
+        "학생회": {
+            icon: "/image/icons/planlist/club.png",
+            img : "/image/cutscene/cutimg_club.PNG",
+            plus: ["리더십", "사회성", "스트레스"],
+            minus: ["체력"]
+        },
         "휴식" : {
             icon: "/image/icons/planlist/rest.png",
             img : "/image/cutscene/cutimg_rest.PNG",
@@ -61,7 +67,7 @@ export default function PlanList( { plansFinished, setPlansFinished }){
             icon: "/image/icons/planlist/hobby.png",
             img : "/image/cutscene/cutimg_hobby.PNG",
             plus: ["-"],
-            minus: ["스트레스", "근성", "사회성", "지력"]
+            minus: ["스트레스", "근성", "사회성", "지력", "코인"]
         },
         "운동" : {
             icon: "/image/icons/planlist/exercise.png",
@@ -278,7 +284,7 @@ export default function PlanList( { plansFinished, setPlansFinished }){
           };
       
           const fallbackImageMap = {
-            "코인 부족": "/image/cutscene/cutimg_nomoney.PNG", // 이미지 추가
+            "코인부족": "/image/cutscene/cutimg_nomoney.PNG",
           };
       
           const plus = Object.entries(item.effects)
@@ -356,10 +362,11 @@ export default function PlanList( { plansFinished, setPlansFinished }){
                 </>
             )}
 
-            {isSubmit && !plansFinished && 
+            {isSubmit && 
                 <ProgressingList
                     setPlansFinished={setPlansFinished}
                     plans={transformedPlans}
+                    setCanClickMail={setCanClickMail}
                 />
             }
 
