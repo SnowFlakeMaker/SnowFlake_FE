@@ -14,10 +14,10 @@ export default function Main(){
     const [userId, setUserId] = useState(null);
     const [alarmList, setAlarmList] = useState([]);
 
-    const { isTutorial, currentStep, nextStep } = useTutorial();
+    const { IsExchangeAccepted } = useExchange();
+    const { isTutorial, currentStep, nextStep, isLoading } = useTutorial();
     const isTutorialStep = isTutorial && currentStep <= 3;
 
-    const { IsExchangeAccepted } = useExchange();
     const [canProceedExchange, setCanProceedExchange] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
@@ -29,8 +29,10 @@ export default function Main(){
     const [showNextChapterModal, setShowNextChapterModal] = useState(false);
 
     const [plansFinished, setPlansFinished] = useState(false);
-    
-    
+    const [isEventActive, setIsEventActive] = useState(false);
+    const [canClickMail, setCanClickMail] = useState(true);
+    const [checkExchange, setCheckExchange] = useState(false);
+
     useEffect(() => {
         const getUserId = async () => {
           try {
@@ -58,7 +60,7 @@ export default function Main(){
         source.onopen = () => {
           console.log("✅ SSE 연결 성공!");
         };
-      
+    
         source.addEventListener("init", (event) => {
             console.log("🟢 연결 메시지 (init):", event.data); // "connected"
         });
@@ -91,44 +93,67 @@ export default function Main(){
         return () => source.close();
     }, [userId]);
 
+
     useEffect(() => {
         const hasClearedAllOneTimeAlarms = oneTimeAlarmList.every(
           (alarm) => !alarmList.includes(alarm)
         );
     
+        console.log(alarmList, oneTimeAlarmList, hasReceivedOneTimeEvent, postNextChapterCalled, plansFinished, isEventActive);
+    
+        // 조건 만족해도 5초 후에만 모달 띄움
         if (
-          hasReceivedOneTimeEvent &&
           hasClearedAllOneTimeAlarms &&
           !postNextChapterCalled &&
-          plansFinished
+          plansFinished &&
+          !isEventActive
         ) {
-          setShowNextChapterModal(true);
+            const timeout = setTimeout(() => {
+                setShowNextChapterModal(true);
+            }, 3000); // ✅ 5초 대기
+    
+            return () => clearTimeout(timeout); // cleanup
         }
-    }, [alarmList, oneTimeAlarmList, hasReceivedOneTimeEvent, postNextChapterCalled, plansFinished]);
+    }, [alarmList, oneTimeAlarmList, hasReceivedOneTimeEvent, postNextChapterCalled, plansFinished, isEventActive]);
 
 
-    useEffect(() => { //교환학생 페이지 전환 
-        if (IsExchangeAccepted === true) {
-          const getExchangeProceed = async () => {
-            try {
-              const response = await apiClient.get('/event/exchange/status');
-              if (response.status === 200) {
-                console.log(response.data);
-                setCanProceedExchange(response.data.data.success);
+    // 알림 추가 시 localStorage에도 저장
+    useEffect(() => {
+        if (alarmList.length > 0) {
+        localStorage.setItem("alarmList", JSON.stringify(alarmList));
+        }
+    }, [alarmList]);
+    
+    // 처음 렌더링 시 localStorage에서 복원
+    useEffect(() => {
+        const savedAlarms = localStorage.getItem("alarmList");
+        if (savedAlarms) {
+        setAlarmList(JSON.parse(savedAlarms));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!checkExchange) return; // checkExchange가 true일 때만 실행
+      
+        const getExchangeProceed = async () => {
+          try {
+            const response = await apiClient.post('/event/exchange/validate');
+            if (response.status === 200) {
+              console.log(response.data);
+              setCanProceedExchange(response.data.data.success);
+              if (response.data.data.success) {
                 navigate("/exchange");
-              }
-            } catch (error) {
-              if (error.response?.status === 400) {
-                setCanProceedExchange(error.response.data.data.success);
-                setShowModal(true);
               } else {
-                console.log(error);
+                setShowModal(true);
               }
             }
-          };
-          getExchangeProceed();
-        }
-    }, [IsExchangeAccepted]);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+      
+        getExchangeProceed();
+      }, [checkExchange]); // ✅ 정확하게 상태를 감지
     
     
 
@@ -157,8 +182,14 @@ export default function Main(){
                 if (response.status === 200) {
                     console.log("✅ 다음 챕터로 이동");
                     setPostNextChapterCalled(true);
+                    setTimeout(() => {
+                        setPostNextChapterCalled(false);
+                    }, 700); // ✅ 바로 false 초기화
                     setHasReceivedOneTimeEvent(false);
-                    setShowNextChapterModal(false); // ✅ 모달 닫기
+                    setShowNextChapterModal(false); 
+                    setPlansFinished(false);
+                    setIsEventActive(false);
+                    setCanClickMail(true);
                 }
             } catch (error) {
                 console.error(error);
@@ -166,18 +197,21 @@ export default function Main(){
         }
     };
     
+    if (isLoading) return null;
+
     return(
         <BackgroundContainer>
             {/* 튜토리얼 중이면 어두운 배경 */}
             {isTutorial && <Overlay />}
-            <Profile isHighlight={isTutorial && currentStep === 0} plansFinished={plansFinished} setPlansFinished={setPlansFinished}/>
+            <Profile isHighlight={isTutorial && currentStep === 0} plansFinished={plansFinished} setPlansFinished={setPlansFinished}  setCanClickMail={setCanClickMail}/>
             {/* <EventIcon isHighlight={isTutorial && currentStep === 1} /> */}
             <InfoBar isHighlight={isTutorial && currentStep === 1} 
                     alarmList={alarmList} setAlarmList={setAlarmList}  
-                    setOneTimeAlarmList={setOneTimeAlarmList} plansFinished = {plansFinished} />
+                    setOneTimeAlarmList={setOneTimeAlarmList} plansFinished = {plansFinished} 
+                    isEventActive={isEventActive} setIsEventActive={setIsEventActive} canClickMail={canClickMail}/>
 
             {isTutorialStep && (
-                <TutorialContainer  onClick={isTutorial ? nextStep : undefined}>
+                <TutorialContainer  onClick={nextStep}>
                     <TutorialText>
                         {currentStep === 0 && "이곳에서는 내 정보를 확인할 수 있어요. 클릭하면 현재 스탯을 볼 수 있고, 이번 학기 계획을 짤 수 있어요."}
                         {/* {currentStep === 1 && "이곳에서는 현재 진행 중인 이벤트들을 확인할 수 있어요."} */}
@@ -190,7 +224,7 @@ export default function Main(){
             {showModal&& (
                 <ModalOverlay>
                     <ModalText>코인이 부족하여 교환학생을 갈 수 없습니다.<br/> 숙명여대에서 학기를 진행합니다.</ModalText>
-                    <BlueButton onClick={()=> setShowModal(false)}>닫기</BlueButton>
+                    <BlueButton onClick={()=> {setShowModal(false); setCheckExchange(true);}}>닫기</BlueButton>
                 </ModalOverlay>
             )}
 

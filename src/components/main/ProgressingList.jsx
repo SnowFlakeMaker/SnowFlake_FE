@@ -4,7 +4,7 @@ import { useDate } from "./DateContext";
 import { apiClient } from "../../apiClient";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
-export default function ProgressingList( { plans, setPlansFinished  } ){
+export default function ProgressingList( { plans, setPlansFinished, setCanClickMail  } ){
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isComplete, setIsComplete] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -17,6 +17,7 @@ export default function ProgressingList( { plans, setPlansFinished  } ){
         setShowModal(false);
         setIsComplete(true);
         setPlansFinished(true);
+        setCanClickMail(true);
     };
 
     useEffect(() => {
@@ -25,6 +26,7 @@ export default function ProgressingList( { plans, setPlansFinished  } ){
         setCurrentIndex(0);
         setIsComplete(false);
         setShowModal(false);
+        setCanClickMail(false);
         indexRef.current = 0;
       
         const runStep = () => {

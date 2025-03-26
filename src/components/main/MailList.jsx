@@ -22,7 +22,7 @@ import Tuition from "../events/Tuituion";
 import { apiClient } from "../../apiClient";
 
 
-export default function MailList( { alarmList, setAlarmList, setOneTimeAlarmList, plansFinished }){
+export default function MailList( { alarmList, setAlarmList, setOneTimeAlarmList, plansFinished, setIsEventActive }){
     const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
     const [showMailList, setShowMailList] = useState(true);
@@ -35,7 +35,11 @@ export default function MailList( { alarmList, setAlarmList, setOneTimeAlarmList
         setClickedAlarms(prev => ({ ...prev, [alarm]: true }));
 
         // 알람 제거
-        setAlarmList(prev => prev.filter(item => item !== alarm));
+        setAlarmList(prev => {
+            const updated = prev.filter(item => item !== alarm);
+            localStorage.setItem("alarmList", JSON.stringify(updated));
+            return updated;
+        });
         setOneTimeAlarmList(prev => prev.filter(a => a !== alarm));
 
 
@@ -78,6 +82,12 @@ export default function MailList( { alarmList, setAlarmList, setOneTimeAlarmList
             setActiveEvent("tuition");
         }
     };
+
+    
+    useEffect(() => {
+        // 현재 이벤트가 있으면 true, 아니면 false 전달
+        setIsEventActive(!!activeEvent);
+    }, [activeEvent]);
    
     return(
         <>
