@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -6,6 +7,8 @@ export const apiClient = axios.create({
     baseURL: "/api",
     withCredentials: true  // ✅ 모든 요청에 쿠키 포함
 });
+
+
 
 const refreshToken = async () => {
     try {
@@ -30,6 +33,7 @@ const refreshToken = async () => {
 // ✅ 자동 로그아웃 함수
 const logout = () => {
     console.log("🚨 리프레시 토큰 만료 - 자동 로그아웃 실행");
+    window.location.href = "/";
 };
 
 // ✅ 인터셉터에서 403 또는 401 발생 시 토큰 갱신
