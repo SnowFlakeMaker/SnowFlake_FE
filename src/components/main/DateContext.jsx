@@ -24,11 +24,13 @@ export const DateProvider = ({ children }) => {
     const semester = semesterData || "";
     useEffect(() => {
         if (!semester) return;
-
+    
         if (semester.includes("1학기") || semester.includes("2학기")) {
             setMaxDay(31);
+            setCurrentDay(1); // ✅ 학기 바뀌면 1일부터 시작
         } else if (semester.includes("여름방학") || semester.includes("겨울방학")) {
             setMaxDay(14);
+            setCurrentDay(1); // ✅ 방학도 마찬가지
         }
     }, [semester]);
 
