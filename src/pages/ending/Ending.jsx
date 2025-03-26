@@ -8,11 +8,41 @@ export default function Ending(){
     const [endingText, setEndingText] = useState("");
     const [showNextText, setShowNextText] = useState(false);
     const [dream, setDream] = useState("");
+    const [isMaster, setIsMaster] = useState(null);
 
     const [text, setText] = useState("");
     const [src, setSrc] = useState("");
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowNextText(true);
+        }, 3000); 
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        const getMaster = async () => {
+            try {
+                const response = await apiClient.get('/event/combined-programs/check');
+                if (response.status === 200) {
+                    const isPassed = response.data.data;
+    
+                    // ❗ 학석사 과정이 필요한데 아직 방문 안했으면 이동
+                    if (isPassed && localStorage.getItem("cameFromCombined") !== "true") {
+                        localStorage.setItem("cameFromCombined", "true"); // 방문 표시
+                        navigate("/combined-programs");
+                    }
+    
+                    setIsMaster(isPassed);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getMaster();
+    }, []);
     
     useEffect(()=>{
         const getEnding = async() => {
@@ -30,7 +60,7 @@ export default function Ending(){
             }
         }
         getEnding();
-    }, [!endingType]); 
+    }, [!endingType, isMaster]); 
 
     const renderEnding = ()=>{
         switch(endingType){
