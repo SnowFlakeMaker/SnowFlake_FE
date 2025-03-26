@@ -6,16 +6,26 @@ import Status from "./Status";
 import { apiClient } from "../../apiClient";
 import { useTutorial } from "../../pages/intro/Tutorial";
 import { useDate } from "./DateContext";
+import { useQuery } from '@tanstack/react-query';
 
-export default function Profile( { isHighlight } ){
+export default function Profile( { isHighlight, plansFinished, setPlansFinished, setCanClickMail } ){
     const [showStatus, setShowStatus] = useState(false);
     const [showList, setShowList] = useState(false);
     const [name, setName] = useState("");
     const [major, setMajor] = useState("");
-    const [semester, setSemester] = useState("");
     const { isTutorial } = useTutorial(); 
     const { currentDay, currentMonth } = useDate();
 
+
+    const { data: semester } = useQuery({
+        queryKey: ['semester'],
+        queryFn: async () => {
+          const response = await apiClient.get('/main/chapter');
+          return response.data.data.current_chapter.chapter;
+        },
+        refetchInterval: 5000,
+    });
+    
     const handleStatus = ()=>{
         if (isTutorial) return;
         setShowStatus((prev) => !prev);
@@ -41,23 +51,10 @@ export default function Profile( { isHighlight } ){
             }
         }
 
-        const getSemester = async()=>{
-            try{
-                const response = await apiClient.get('/main/chapter');
-                if(response.status===200){
-                    console.log(response.data);
-                    const data = response.data.data.current_chapter.chapter;
-                    setSemester(data);
-                }
-            } catch(error) {
-                console.log(error);
-            }
-        }
-
         const fetchData = async () => {
             try {
                 await getPlayer();
-                await getSemester();
+                // await getSemester();
             } catch (error) {
                 console.error("데이터 가져오기 실패:", error);
             }
@@ -84,7 +81,7 @@ export default function Profile( { isHighlight } ){
             </DateContainer>
 
             {showStatus && <Status />}
-            {showList && <PlanList />}
+            {showList && <PlanList plansFinished = {plansFinished} setPlansFinished = {setPlansFinished} setCanClickMail={setCanClickMail}/>}
         </Container>
     );
 }

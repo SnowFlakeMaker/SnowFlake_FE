@@ -50,7 +50,7 @@ export default function ClassRegister(){
     useEffect(()=>{
         const getCourse = async() => {
             try{
-                const response = await apiClient.get("/course/main", { withCredentials: true });
+                const response = await apiClient.get("/course/main");
                 
                 if(response.status === 200) {
                     console.log(response.data);
@@ -173,11 +173,22 @@ export default function ClassRegister(){
 
     const selectMajorType =(majorType)=>{
         switch(majorType){
-            case "DOUBLE_MAJOR" : setMajorType("복수전공");
-            case "SUB_MAJOR" : setMajorType("부전공");
-            case "ADVANCED_MAJOR" : setMajorType("심화전공");
-            case "UNKNOWN" : setMajorType("미정");
-        }
+            case "DOUBLE_MAJOR":
+                setMajorType("복수전공");
+                break;
+            case "SUB_MAJOR":
+                setMajorType("부전공");
+                break;
+            case "ADVANCED_MAJOR":
+                setMajorType("심화전공");
+                break;
+            case "UNKNOWN":
+                setMajorType("미정");
+                break;
+            default:
+                setMajorType("미정");
+                break;
+            }
     }
 
     const calculateCredits = () => {
@@ -189,12 +200,12 @@ export default function ClassRegister(){
         if (isAlreadySoftware) sum += 3;
 
         sum += 
-            (core1Count || 0) + 
-            (core2Count || 0) + 
-            (core3Count || 0) + 
-            (core4Count || 0) + 
-            (majorCount || 0) + 
-            (subMajorCount || 0);
+            (core1Count * 3 || 0) + 
+            (core2Count * 3  || 0) + 
+            (core3Count * 3 || 0) + 
+            (core4Count * 3 || 0) + 
+            (majorCount * 3 || 0) + 
+            (subMajorCount * 3 || 0);
 
         console.log("총합:", sum);
         return sum;
@@ -312,7 +323,7 @@ export default function ClassRegister(){
                                     <SnowIcon 
                                         style={ {width : "1.5vw", height : "1.5vw"}}
                                         src="/image/icons/blue-snow-icon.png" />
-                                    <InfoWhite>교양선택 ({core1Count + core2Count +core3Count + core4Count}/15)</InfoWhite> 
+                                    <InfoWhite>교양선택 ({(core1Count + core2Count +core3Count + core4Count) * 3}/15)</InfoWhite> 
                                 </CourseTitle>
                                 
                                 <Courses>
@@ -329,13 +340,13 @@ export default function ClassRegister(){
                                     <SnowIcon 
                                     style={ {width : "1.5vw", height : "1.5vw"}}
                                     src="/image/icons/blue-snow-icon.png" />
-                                    <InfoWhite>전공 ({majorCount}/63)</InfoWhite> 
+                                    <InfoWhite>전공 ({majorCount * 3}/63)</InfoWhite> 
                                 </CourseTitle>
                                 
                                 <Courses>
                                     <InfoWhite>▶ 신청된 전공과목 개수 : {majorsEssential + majorsElective}개 </InfoWhite> 
-                                    {["복수전공", "부전공"].includes(myMajor) && (
-                                        <InfoWhite>▶ 신청된 {myMajor} 과목 개수 : {subMajors}개</InfoWhite>
+                                    {["복수전공", "부전공"].includes(majorType) && (
+                                        <InfoWhite>▶ 신청된 {majorType} 과목 개수 : {subMajors || 0}개</InfoWhite>
                                     )}
                                 </Courses>
                                 
@@ -360,16 +371,18 @@ export default function ClassRegister(){
                                     <InfoDarkBlue>디지털 시대의 사고와 의사소통</InfoDarkBlue>
                                     <ButtonContainer>
                                         {isAlreadyDigital ? (
-                                            <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                            <RegisterButton 
+                                                onClick={()=>setTotalCredit(prev =>  prev + 3)}
+                                                style={{ backgroundColor: "#D9D9D9" }} disabled>
                                                 신청하기
                                             </RegisterButton>
                                         ) : (
                                             digital ? (
-                                                <CancelButton onClick={() => setDigital(prev => !prev)}>
+                                                <CancelButton onClick={() => {setDigital(prev => !prev); setTotalCredit(prev => Math.max(0, prev - 3));}}>
                                                     취소하기
                                                 </CancelButton>
                                             ) : (
-                                                <RegisterButton onClick={() => setDigital(prev => !prev)}>
+                                                <RegisterButton onClick={() => {setDigital(prev => !prev); setTotalCredit(prev =>  prev + 3);}}>
                                                     신청하기
                                                 </RegisterButton>
                                             )
@@ -381,16 +394,18 @@ export default function ClassRegister(){
                                     <InfoDarkBlue>미래 설계와 나의 브랜딩</InfoDarkBlue>
                                     <ButtonContainer>
                                         {isAlreadyBranding ? (
-                                            <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                            <RegisterButton 
+                                                onClick={()=>setTotalCredit(prev =>  prev + 3)}
+                                                style={{ backgroundColor: "#D9D9D9" }} disabled>
                                                 신청하기
                                             </RegisterButton>
                                         ) : (
                                             branding ? (
-                                                <CancelButton onClick={() => setBranding(prev => !prev)}>
+                                                <CancelButton onClick={() => {setBranding(prev => !prev); setTotalCredit(prev => Math.max(0, prev - 3));}}>
                                                     취소하기
                                                 </CancelButton>
                                             ) : (
-                                                <RegisterButton onClick={() => setBranding(prev => !prev)}>
+                                                <RegisterButton onClick={() => {setBranding(prev => !prev); setTotalCredit(prev =>  prev + 3);}}>
                                                     신청하기
                                                 </RegisterButton>
                                             )
@@ -402,16 +417,18 @@ export default function ClassRegister(){
                                     <InfoDarkBlue>영어 교양 필수</InfoDarkBlue>
                                     <ButtonContainer>
                                         {isAlreadyEnglish ? (
-                                            <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                            <RegisterButton 
+                                                onClick={()=>setTotalCredit(prev =>  prev + 3)}
+                                                style={{ backgroundColor: "#D9D9D9" }} disabled>
                                                 신청하기
                                             </RegisterButton>
                                         ) : (
                                             english ? (
-                                                <CancelButton onClick={() => setEnglish(prev => !prev)}>
+                                                <CancelButton onClick={() => {setEnglish(prev => !prev);setTotalCredit(prev => Math.max(0, prev - 3));}}>
                                                     취소하기
                                                 </CancelButton>
                                             ) : (
-                                                <RegisterButton onClick={() => setEnglish(prev => !prev)}>
+                                                <RegisterButton onClick={() => {setEnglish(prev => !prev);setTotalCredit(prev =>  prev + 3);}}>
                                                     신청하기
                                                 </RegisterButton>
                                             )
@@ -423,16 +440,18 @@ export default function ClassRegister(){
                                     <InfoDarkBlue>논리적 사고와 소프트웨어</InfoDarkBlue>
                                     <ButtonContainer>
                                         {isAlreadySoftware ? (
-                                            <RegisterButton style={{ backgroundColor: "#D9D9D9" }} disabled>
+                                            <RegisterButton 
+                                                onClick={()=>setTotalCredit(prev =>  prev + 3)}
+                                                style={{ backgroundColor: "#D9D9D9" }} disabled>
                                                 신청하기
                                             </RegisterButton>
                                         ) : (
                                             software ? (
-                                                <CancelButton onClick={() => setSoftware(prev => !prev)}>
+                                                <CancelButton onClick={() => {setSoftware(prev => !prev); setTotalCredit(prev => Math.max(0, prev - 3));}}>
                                                     취소하기
                                                 </CancelButton>
                                             ) : (
-                                                <RegisterButton onClick={() => setSoftware(prev => !prev)}>
+                                                <RegisterButton onClick={() => {setSoftware(prev => !prev); setTotalCredit(prev =>  prev + 3);}}>
                                                     신청하기
                                                 </RegisterButton>
                                             )
@@ -456,10 +475,10 @@ export default function ClassRegister(){
                                     <ButtonContainer>
                                         <RegisterButton onClick={() => {
                                             if (totalCredit >= 18) return;
-                                            setTotalCredit(prev =>  prev + 3)
+                                            setTotalCredit(prev =>  prev + 3);
                                             setField1(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
                                         <CancelButton  onClick={() => {
-                                            setTotalCredit(prev => Math.max(0, prev - 3))
+                                            setTotalCredit(prev => Math.max(0, prev - 3));
                                             setField1(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
                                     </ButtonContainer>
                                 </CourseList>
@@ -469,10 +488,10 @@ export default function ClassRegister(){
                                     <ButtonContainer>
                                         <RegisterButton onClick={() => {
                                             if (totalCredit >= 18) return;
-                                            setTotalCredit(prev =>  prev + 3)
+                                            setTotalCredit(prev =>  prev + 3);
                                             setField2(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
                                         <CancelButton  onClick={() => {
-                                            setTotalCredit(prev => Math.max(0, prev - 3))
+                                            setTotalCredit(prev => Math.max(0, prev - 3));
                                             setField2(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
                                     </ButtonContainer>
                                 </CourseList>
@@ -482,10 +501,10 @@ export default function ClassRegister(){
                                     <ButtonContainer>
                                         <RegisterButton onClick={() => {
                                             if (totalCredit >= 18) return;
-                                            setTotalCredit(prev =>  prev + 3)
+                                            setTotalCredit(prev =>  prev + 3);
                                             setField3(prev => prev === null ? 1 : prev + 1)}}>신청하기</RegisterButton>
                                         <CancelButton  onClick={() => {
-                                            setTotalCredit(prev => Math.max(0, prev - 3))
+                                            setTotalCredit(prev => Math.max(0, prev - 3));
                                             setField3(prev => Math.max(0, prev - 1))}}>취소하기</CancelButton>
                                     </ButtonContainer>
                                 </CourseList>
@@ -552,13 +571,13 @@ export default function ClassRegister(){
                                         <SnowIcon 
                                             style={ {width : "2vw", height : "2vw"}}
                                             src="/image/icons/blue-snow-icon.png" />
-                                        <InfoBlue>전공 ({majorCount}/63) ({majorType} : {subMajorCount}/42)</InfoBlue>
+                                        <InfoBlue>전공 ({majorCount}/63)</InfoBlue>
                                     </CourseBlueTitle>
 
-                                    <CourseLists>
+                                    <CourseLists style={ { marginLeft : "1vw" }}>
                                         <CourseList>
-                                            <InfoDarkBlue>전공 필수</InfoDarkBlue>
-                                            <ButtonContainer>
+                                            <InfoDarkBlue>전필</InfoDarkBlue>
+                                            <ButtonContainer style={ { marginLeft : "0.7vw" }}>
                                                 <RegisterButton onClick={() => {
                                                     if (totalCredit >= 18) return;
                                                     setTotalCredit(prev =>  prev + 3)
@@ -570,8 +589,8 @@ export default function ClassRegister(){
                                         </CourseList>
 
                                         <CourseList>
-                                            <InfoDarkBlue>전공 선택</InfoDarkBlue>
-                                            <ButtonContainer>
+                                            <InfoDarkBlue>전선</InfoDarkBlue>
+                                            <ButtonContainer style={ { marginLeft : "0.7vw" }}>
                                                 <RegisterButton onClick={() => {
                                                     if (totalCredit >= 18) return;
                                                     setTotalCredit(prev =>  prev + 3)
@@ -589,7 +608,7 @@ export default function ClassRegister(){
                                         <SnowIcon 
                                             style={ {width : "2vw", height : "2vw"}}
                                             src="/image/icons/blue-snow-icon.png" />
-                                        <InfoBlue>{myMajor}</InfoBlue>
+                                        <InfoBlue>{majorType} ({subMajors || 0}/42)</InfoBlue>
                                     </CourseBlueTitle>
 
                                     <MajorButtonContainer>
@@ -697,7 +716,7 @@ const MajorClass = styled.div`
 
 const SubMajorContainer = styled.div`
     width : 100%;
-    height : 18%;
+    height : 20%;
     display : flex;
     flex-direction : row;
     gap : 1vw;
@@ -782,6 +801,7 @@ const CourseList = styled.div`
     flex-direction : row;
     align-items : center;
     margin-right : 2vw;
+    
 `;
 
 const InfoWhite = styled.span`

@@ -5,8 +5,9 @@ import ProgressingList from "./ProgressingList";
 import { apiClient } from "../../apiClient";
 import { useDate } from "./DateContext";
 import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 
-export default function PlanList(){
+export default function PlanList( { plansFinished, setPlansFinished, setCanClickMail }){
     const defaultPlans = {
         "수업": {
             icon: "/image/icons/planlist/class.png",
@@ -38,6 +39,24 @@ export default function PlanList(){
             plus: ["리더십", "사회성", "스트레스"],
             minus: ["체력"]
         },
+        "대외활동": {
+            icon: "/image/icons/planlist/club.png",
+            img : "/image/cutscene/cutimg_club.PNG",
+            plus: ["리더십", "사회성", "스트레스"],
+            minus: ["체력"]
+        },
+        "리더십그룹": {
+            icon: "/image/icons/planlist/club.png",
+            img : "/image/cutscene/cutimg_club.PNG",
+            plus: ["리더십", "사회성", "스트레스"],
+            minus: ["체력"]
+        },
+        "학생회": {
+            icon: "/image/icons/planlist/club.png",
+            img : "/image/cutscene/cutimg_club.PNG",
+            plus: ["리더십", "사회성", "스트레스"],
+            minus: ["체력"]
+        },
         "휴식" : {
             icon: "/image/icons/planlist/rest.png",
             img : "/image/cutscene/cutimg_rest.PNG",
@@ -48,7 +67,7 @@ export default function PlanList(){
             icon: "/image/icons/planlist/hobby.png",
             img : "/image/cutscene/cutimg_hobby.PNG",
             plus: ["-"],
-            minus: ["스트레스", "근성", "사회성", "지력"]
+            minus: ["스트레스", "근성", "사회성", "지력", "코인"]
         },
         "운동" : {
             icon: "/image/icons/planlist/exercise.png",
@@ -98,6 +117,8 @@ export default function PlanList(){
     const [isSubmit, setIsSubmit] = useState(false); //계획리스트 제출 여부
     const { currentMonth } = useDate();
     const [executedPlans, setExecutedPlans] = useState([]); //백엔드 execute로 받은 실행결과 
+    
+    const [executeInternship, setExecuteInternsip] = useState(undefined);
 
     const isAllPlansFilled = monthlyPlans.every((plan) => plan !== null);
 
@@ -117,7 +138,11 @@ export default function PlanList(){
                 if(response.status===200){
                     console.log(response.data);
                     const newItems = response.data.data; 
-                    setFetchedTodo((prev) => [...prev, ...newItems]);
+                    setFetchedTodo((prev) => {
+                        const existing = new Set(prev); // 기존 항목들
+                        const filteredNewItems = newItems.filter(item => !existing.has(item));
+                        return [...prev, ...filteredNewItems];
+                      });
                 }
             } catch(error) {
                 console.log(error);
@@ -144,11 +169,24 @@ export default function PlanList(){
                 console.log(error);
             }
         }
+
+        const getInternship = async()=>{
+            try{
+                const response = await apiClient.get('/event/internship/check');
+                if(response.status === 200){
+                    setExecuteInternsip(response.data.data);
+                    console.log(response.data);
+                }
+            } catch(error){
+                console.log(error);
+            }
+        }
         
         const fetchData = async () => {
             try {
                 await getPlan();
                 await getSemester();
+                await getInternship();
             } catch (error) {
                 console.error("데이터 가져오기 실패:", error);
             }
@@ -156,6 +194,29 @@ export default function PlanList(){
 
         fetchData();
     }, []);
+
+    useEffect(() => {
+        if (executeInternship === true && isVacation === false) {
+          const totalDays = 31;
+          const internDays = 14;
+          const internIcon = "/image/icons/planlist/intern.png";
+          const internTitle = "인턴";
+      
+          const newCalendarPlans = Array.from({ length: totalDays }, (_, i) =>
+            i < internDays ? internIcon : null
+          );
+      
+          const newMonthlyPlans = Array.from({ length: totalDays }, (_, i) =>
+            i < internDays ? internTitle : null
+          );
+      
+          setCalendarPlans(newCalendarPlans);
+          setMonthlyPlans(newMonthlyPlans);
+          setSelectedDate(internDays); // 14일 이후부터 선택 가능
+        }
+      }, [executeInternship, isVacation]);
+
+
 
     const postExecute = async()=>{
         try{
@@ -209,40 +270,71 @@ export default function PlanList(){
         }
     };
 
-    // useEffect(() => {
-    //     console.log("업데이트된 montlyPlans:", montlyPlans);
-    // }, [montlyPlans])
+    const transformedPlans = useMemo(() => {
+        return executedPlans.map((item) => {
+          const effectMap = {
+            GRIT: "근성",
+            STRENGTH: "체력",
+            INTELLIGENCE: "지력",
+            SOCIAL: "사회성",
+            STRESS: "스트레스",
+            LEADERSHIP: "리더십",
+            FOREIGNLANG: "외국어",
+            COIN: "코인",
+          };
+      
+          const fallbackImageMap = {
+            "코인부족": "/image/cutscene/cutimg_nomoney.PNG",
+          };
+      
+          const plus = Object.entries(item.effects)
+            .filter(([_, value]) => value > 0)
+            .map(([key]) => effectMap[key] || key);
+      
+          const minus = Object.entries(item.effects)
+            .filter(([_, value]) => value < 0)
+            .map(([key]) => effectMap[key] || key);
+      
+          return {
+            title: item.taskName,
+            img: defaultPlans[item.taskName]?.img ||
+                 fallbackImageMap[item.taskName] || "",
+            plus,
+            minus,
+          };
+        });
+      }, [executedPlans]);
 
     return(
         <Container>
             {!isSubmit && (
                 <>
                     <CalenderContainer>
-                    <MonthlyContainer>
-                        <SnowIcon  src="/image/icons/snow-icon.png" />
-                        <MonthText>{currentMonth}</MonthText>
-                    </MonthlyContainer>
+                        <MonthlyContainer>
+                            <SnowIcon  src="/image/icons/snow-icon.png" />
+                            <MonthText>{currentMonth}</MonthText>
+                        </MonthlyContainer>
 
-                    <Calender>
-                        <DaysContainer>
-                            {[...Array(7)].map((_, i) => (
-                                <DaysOfWeek key={i} />
-                            ))}
-                        </DaysContainer>
-    
-                        <DatesContainer>
-                            {calendarPlans.map((plan, i) => (
-                                <DateBox 
-                                    key={i} 
-                                    isSelected={i === selectedDate}
-                                >
-                                    {plan && <PlanIcon src={plan} />}
-                                </DateBox>
-                            ))}
-                        </DatesContainer>
-                    </Calender>
+                        <Calender>
+                            <DaysContainer>
+                                {[...Array(7)].map((_, i) => (
+                                    <DaysOfWeek key={i} />
+                                ))}
+                            </DaysContainer>
+        
+                            <DatesContainer>
+                                {calendarPlans.map((plan, i) => (
+                                    <DateBox 
+                                        key={i} 
+                                        isSelected={i === selectedDate}
+                                    >
+                                        {plan && <PlanIcon src={plan} />}
+                                    </DateBox>
+                                ))}
+                            </DatesContainer>
+                        </Calender>
 
-                </CalenderContainer>
+                    </CalenderContainer>
                 
                     <PlannerContainer>
                         <SubmitButton 
@@ -270,35 +362,11 @@ export default function PlanList(){
                 </>
             )}
 
-            {isSubmit &&
+            {isSubmit && 
                 <ProgressingList
-                    plans={executedPlans.map((item) => {
-                    const effectMap = {
-                        GRIT: "근성",
-                        STRENGTH: "체력",
-                        INTELLIGENCE: "지력",
-                        SOCIAL: "사회성",
-                        STRESS: "스트레스",
-                        LEADERSHIP: "리더십",
-                        FOREIGNLANG: "외국어",
-                        COIN : "코인"
-                    };
-              
-                    const plus = Object.entries(item.effects)
-                        .filter(([_, value]) => value > 0)
-                        .map(([key]) => effectMap[key] || key);
-                
-                    const minus = Object.entries(item.effects)
-                        .filter(([_, value]) => value < 0)
-                        .map(([key]) => effectMap[key] || key);
-                
-                    return {
-                        title: item.taskName,
-                        img: defaultPlans[item.taskName]?.img || "",
-                        plus,
-                        minus,
-                    };
-                    })}
+                    setPlansFinished={setPlansFinished}
+                    plans={transformedPlans}
+                    setCanClickMail={setCanClickMail}
                 />
             }
 

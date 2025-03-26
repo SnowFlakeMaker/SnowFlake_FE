@@ -1,41 +1,65 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useDate } from "./DateContext";
-
-
-export default function ProgressingList( { plans } ){
+import { apiClient } from "../../apiClient";
+import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
+export default function ProgressingList( { plans, setPlansFinished, setCanClickMail  } ){
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isComplete, setIsComplete] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const { nextDay } = useDate();
 
-    const intervalRef = useRef(null);
-    
+    const timeoutRef = useRef(null);
+    const indexRef = useRef(0); 
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setIsComplete(true);
+        setPlansFinished(true);
+        setCanClickMail(true);
+    };
+
     useEffect(() => {
         if (plans.length === 0) return;
       
-        const maxLength = plans.length;
+        setCurrentIndex(0);
+        setIsComplete(false);
+        setShowModal(false);
+        setCanClickMail(false);
+        indexRef.current = 0;
       
-        intervalRef.current = setInterval(() => {
-          setCurrentIndex((prevIndex) => {
-            const nextIndex = prevIndex + 1;
+        const runStep = () => {
+          if (indexRef.current >= plans.length) {
+            setIsComplete(true);
+            setShowModal(true);
+            return;
+          }
       
-            if (nextIndex >= maxLength) {
-              clearInterval(intervalRef.current);
-              setIsComplete(true);
-              setShowModal(true);
-            }
+          timeoutRef.current = setTimeout(() => {
+            nextDay(); // 날짜 먼저 올리고
+            indexRef.current += 1;
+            console.log(indexRef.current);
+            setCurrentIndex(indexRef.current); // 날짜 올라간 후에 index 올림
       
-            return nextIndex < maxLength ? nextIndex : prevIndex;
-          });
+            runStep(); // 다음 타이머 예약
+          }, 3000);
+        };
       
-          nextDay();
-        }, 3000);
+        runStep();
       
-        return () => clearInterval(intervalRef.current);
-      }, [plans]);
+        return () => clearTimeout(timeoutRef.current);
+    }, [plans]);
+
+    useEffect(() => {
+        console.log("🔄 currentIndex", currentIndex);
+        console.log("🧩 currentPlan", plans[currentIndex]);
+        console.log("📦 전체 plans", plans);
+      }, [currentIndex]);
+
 
     const currentPlan = plans[currentIndex];
+
 
     return(
         <>
@@ -43,12 +67,22 @@ export default function ProgressingList( { plans } ){
                 <Container>
                     <DoingContainer>
                         <DoingText>{currentPlan.title}</DoingText>
-                        <DoingImg src={currentPlan.img} />
+                        <DoingImg src={currentPlan.img}  key={currentIndex}/>
                     </DoingContainer>
                     <StatusContainer>
-                        <StatusText style={{ marginBottom: "8vh", marginTop : "1vw" }}>효과</StatusText>
-                        <StatusText style={{ marginBottom: "1vh" }}> ▶ 증가 : {currentPlan.plus.join(', ')} </StatusText>
-                        <StatusText> ▶ 감소 :{currentPlan.minus.join(', ')}</StatusText>
+                        {currentPlan.title === "코인부족" && 
+                            <StatusText>코인이 부족하여 해당 계획이 실행되지 않고 다음날로 넘어갑니다.</StatusText>
+                        }
+                        {currentPlan.title !== "코인부족" && 
+                            <>
+                                <StatusText style={{ marginBottom: "8vh", marginTop : "1vw" }}>효과</StatusText>
+                                <StatusText style={{ marginBottom: "1vh" }}> ▶ 증가 : {currentPlan.plus.join(', ')} </StatusText>
+                                <StatusText> ▶ 감소 :{currentPlan.minus.join(', ')}</StatusText>
+                            </>
+                        }
+                        
+                        
+                        
                     </StatusContainer>
                 </Container>
             }
@@ -57,7 +91,7 @@ export default function ProgressingList( { plans } ){
             {showModal &&
                 <ModalOverlay>
                     <ModalText>이번 달 계획이 모두 완료되었습니다!</ModalText>
-                    <BlueButton onClick={() => setShowModal(false)}>닫기</BlueButton>
+                    <BlueButton onClick={handleCloseModal}>닫기</BlueButton>
                 </ModalOverlay>
             }
             
@@ -106,12 +140,15 @@ const StatusContainer = styled.div`
     flex-direction: column;
     position: fixed;
     right: 1vw;
+    padding-top: 1.5vh;
+    padding-right: 1.5vw;
 `;
 
 const StatusText = styled.span`
     font-size :  ${({ theme }) => theme.typography.title24.fontSize};
     color : ${({ theme }) => theme.colors.mainblue100};
     margin-left : 1.5vw;
+    line-height: 1.3;
 `;
 
 const ModalOverlay = styled.div`

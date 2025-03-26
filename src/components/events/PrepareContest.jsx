@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { apiClient } from "../../apiClient";
 
 export default function PrepareContest(){
     const [isApply, setIsApply] = useState(undefined);
@@ -8,6 +9,17 @@ export default function PrepareContest(){
     
     if(isClosed == true) return null;
 
+    const postContest = async()=>{
+        try{
+            const response = await apiClient.post('/event/contest');
+            if(response.status === 200){
+                console.log(response.data);
+                setIsAllowed(response.data.data.success);
+            }
+        } catch(error){
+            console.log(error);
+        }
+    }
     return(
         <Container>
             {isApply === undefined &&
@@ -17,7 +29,7 @@ export default function PrepareContest(){
                     </TextContainer>
 
                     <SelectContainer>
-                        <SelectOption onClick={()=>setIsApply(true)}>준비한다. (Y)</SelectOption>
+                        <SelectOption onClick={()=>{setIsApply(true); postContest();}}>준비한다. (Y)</SelectOption>
                         <SelectOption onClick={()=>setIsApply(false)}>준비하지 않는다. (N)</SelectOption>
                     </SelectContainer>
                 </>
@@ -36,7 +48,7 @@ export default function PrepareContest(){
             {isAllowed === false &&
                 <>
                     <TextContainer>
-                        <Text>아쉽게도 공모전에서 수상하지 못했어.</Text>
+                        <Text>아쉽게도 공모전에서 수상하지 못했어. 그렇지만 분명 성장한 부분도 있을거야.</Text>
                     </TextContainer>
 
                     <SelectContainer>

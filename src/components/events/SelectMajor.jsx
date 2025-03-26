@@ -8,8 +8,11 @@ export default function SelectMajor(){
 
     const postMajor = async(majorChoice)=>{
         try {
+            console.log(majorChoice);
             const response = await apiClient.post(`/event/major?majorChoice=${majorChoice}`);
-            console.log("전공 신청 성공:", response.data);
+            if(response.status === 200){
+                console.log("전공 신청 성공:", response.data);
+            }
           } catch (error) {
             console.error("전공 신청 실패:", error);
           }
@@ -25,10 +28,10 @@ export default function SelectMajor(){
             </TextContainer>
 
             <SelectContainer>
-                <SelectOption onClick={()=> {setMajor("복수전공"); postMajor(major);} }>복수전공</SelectOption>
-                <SelectOption onClick={()=> {setMajor("부전공"); postMajor(major);}}>부전공</SelectOption>
-                <SelectOption onClick={()=> {setMajor("심화전공"); postMajor(major);}}>심화전공</SelectOption>
-                <SelectOption onClick={()=> {setMajor("선택안함"); postMajor(major);}} >선택하지 않는다.</SelectOption>
+                <SelectOption onClick={()=> {setMajor("복수전공"); postMajor("복수전공");} }>복수전공</SelectOption>
+                <SelectOption onClick={()=> {setMajor("부전공"); postMajor("부전공");}}>부전공</SelectOption>
+                <SelectOption onClick={()=> {setMajor("심화전공"); postMajor("심화전공");}}>심화전공</SelectOption>
+                <SelectOption onClick={()=> {setMajor("선택안함"); postMajor("선택안함");}} >선택하지 않는다.</SelectOption>
             </SelectContainer>
         </Container>
     );

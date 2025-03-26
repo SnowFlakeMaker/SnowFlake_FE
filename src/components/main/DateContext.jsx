@@ -1,56 +1,58 @@
 import React from "react";
 import { createContext, useContext, useState, useEffect } from "react";
 import { apiClient } from "../../apiClient";
+import { useQuery } from "@tanstack/react-query";
 
 const DateContext = createContext();
 
 export const useDate = () => useContext(DateContext);
 
 export const DateProvider = ({ children }) => {
-    const [currentDay, setCurrentDay] = useState(1); // 시작일
-    const [currentMonth, setCurrentMonth] = useState("3월"); // 기본값
-    const [semester, setSemester] = useState("");
-    const [maxDay, setMaxDay] = useState(31); // 최대 날짜 제한 추가
+    const [currentDay, setCurrentDay] = useState(1);
+    const [maxDay, setMaxDay] = useState(31);
+
+    const { data: semesterData } = useQuery({
+        queryKey: ["semester"],
+        queryFn: async () => {
+            const response = await apiClient.get("/main/chapter");
+            return response.data.data.current_chapter.chapter;
+        },
+        refetchInterval: 5000, // ⏱ 5초마다 자동 갱신
+    });
+
+    // 학기에 따라 월, maxDay 계산
+    const semester = semesterData || "";
+    useEffect(() => {
+        if (!semester) return;
+    
+        if (semester.includes("1학기") || semester.includes("2학기")) {
+            setMaxDay(31);
+            setCurrentDay(1); // ✅ 학기 바뀌면 1일부터 시작
+        } else if (semester.includes("여름방학") || semester.includes("겨울방학")) {
+            setMaxDay(14);
+            setCurrentDay(1); // ✅ 방학도 마찬가지
+        }
+    }, [semester]);
+
+    // ✅ currentMonth는 계산값으로 처리 (state 아님)
+    let currentMonth = "3월";
+    if (semester.includes("1학기")) {
+        currentMonth = "3월";
+    } else if (semester.includes("2학기")) {
+        currentMonth = "10월";
+    } else if (semester.includes("여름방학")) {
+        currentMonth = "7월";
+    } else if (semester.includes("겨울방학")) {
+        currentMonth = "1월";
+    }
 
     const nextDay = () => {
-        setCurrentDay((prev) => {
-            if (prev >= maxDay) return prev; // 더 이상 증가하지 않음
-            return prev + 1;
+        setCurrentDay(prev => {
+            const next = prev < maxDay ? prev + 1 : prev;
+            console.log(`📅 날짜 변경: ${prev} → ${next} (max: ${maxDay})`);
+            return next;
         });
     };
-
-    useEffect(() => {
-        const getSemester = async () => {
-            try {
-                const response = await apiClient.get('/main/chapter');
-                if (response.status === 200) {
-                    console.log(response.data);
-                    const semesterValue = response.data.data.current_chapter.chapter;
-                    setSemester(semesterValue);
-    
-                    // 학기에 따라 월 설정 (포함되는 경우)
-                    if (semesterValue.includes("1학기")) {
-                        setCurrentMonth("3월");
-                        setMaxDay(31);
-                    } else if (semesterValue.includes("2학기")) {
-                        setCurrentMonth("9월");
-                        setMaxDay(31);
-                    } else if (semesterValue.includes("여름방학")) {
-                        setCurrentMonth("7월");
-                        setMaxDay(14);
-                    } else if (semesterValue.includes("겨울방학")) {
-                        setCurrentMonth("1월");
-                        setMaxDay(14);
-                    }
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-    
-        getSemester();
-    }, []);
-
     return (
         <DateContext.Provider value={{ currentDay, currentMonth, nextDay }}>
             {children}

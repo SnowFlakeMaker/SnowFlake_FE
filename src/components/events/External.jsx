@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { apiClient } from "../../apiClient";
 
 export default function External(){
     const [isApply, setIsApply] = useState(undefined);
@@ -8,6 +9,19 @@ export default function External(){
     
     if(isClosed == true) return null;
 
+
+    const postExternal = async()=>{
+        try{
+            const response = await apiClient.post('/event/external');
+            if(response.status === 200){
+                setIsAllowed(response.data.data.success);
+                console.log(response.data);
+            }
+        }catch(error){
+            console.log(error);
+        }
+    }
+    
     return(
         <Container>
             {isApply === undefined &&
@@ -17,7 +31,7 @@ export default function External(){
                     </TextContainer>
 
                     <SelectContainer>
-                        <SelectOption onClick={()=>setIsApply(true)}>지원한다. (Y)</SelectOption>
+                        <SelectOption onClick={()=>{setIsApply(true); postExternal();}}>지원한다. (Y)</SelectOption>
                         <SelectOption onClick={()=>setIsApply(false)}>지원하지 않는다. (N)</SelectOption>
                     </SelectContainer>
                 </>

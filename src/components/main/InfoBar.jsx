@@ -4,17 +4,16 @@ import MailList from "./MailList";
 import Logout from "../../pages/auth/Logout";
 import { useTutorial } from "../../pages/intro/Tutorial";
 import { apiClient } from "../../apiClient";
+import { useQuery } from "@tanstack/react-query";
 
-export default function InfoBar( { isHighlight, alarmList }){
+export default function InfoBar( { isHighlight, alarmList, setAlarmList, setOneTimeAlarmList, plansFinished, setIsEventActive, canClickMail }){
     const [showMail, setShowMail] = useState(false);
     const [showLogout, setShowLogout] = useState(false);
     const count = alarmList.length; //알림 갯수
     const { isTutorial } = useTutorial(); //튜토리얼 여부
 
-    const [coin, setCoin] = useState(0);
-
     const handleMailList =()=>{
-        if (isTutorial) return;
+        if (isTutorial || !canClickMail) return; 
         setShowMail((prev) => !prev);
     }
 
@@ -23,23 +22,14 @@ export default function InfoBar( { isHighlight, alarmList }){
         setShowLogout((prev) => !prev);
     }
 
-    useEffect(()=>{
-        const getCoin = async () =>{
-            try{
-                const response = await apiClient.get('/main/status');
-                if(response.status === 200) {
-                    console.log(response.data)
-                    const data = response.data.data;
-                    setCoin(data.coin);
-                }
-            } catch(error) {
-                console.log(error);
-            }
-        }
-
-        getCoin();
-    }, [])
-    
+    const { data: coin } = useQuery({
+        queryKey: ['coin'],
+        queryFn: async () => {
+          const response = await apiClient.get('/main/status');
+          return response.data.data.coin;
+        },
+        refetchInterval: 5000, // 5초마다 자동 갱신
+    });
 
     
     return(
@@ -62,7 +52,9 @@ export default function InfoBar( { isHighlight, alarmList }){
                 <Icon onClick={handleLogout} src="image/icons/setting.png"/>
             </SettingContainer>
 
-            {showMail && <MailList alarmList={alarmList} />}
+            {showMail && <MailList alarmList={alarmList} 
+            setAlarmList={setAlarmList} setOneTimeAlarmList={setOneTimeAlarmList} 
+            plansFinished={plansFinished} setIsEventActive={setIsEventActive} />}
             {showLogout && <Logout/>}
         </Conatiner>
     );
