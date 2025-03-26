@@ -19,8 +19,8 @@ export default function Festival(){
             }
         } catch (error){
             if (error.response?.status === 409){
-                setIsAllowed(error.response?.data.success);
-                console.log(error.response?.data.success);
+                setIsAllowed(error.response?.data.data.success);
+                console.log(error.response);
             }
         }
     }
@@ -35,7 +35,7 @@ export default function Festival(){
 
                 <SelectContainer>
                     <SelectOption onClick={()=>{setIsApply(true); postFestival();}}>간다. (Y)</SelectOption>
-                    <SelectOption onClick={()=>setIsApply(false)}>가지 않는다. (N)</SelectOption>
+                    <SelectOption onClick={()=>{setIsApply(false); setIsClosed(true);}}>가지 않는다. (N)</SelectOption>
                 </SelectContainer>
                 </>
             }
