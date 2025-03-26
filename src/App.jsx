@@ -23,6 +23,7 @@ import Ending from "./pages/ending/Ending";
 import ExchangeProceeding from "./components/events/ExchangeProceeding";
 import Credit from "./pages/main/Credit";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import MasterSequence from "./pages/ending/MasterSequence";
 
 function App() {
 
@@ -56,8 +57,10 @@ function App() {
                     <Route path="/main" element={<Main/>}/>
                     <Route path="/stress_ending" element={<StressEnding/>} />
                     <Route path="/ending" element={<Ending/>} />
-                    <Route path="/exchgane" element={<ExchangeProceeding/>} />
+                    <Route path="/exchange" element={<ExchangeProceeding/>} />
                     <Route path="/credit" element={<Credit/>} />
+                    <Route path="/combined-programs" element={<MasterSequence/>} />
+
 
                   </Routes>
                 </Router>
