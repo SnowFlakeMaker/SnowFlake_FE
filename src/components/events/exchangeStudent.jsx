@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { apiClient } from "../../apiClient";
+import { useExchange } from "../contexts/ExchangeContext";
 
 export default function ExchangeStudent(){
     const [isApply, setIsApply] = useState(undefined);
     const [isAllowed, setIsAllowed] = useState(undefined); //백엔드에서 받을 교환학생 합격 여부 
     const [isClosed, setIsClosed] = useState(false);
+    const { setIsExchangeAccepted } = useExchange();
+
     
     if(isClosed == true) return null;
 
@@ -13,7 +16,9 @@ export default function ExchangeStudent(){
         try{
             const response = await apiClient.post('/event/exchange/apply');
             if(response.status === 200){
-                setIsAllowed(response.data);
+                console.log(response.data);
+                setIsAllowed(response.data.data.success);
+                setIsExchangeAccepted(isAllowed);
             }
         } catch(error){
             console.log(error);
