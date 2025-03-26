@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { apiClient } from "../../apiClient";
 import { useNavigate } from "react-router-dom";
@@ -10,10 +10,34 @@ export default function Ending(){
     const [dream, setDream] = useState("");
     const [isMaster, setIsMaster] = useState(null);
 
+
+    const audioRef = useRef(null);
+    const [isMuted, setIsMuted] = useState(true);
+
     const [text, setText] = useState("");
     const [src, setSrc] = useState("");
 
     const navigate = useNavigate();
+
+    const handleUnmute = () => {
+        const audio = audioRef.current;
+        if (audio) {
+            const newMuteState = !isMuted;
+            audio.muted = newMuteState;
+            setIsMuted(newMuteState);
+            if (!audio.paused) {
+                audio.play().catch(err => console.log("오디오 재생 실패:", err));
+            }
+        }
+    };
+
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (audio) {
+            audio.muted = true; // 최초엔 음소거된 상태로 시작
+            audio.play().catch(err => console.log("자동 재생 실패:", err));
+        }
+    }, []);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -92,7 +116,7 @@ export default function Ending(){
                 }
                 else if(endingText === "짐 대표"){
                     setText("건강 때문에 시작한 운동이 직업이 될 줄은 몰랐다. 직접 운영하는 피트니스 센터도 생기고운동 루틴 짜는 게 이젠 일상이 됐다. 앞으로도 건강하게, 꾸준히 이 길을 걸어갈 생각이다.");
-                    setSrc("");
+                    setSrc("/image/ending/endingimg_health_gym.PNG");
                 }
                 else if(endingText === "연구원"){
                     setText("공부하는 게 재밌었다. 끝까지 파고들다 보니 연구라는 길이 내게 맞았다. 힘든 순간도 있지만, 내가 좋아하는 걸 연구할 수 있어서 행복하다.");
@@ -165,6 +189,8 @@ export default function Ending(){
 
     return(
         <BackgroundContainer>
+            <audio ref={audioRef} src="/music/ending.mp3" loop autoPlay /> 
+            <SoundButton onClick={handleUnmute}> {isMuted ? "🔇" : "🔈"}</SoundButton>
             <TextContainer>
                 <Text>{text}</Text>
             
@@ -197,8 +223,8 @@ const BackgroundImg = styled.img`
 
 const TextContainer = styled.div`
     width: 95%;
-    height : 20vh;
-    bottom : 5vh;
+    height : 23vh;
+    bottom : 1vh;
     position: fixed;
     background-color: ${({ theme }) => theme.colors.mainblue100};
     border: 2px solid ${({ theme }) => theme.colors.mainblue400};
@@ -221,5 +247,18 @@ const NextText = styled.span`
     text-align: right;
     padding-right: 3vw;
     bottom: 3vh;
+    cursor: pointer;
+`;
+
+
+const SoundButton = styled.button`
+    border : none;    
+    position: fixed;
+    top: 2vh;
+    right: 2vw;
+    z-index: 20;
+    font-size: 24px;
+    background: none;
+    border: none;
     cursor: pointer;
 `;

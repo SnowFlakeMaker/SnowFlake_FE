@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import MailList from "./MailList";
-import Logout from "../../pages/auth/Logout";
+import Setting from "../../pages/main/Setting";
 import { useTutorial } from "../../pages/intro/Tutorial";
 import { apiClient } from "../../apiClient";
 import { useQuery } from "@tanstack/react-query";
@@ -55,7 +55,7 @@ export default function InfoBar( { isHighlight, alarmList, setAlarmList, setOneT
             {showMail && <MailList alarmList={alarmList} 
             setAlarmList={setAlarmList} setOneTimeAlarmList={setOneTimeAlarmList} 
             plansFinished={plansFinished} setIsEventActive={setIsEventActive} />}
-            {showLogout && <Logout/>}
+            {showLogout && <Setting />}
         </Conatiner>
     );
 }

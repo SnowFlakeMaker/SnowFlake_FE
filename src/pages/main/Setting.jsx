@@ -1,12 +1,34 @@
-import React from "react";
+import React , {useRef, useState, useEffect} from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { apiClient } from "../../apiClient";
 
-export default function Logout(){
-    const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+export default function Setting(){
     const navigate = useNavigate();
+    const audioRef = useRef(null);    
+    const [isMuted, setIsMuted] = useState(true);
+
+    const handleUnmute = () => {
+        console.log("클릭중");
+
+        const audio = audioRef.current;
+        if (audio) {
+            const newMuteState = !isMuted;
+            audio.muted = newMuteState;
+            setIsMuted(newMuteState);
+            if (!audio.paused) {
+                audio.play().catch(err => console.log("오디오 재생 실패:", err));
+            }
+        }
+    };
+
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (audio) {
+            audio.muted = true; // 최초엔 음소거된 상태로 시작
+            audio.play().catch(err => console.log("자동 재생 실패:", err));
+        }
+    }, []);
 
     const getLogout = async() => {
         try {
@@ -22,8 +44,13 @@ export default function Logout(){
 
     return(
         <Container>
+            <audio ref={audioRef} src="/music/playing.mp3" loop autoPlay /> 
             <AlarmContainer onClick={getLogout}>
                 <AlarmTitle>로그아웃</AlarmTitle>
+            </AlarmContainer>
+
+            <AlarmContainer onClick={handleUnmute}>
+                <AlarmTitle>사운드 재생 {isMuted ? "🔇" : "🔈"} </AlarmTitle>
             </AlarmContainer>
         </Container>
     );
