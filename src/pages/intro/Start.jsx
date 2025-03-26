@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect} from "react";
 import { useNavigate } from "react-router-dom"; 
 import styled from "styled-components";
 
 export default function Start(){
     const navigate = useNavigate();
+    const audioRef = useRef(null);
+    const [isMuted, setIsMuted] = useState(true);
 
     const GoSignIn =()=>{
         navigate("/signin");
@@ -13,8 +15,27 @@ export default function Start(){
         navigate("/login");
     }
 
+    const handleUnmute = () => {
+        const audio = audioRef.current;
+        if (audio) {
+            audio.muted = false;
+            audio.play().catch(err => console.log("오디오 재생 실패:", err));
+            setIsMuted(false);
+        }
+    };
+
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (audio) {
+            audio.muted = true; // 최초엔 음소거된 상태로 시작
+            audio.play().catch(err => console.log("자동 재생 실패:", err));
+        }
+    }, []);
+
     return(
         <BackgroundContainer>
+            <audio ref={audioRef} src="/music/start.mp3" loop autoPlay /> 
+            <SoundButton onClick={handleUnmute}> {isMuted ? "🔇" : "🔈"}</SoundButton>
             <LogoImg src="/image/background/logo.png" />
             <ButtonContainer>
                 <BlueButton onClick={GoSignIn}>회원가입</BlueButton>
@@ -85,4 +106,16 @@ const BlackText = styled.span`
     z-index : 15;
     position: fixed;
     bottom: 5vh;
+`;
+
+const SoundButton = styled.button`
+    border : none;    
+    position: fixed;
+    top: 2vh;
+    right: 2vw;
+    z-index: 20;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
 `;

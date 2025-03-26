@@ -285,6 +285,7 @@ export default function PlanList( { plansFinished, setPlansFinished, setCanClick
       
           const fallbackImageMap = {
             "코인부족": "/image/cutscene/cutimg_nomoney.PNG",
+            "인턴" : "/image/cutscene/intern.PNG",
           };
       
           const plus = Object.entries(item.effects)
