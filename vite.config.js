@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://52.79.237.120:8080', // EC2 주소
+        target: 'https://nsmaker.o-r.kr', // EC2 주소
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, ''),
         ws: true,
