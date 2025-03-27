@@ -201,7 +201,7 @@ export default function Main(){
 
     return(
         <BackgroundContainer>
-            <AudiPlayer />
+            <AudioPlayer />
             {/* 튜토리얼 중이면 어두운 배경 */}
             {isTutorial && <Overlay />}
             <Profile isHighlight={isTutorial && currentStep === 0} plansFinished={plansFinished} setPlansFinished={setPlansFinished}  setCanClickMail={setCanClickMail}/>
