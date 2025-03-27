@@ -33,7 +33,7 @@ const refreshToken = async () => {
 // ✅ 자동 로그아웃 함수
 const logout = () => {
     console.log("🚨 리프레시 토큰 만료 - 자동 로그아웃 실행");
-    window.location.href = "/";
+    // window.location.href = "/";
 };
 
 // ✅ 인터셉터에서 403 또는 401 발생 시 토큰 갱신
