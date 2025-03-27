@@ -47,7 +47,7 @@ export default function LogIn(){
             });
             if (response.status === 200 && response.data.data) {
                 console.log("로그인 성공:", response.data);
-                navigate("/main");
+                navigate("/entrance");
                 setIsLoggedIn(true); 
             } else {
                 setPasswordErr(true);
