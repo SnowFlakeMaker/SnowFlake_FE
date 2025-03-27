@@ -38,14 +38,14 @@ export default function LogIn(){
 
     const postLogIn = async()=>{
         try {
-            await axios.post("/auth/login", {
+            await axios.post(`${SERVER_URL}/auth/login`, {
                 email,
                 password
               }, {
                 withCredentials: true,
             });
 
-
+            console.log("요청 URL:", import.meta.env.VITE_SERVER_URL);
             if (response.status === 200 && response.data.data) {
                 console.log("로그인 성공:", response.data);
                 navigate("/main");
