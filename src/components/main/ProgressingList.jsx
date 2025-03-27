@@ -43,7 +43,7 @@ export default function ProgressingList( { plans, setPlansFinished, setCanClickM
             setCurrentIndex(indexRef.current); // 날짜 올라간 후에 index 올림
       
             runStep(); // 다음 타이머 예약
-          }, 300);
+          }, 800);
         };
       
         runStep();
