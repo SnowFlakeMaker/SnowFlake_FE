@@ -39,7 +39,7 @@ export default function LogIn(){
     const postLogIn = async()=>{
         try {
             const response = await apiClient.post(
-                `/api/auth/login`, 
+                `/auth/login`, 
                 {
                     email: email,
                     password: password,
