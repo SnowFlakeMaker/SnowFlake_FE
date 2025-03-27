@@ -38,14 +38,13 @@ export default function LogIn(){
 
     const postLogIn = async()=>{
         try {
-            const response = await apiClient.post(
-                `/auth/login`, 
-                {
-                    email: email,
-                    password: password,
-                },
-            );
-    
+            await axios.post("/auth/login", {
+                email,
+                password
+              }, {
+                withCredentials: true,
+            });
+
 
             if (response.status === 200 && response.data.data) {
                 console.log("로그인 성공:", response.data);
