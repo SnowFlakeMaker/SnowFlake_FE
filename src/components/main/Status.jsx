@@ -50,7 +50,7 @@ export default function Status(){
                 {title: "평가", value: generalAssess}
             ].map((item, index) => (
                 <StatusContainer key={index}>
-                    <Title>{item.title}</Title>
+                    <Title>{item.title} ({item.value})</Title>
                     <Icon src="/image/icons/status-bar.png"/>
                     <Bar>
                         <StatusBarContainer>
@@ -66,8 +66,8 @@ export default function Status(){
 }
 
 const Container = styled.div`
-    width: 30vw;
-    height: 45vh;
+    width: 32vw;
+    height: 47vh;
     z-index : 5;
     border : 0.2vw solid  ${({ theme }) => theme.colors.mainblue100};
     background-color :  ${({ theme }) => theme.colors.mainblue400};
@@ -88,7 +88,7 @@ const StatusContainer = styled.div`
 `;
 
 const Title = styled.span`
-    width : 5vw;
+    width : 7vw;
     color :  ${({ theme }) => theme.colors.mainblue100};
     font-size :  ${({ theme }) => theme.typography.subtitle20.fontSize};
     padding-left : 1vw;
