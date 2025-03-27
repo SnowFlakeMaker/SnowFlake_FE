@@ -25,6 +25,7 @@ import Credit from "./pages/main/Credit";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MasterSequence from "./pages/ending/MasterSequence";
 import { AuthProvider } from "./pages/auth/Authcontext";
+import { SoundProvider } from "./pages/main/Soundcontext";
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
   return (
     <CookiesProvider>
       <QueryClientProvider client={queryClient}>
+        <SoundProvider>
         <AuthProvider>
           <TutorialProvider>
           <ExchangeProvider>
@@ -71,6 +73,7 @@ function App() {
           </ExchangeProvider>
           </TutorialProvider>
           </AuthProvider>
+          </SoundProvider>
 
       </QueryClientProvider>
 

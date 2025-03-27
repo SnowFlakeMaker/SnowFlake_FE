@@ -2,24 +2,24 @@ import React , {useRef, useState, useEffect} from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { apiClient } from "../../apiClient";
+import { useSound } from "./Soundcontext";
 
 export default function Setting(){
     const navigate = useNavigate();
     const audioRef = useRef(null);    
-    const [isMuted, setIsMuted] = useState(true);
+    const { isMuted, setIsMuted } = useSound();
+
 
     const handleUnmute = () => {
-        console.log("클릭중");
-
-        const audio = audioRef.current;
-        if (audio) {
-            const newMuteState = !isMuted;
-            audio.muted = newMuteState;
-            setIsMuted(newMuteState);
-            if (!audio.paused) {
-                audio.play().catch(err => console.log("오디오 재생 실패:", err));
-            }
-        }
+        setIsMuted(prev => !prev);
+        // if (audio) {
+        //     const newMuteState = !isMuted;
+        //     audio.muted = newMuteState;
+        //     setIsMuted(newMuteState);
+        //     if (!audio.paused) {
+        //         audio.play().catch(err => console.log("오디오 재생 실패:", err));
+        //     }
+        // }
     };
 
     useEffect(() => {

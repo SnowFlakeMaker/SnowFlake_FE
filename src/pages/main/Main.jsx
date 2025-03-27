@@ -2,12 +2,12 @@ import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import Profile from "../../components/main/Profile";
 import InfoBar from "../../components/main/InfoBar";
-import EventIcon from "../../components/main/EventIcon";
 import { TutorialContainer, TutorialText, useTutorial } from "../intro/Tutorial";
 import { apiClient } from "../../apiClient";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { useExchange } from "../../components/contexts/ExchangeContext";
 import { useNavigate } from "react-router-dom";
+import AudioPlayer from "./AudioPlayer";
 
 export default function Main(){
     const SERVER_URL = import.meta.env.VITE_SERVER_URL;
@@ -201,6 +201,7 @@ export default function Main(){
 
     return(
         <BackgroundContainer>
+            <AudiPlayer />
             {/* 튜토리얼 중이면 어두운 배경 */}
             {isTutorial && <Overlay />}
             <Profile isHighlight={isTutorial && currentStep === 0} plansFinished={plansFinished} setPlansFinished={setPlansFinished}  setCanClickMail={setCanClickMail}/>
