@@ -39,7 +39,7 @@ export default function LogIn(){
     const postLogIn = async()=>{
         console.log("요청 URL:", import.meta.env.VITE_SERVER_URL);
         try {
-            await axios.post(`${SERVER_URL}/auth/login`, {
+            const response = await axios.post(`${SERVER_URL}/auth/login`, {
                 email : email,
                 password : password
             }, {
