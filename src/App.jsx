@@ -24,6 +24,7 @@ import ExchangeProceeding from "./components/events/ExchangeProceeding";
 import Credit from "./pages/main/Credit";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MasterSequence from "./pages/ending/MasterSequence";
+import { AuthProvider } from "./pages/auth/Authcontext";
 
 function App() {
 
@@ -39,6 +40,7 @@ function App() {
   return (
     <CookiesProvider>
       <QueryClientProvider client={queryClient}>
+        <AuthProvider>
           <TutorialProvider>
           <ExchangeProvider>
             <DateProvider>
@@ -68,6 +70,8 @@ function App() {
             </DateProvider>
           </ExchangeProvider>
           </TutorialProvider>
+          </AuthProvider>
+
       </QueryClientProvider>
 
     </CookiesProvider>

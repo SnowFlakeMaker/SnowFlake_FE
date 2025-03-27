@@ -2,6 +2,7 @@ import React from "react";
 import { createContext, useContext, useState, useEffect } from "react";
 import { apiClient } from "../../apiClient";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "../../pages/auth/Authcontext";
 
 const DateContext = createContext();
 
@@ -10,6 +11,7 @@ export const useDate = () => useContext(DateContext);
 export const DateProvider = ({ children }) => {
     const [currentDay, setCurrentDay] = useState(1);
     const [maxDay, setMaxDay] = useState(31);
+    const { isLoggedIn } = useAuth();
 
     const { data: semesterData } = useQuery({
         queryKey: ["semester"],
@@ -17,7 +19,8 @@ export const DateProvider = ({ children }) => {
             const response = await apiClient.get("/main/chapter");
             return response.data.data.current_chapter.chapter;
         },
-        refetchInterval: 5000, // ⏱ 5초마다 자동 갱신
+        refetchInterval: 5000,
+        enabled: isLoggedIn, // ⏱ 5초마다 자동 갱신
     });
 
     // 학기에 따라 월, maxDay 계산

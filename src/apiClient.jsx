@@ -44,7 +44,7 @@ apiClient.interceptors.response.use(
 
         const originalRequest = error.config;
 
-        if ((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry) {
+        if ((error.response?.status === 401) && !originalRequest._retry) {
             console.log("🔄 401 또는 403 감지 → 토큰 갱신 시도");
             originalRequest._retry = true;
 

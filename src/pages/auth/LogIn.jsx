@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useCookies } from "react-cookie";
 import axios from "axios";
+import { useAuth } from "./Authcontext";
 
 export default function LogIn(){
     const SERVER_URL = import.meta.env.VITE_SERVER_URL;
@@ -15,6 +16,8 @@ export default function LogIn(){
     const [saveID, setSaveID] = useState(false);
     const [cookies, setCookie, removeCookie] = useCookies(["rememberEmail"]); 
     const [passwordErr, setPasswordErr] = useState(null);
+
+    const { setIsLoggedIn } = useAuth();
 
     useEffect(() => {
     	/*저장된 쿠키값이 있으면, CheckBox TRUE 및 UserID에 값 셋팅*/
@@ -52,6 +55,7 @@ export default function LogIn(){
             if (response.status === 200 && response.data.data) {
                 console.log("로그인 성공:", response.data);
                 navigate("/main");
+                setIsLoggedIn(true); 
             } else {
                 setPasswordErr(true);
             }
