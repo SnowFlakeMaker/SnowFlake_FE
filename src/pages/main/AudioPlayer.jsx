@@ -1,6 +1,6 @@
 // components/BgmPlayer.jsx
 import { useEffect, useRef, useState } from "react";
-import { useSound } from "../contexts/SoundContext";
+import { useSound } from "./Soundcontext";
 
 export default function AudioPlayer() {
     const audioRef = useRef(null);
