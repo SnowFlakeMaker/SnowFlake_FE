@@ -24,7 +24,7 @@ export default function MasterSequence(){
                 
                 {showNextText && <NextText> ▶ 엔딩보기</NextText>}
             </TextContainer>
-            {/* <BackgroundImg /> */}
+            <BackgroundImg src="/image/ending/status/intelli/endingimg_brain_student.PNG" />
         </BackgroundContainer>
     );
 }

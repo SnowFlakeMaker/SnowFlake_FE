@@ -33,7 +33,7 @@ export default function StressEnding(){
 
             
             
-            {/* <BackgroundImg /> */}
+            <BackgroundImg src="/image/ending/stress/endingimg_stress.PNG" />
         </BackgroundContainer>
     );
 }
