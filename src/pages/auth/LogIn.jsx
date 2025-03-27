@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { useAuth } from "./Authcontext";
+import { apiClient } from "../../apiClient";
 
 export default function LogIn(){
     const SERVER_URL = import.meta.env.VITE_SERVER_URL;
@@ -36,19 +37,13 @@ export default function LogIn(){
     }
 
     const postLogIn = async()=>{
-        const emailId = email.split("@")[0]; 
-        console.log(emailId, password);
-        
         try {
-            const response = await axios.post(
-                `/api/auth/login`, 
+            const response = await apiClient.post(
+                `/auth/login`, 
                 {
-                    email: emailId,
+                    email: email,
                     password: password,
                 },
-                {
-                    withCredentials: true  // ✅ 쿠키 포함 설정
-                }
             );
     
 
@@ -77,6 +72,8 @@ export default function LogIn(){
                         <Input  
                             value={email} 
                             onChange={(e) => setEmail(e.target.value)}/>
+                        <Placeholder>@sookmyung.ac.kr</Placeholder>
+
                     </InputContainer>
 
                     <InputContainer>
@@ -193,6 +190,17 @@ const Input = styled.input`
     justify-content: center;
     box-sizing: border-box;
 `;
+
+const Placeholder = styled.span`
+    position: absolute;
+    right: 1vw;/* 오른쪽 정렬 */
+    top: 70%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: ${({ theme }) => theme.colors.mainblue300};
+    pointer-events: none; /* 클릭되지 않도록 설정 */
+`;
+
 
 const ButtonContainer = styled.div`
     width: 100%; /* ContentWrapper 내에서 전체 사용 */
