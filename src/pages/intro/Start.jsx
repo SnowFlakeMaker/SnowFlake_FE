@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect} from "react";
 import { useNavigate } from "react-router-dom"; 
 import styled from "styled-components";
 
 export default function Start(){
     const navigate = useNavigate();
+    const audioRef = useRef(null);
+    const [isMuted, setIsMuted] = useState(true);
 
     const GoSignIn =()=>{
         navigate("/signin");
@@ -13,13 +15,35 @@ export default function Start(){
         navigate("/login");
     }
 
+    const handleUnmute = () => {
+        const audio = audioRef.current;
+        if (audio) {
+            audio.muted = false;
+            audio.play().catch(err => console.log("오디오 재생 실패:", err));
+            setIsMuted(false);
+        }
+    };
+
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (audio) {
+            audio.muted = true; // 최초엔 음소거된 상태로 시작
+            audio.play().catch(err => console.log("자동 재생 실패:", err));
+        }
+    }, []);
+
     return(
         <BackgroundContainer>
+            <audio ref={audioRef} src="/music/start.mp3" loop autoPlay /> 
+            <SoundButton onClick={handleUnmute}> {isMuted ? "🔇" : "🔈"}</SoundButton>
+            <LogoImg src="/image/background/logo.png" />
             <ButtonContainer>
-                <GrayButton onClick={GoSignIn}>회원가입</GrayButton>
-                <GrayButton onClick={GoLogIn}>로그인</GrayButton>
+                <BlueButton onClick={GoSignIn}>회원가입</BlueButton>
+                <BlueButton onClick={GoLogIn}>로그인</BlueButton>
             </ButtonContainer> 
-            <BackgroundImg src="/image/lobby_temp.png"/>
+            <BlackText>이 게임은 숙명여자대학교 학생들을 위한 대학 생활 안내 게임으로, 회원가입 시 본인 인증을 거친 숙명여자대학교 구글 계정이 필요합니다.</BlackText>
+            <BackgroundImg src="/image/background/lobby.png"/>
+            
         </BackgroundContainer>
         
     );
@@ -33,6 +57,16 @@ const BackgroundContainer = styled.div`
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    display : flex;
+    flex-direction : column;
+`;
+
+const LogoImg = styled.img`
+    z-index : 5;
+    justify-content : center;
+    align-items : center;
+    position: fixed;
+    top : 25vh;
 `;
 
 const BackgroundImg = styled.img`
@@ -45,23 +79,43 @@ const BackgroundImg = styled.img`
 `;
 
 const ButtonContainer = styled.div`
-    position: absolute;
-    bottom: 10%; /* 화면 하단에서 약간 위로 조정 */
+    position: fixed;
+    bottom: 25vh;
     display: flex;
     flex-direction: column;
     background-color: transparent; 
-    gap: 20px; /* 버튼 간격 조정 */
+    gap: 2vh; /* 버튼 간격 조정 */
     align-items: center;
     z-index: 10;
 `;
 
-const GrayButton = styled.button`
-    width : 477px;
-    height : 77px;
-    background-color: rgba(0, 0, 0, 0.34); /* 반투명한 검정색 */
+const BlueButton = styled.button`
+    width: 25vw; 
+    height: 7vh;
+    background-color: ${({ theme }) => theme.colors.mainblue600};
     color: #ffffff;
     font-size: 24px;
     font-weight: bold;
     border: none;
-    border-radius: 10px; 
+    border-radius: 1vw;
+`;
+
+const BlackText = styled.span`  
+    font-size :  ${({ theme }) => theme.typography.subtitle15.fontSize};
+    color : black;
+    z-index : 15;
+    position: fixed;
+    bottom: 5vh;
+`;
+
+const SoundButton = styled.button`
+    border : none;    
+    position: fixed;
+    top: 2vh;
+    right: 2vw;
+    z-index: 20;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
 `;
